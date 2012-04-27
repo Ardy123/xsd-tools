@@ -1,0 +1,59 @@
+[@lua --define uint32_t type
+	ctype_uint32t = {
+		type = 'c_type',
+		c_type = {
+			name = function() 
+				return 'uint32_t'
+			end,
+			definition = function() 
+				return ''
+			end,
+			statement = function(varName) 
+				return table.concat({
+					'uint32_t\tm_', varName, ';\n',
+				})
+			end,
+		},
+		delete = {
+			definition = function() 
+				return ''
+			end,
+			statement = function(obj) 
+				return ''
+			end,
+		},
+		buildVar = function(obj, member) 
+			return table.concat({obj,'m_',member})
+		end,
+		binding = {
+			marshall = {
+				definition = function() 
+					return ''
+				end,
+				statement = function(dst, obj)
+					return string.format(
+						'_buffer_append(pMarshaller, %s, &%s, sizeof(uint32_t));\n',
+						dst,
+						obj
+					)
+				end,
+			},
+			unmarshall = {
+				definition = function() 
+					return ''
+				end,
+				statement = function(src, obj)
+					return string.format('%s = _streamRead(%s, uint32_t);\n', obj, src)
+				end,
+			},
+		},
+		test = {
+			assign = function()
+				return string.format("%.0f", math.max(0, math.floor(math.random() * 4294967295.0)))
+			end,
+			assert = function(obj1, obj2)
+				return string.format("assert(%s == %s);\n", obj1, obj2)
+			end
+		},
+	}
+]

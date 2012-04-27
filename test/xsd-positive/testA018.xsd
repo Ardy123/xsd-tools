@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema>
+	<element name="fooTest">
+		<simpleType>
+			<list itemType="base64Binary" />
+		</simpleType>
+	</element>
+	<element name="gooTest">
+		<simpleType>
+			<list itemType="hexBinary" />
+		</simpleType>
+	</element>
+</schema>

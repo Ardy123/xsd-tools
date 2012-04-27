@@ -1,0 +1,60 @@
+[@lua --define char_p type
+	ctype_char_p = {
+		type = 'c_type',
+		c_type = {
+			name = function() 
+				return 'char*'
+			end,
+			definition = function() 
+				return ''
+			end,
+			statement = function(varName) 
+				return table.concat({
+					'char*\tm_p', varName, ';\n',
+				})
+			end,
+		},
+		delete = {
+			definition = function() 
+				return ''
+			end,
+			statement = function(obj) 
+				return ''
+			end,
+		},
+		buildVar = function(obj, member) 
+			return table.concat({obj,'m_p',member})
+		end,
+		binding = {
+			marshall = {
+				definition = function() 
+					return ''
+				end,
+				statement = function(dst, obj)
+					return string.format(
+						'_buffer_append(pMarshaller, %s, %s, strlen(%s) + 1);\n', dst, obj, obj
+					)
+				end,
+			},
+			unmarshall = {
+				definition = function()
+					return ''
+				end,
+				statement = function(src, obj)
+					return string.format(
+						'%s = (char*)_streamBlkRead(%s, strlen(%s) + 1);\n', obj, src, src
+					)
+				end,
+			},
+		},
+		test = {
+			assign = function()
+				local tbl = { '"arch"', '"Ancestor"', '"Interaction"', '"Productivity"', '"Jelly"', '"Glue"', '"Way"'}
+				return tbl[math.random(1, #tbl)]
+			end,
+			assert = function(obj1, obj2)
+				return string.format("\tassert(!strcmp(%s, %s));\n", obj1, obj2)
+			end
+		},
+	}
+]

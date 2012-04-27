@@ -1,0 +1,59 @@
+[@lua --define int64_t type
+	ctype_int64t = {
+		type = 'c_type',
+		c_type = {
+			name = function() 
+				return 'int64_t'
+			end,
+			definition = function() 
+				return ''
+			end,
+			statement = function(varName) 
+				return table.concat({
+					'int64_t\tm_', varName, ';\n',
+				})
+			end,
+		},
+		delete = {
+			definition = function() 
+				return ''
+			end,
+			statement = function(obj) 
+				return ''
+			end,
+		},
+		buildVar = function(obj, member) 
+			return table.concat({obj,'m_',member})
+		end,
+		binding = {
+			marshall = {
+				definition = function()
+					return ''
+				end,
+				statement = function(dst, obj)
+					return string.format(
+						'_buffer_append(pMarshaller, %s, &%s, sizeof(int64_t));\n',
+						dst,
+						obj
+					)
+				end,
+			},
+			unmarshall = {
+				definition = function() 
+					return ''
+				end,
+				statement = function(src, obj)
+					return string.format('%s = _streamRead(%s, int64_t);\n', obj, src)
+				end,
+			},
+		},
+		test = {
+			assign = function()
+				return string.format("%.0f", math.floor(math.random() * 9223372036854775807.0))..'LL'
+			end,
+			assert = function(obj1, obj2)
+				return string.format("assert(%s == %s);\n", obj1, obj2)
+			end
+		},
+	}
+]

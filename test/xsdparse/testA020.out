@@ -1,0 +1,13 @@
+name = testA020
+dependents = {
+	binBlob = {
+		name = binBlob
+		dependents = {}
+		content = {
+			type = base64Binary
+		}
+		attributes = {}
+	}
+}
+content = {}
+attributes = {}

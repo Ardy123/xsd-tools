@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema>
+	<complexType name="address">
+		<sequence>
+			<element name="street" type="string" />
+			<element name="city" type="string" />
+			<element name="zipcode" type="integer" />
+			<element name="country" type="string" />
+		</sequence>
+	</complexType>
+
+	<complexType name="USAddress">
+		<complexContent>
+			<restriction base="address">
+				<sequence>
+					<element name="street" type="string" />
+					<element name="city" type="string" />
+				</sequence>
+			</restriction>
+		</complexContent>
+	</complexType>
+	<element name="AddressElm" type="USAddress" />
+</schema>

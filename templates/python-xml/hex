@@ -1,0 +1,39 @@
+[@lua --define python hex type
+	pythontype_hex = {
+		marshall = {
+			attribute = function(attributeName)
+				return table.concat({
+					"\t\tstream.write(' ", attributeName, "= \"' + self.", attributeName, ".encode(\"hex\") + '\"')\n",
+				})
+			end,
+			content = function()
+				return table.concat({
+					"\t\tstream.write(self.getContent()[0].encode(\"hex\"))\n",
+				})
+			end,
+		},
+		unmarshall = {
+			attribute = function(attribName)
+				return table.concat({
+					"\t\t\tif \"", attribName, "\" == attribute:\n",
+					"\t\t\t\tself.", attribName, " = \"\".join(attributes[attribute].split()).decode(\"hex\")\n",
+				})
+			end,
+			content = function()
+				return table.concat({
+					"\t\tself._content = [\"\".join(content[0].split()).decode(\"hex\")]\n"
+				})
+			end
+		},
+		test = {
+			assign = function()
+				return string.format(
+					'%x%x%x',
+					math.random(0, 65535),
+					math.random(0, 65535),
+					math.random(0, 65535)
+				)
+			end,
+		},
+	}
+]

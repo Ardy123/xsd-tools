@@ -1,0 +1,80 @@
+[@lua --define xmlb_base64 type
+	ctype_base64 = {
+		type = 'c_type',
+		c_type = {
+			name = function() 
+				return 'xmlb_base64'
+			end,
+			definition = function() 
+				return table.concat({
+					'typedef struct {\n',
+					'\tuint8_t*\tm_pBuffer;\n',
+					'\tuint32_t\tm_size;\n',
+					'} xmlb_base64;\n',
+				})
+			end,
+			statement = function(varName) 
+				return table.concat({
+					'xmlb_base64\tm_', varName, ';\n',
+				})
+			end,
+		},
+		delete = {
+			definition = function() 
+				return ''
+			end,
+			statement = function(obj) 
+				return ''
+			end,
+		},
+		buildVar = function(obj, member) 
+			return table.concat({obj,'m_',member})
+		end,
+		binding = {
+			marshall = {
+				definition = function() 
+					return table.concat({
+						'static void _marshallBin_base64(xmlb_marshaller* pMarshaller, xmlb_buffer* pOutBuffer, const xmlb_base64* pObj) {\n',
+						'\t_buffer_append(pMarshaller, pOutBuffer, &pObj->m_size, sizeof(pObj->m_size));\n',
+						'\t_buffer_append(pMarshaller, pOutBuffer, pObj->m_pBuffer, pObj->m_size);\n',
+						'}\n',
+					})
+				end,
+				statement = function(dst, obj)
+					return string.format('_marshallBin_base64(pMarshaller, %s, &%s);\n', dst, obj)
+				end,
+			},
+			unmarshall = {
+				definition = function() 
+					return table.concat({
+						'static const uint8_t* _unmarshallBin_base64(xmlb_marshaller* pMarshaller, const uint8_t* pData, xmlb_base64* pObj) {\n',
+						'\tpObj->m_size = _streamRead(pData, uint32_t);\n',
+						'\tpObj->m_pBuffer = (uint8_t*)_streamBlkRead(pData, pObj->m_size);\n',
+						'\treturn pData;\n',
+						'}\n',
+					})
+				end,
+				statement = function(src, obj)
+					return string.format('%s = _unmarshallBin_base64(pMarshaller, %s, &%s);\n', src, src, obj)
+				end,
+			},
+		},
+		test = {
+			assign = function()
+				local str = string.format(
+					'%X%X%X',
+					math.random(0, 65535),
+					math.random(0, 65535),
+					math.random(0, 65535)
+				)
+				return string.format('{ .m_pBuffer = \"%s\", .m_size = %d }', str, str:len())
+			end,
+			assert = function(obj1, obj2)
+				return table.concat({
+					string.format("\tassert(%s.m_size ==  %s.m_size);\n", obj1, obj2),
+					string.format("\tassert(!memcmp(%s.m_pBuffer, %s.m_pBuffer, %s.m_size));\n", obj1, obj2, obj2),
+				})
+			end
+		},
+	}
+]

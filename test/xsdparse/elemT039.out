@@ -1,0 +1,98 @@
+name = elemT039
+dependents = {
+	test3 = {
+		name = test3
+		dependents = {
+			y = {
+				name = y
+				dependents = {}
+				content = {
+					type = string
+				}
+				attributes = {}
+			}
+			x = {
+				name = x
+				dependents = {}
+				content = {
+					type = string
+				}
+				attributes = {}
+			}
+		}
+		content = {}
+		attributes = {}
+	}
+	test2 = {
+		name = test2
+		dependents = {}
+		content = {
+			type = string
+		}
+		attributes = {}
+	}
+	root = {
+		name = root
+		dependents = {
+			test = {
+				name = test
+				dependents = {}
+				content = {
+					type = int
+				}
+				attributes = {}
+			}
+			test3 = {
+				name = test3
+				dependents = {
+					y = {
+						name = y
+						dependents = {}
+						content = {
+							type = string
+						}
+						attributes = {}
+					}
+					x = {
+						name = x
+						dependents = {}
+						content = {
+							type = string
+						}
+						attributes = {}
+					}
+				}
+				content = {}
+				attributes = {}
+			}
+			test2 = {
+				name = test2
+				dependents = {}
+				content = {
+					type = string
+				}
+				attributes = {}
+			}
+		}
+		content = {}
+		attributes = {}
+	}
+	s-a = {
+		name = s-a
+		dependents = {}
+		content = {
+			type = int
+		}
+		attributes = {}
+	}
+	test = {
+		name = test
+		dependents = {}
+		content = {
+			type = int
+		}
+		attributes = {}
+	}
+}
+content = {}
+attributes = {}

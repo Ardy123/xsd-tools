@@ -1,0 +1,57 @@
+[@lua --define float type
+	ctype_float = {
+		type = 'c_type',
+		c_type = {
+			name = function() 
+				return 'float'
+			end,
+			definition = function() 
+				return ''
+			end,
+			statement = function(varName) 
+				return table.concat({
+					'float\tm_', varName, ';\n',
+				})
+			end,
+		},
+		delete = {
+			definition = function() 
+				return ''
+			end,
+			statement = function(obj) 
+				return ''
+			end,
+		},
+		buildVar = function(obj, member) 
+			return table.concat({obj,'m_',member})
+		end,
+		binding = {
+			marshall = {
+				definition = function() 
+					return ''
+				end,
+				statement = function(dst, obj)
+					return string.format(
+						'_buffer_append(pMarshaller, %s, &%s, sizeof(float));\n', 
+						dst, obj)
+				end,
+			},
+			unmarshall = {
+				definition = function() 
+					return ''
+				end,
+				statement = function(src, obj)
+					return string.format('%s = _streamRead(%s, float);\n', obj, src)
+				end,
+			},
+		},
+		test = {
+			assign = function()
+				return tostring(math.random() * math.random(-127, 127))
+			end,
+			assert = function(obj1, obj2)
+				return string.format("assert(%s == %s);\n", obj1, obj2)
+			end
+		},
+	}
+]

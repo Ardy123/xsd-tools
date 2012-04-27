@@ -1,0 +1,13 @@
+name = testA008
+dependents = {
+	fooTest = {
+		name = fooTest
+		dependents = {}
+		content = {
+			type = list(positiveInteger)
+		}
+		attributes = {}
+	}
+}
+content = {}
+attributes = {}

@@ -1,0 +1,38 @@
+[@lua --define python list int type
+	pythontype_listFloat = {
+		marshall = {
+			attribute = function(attribName)
+				return table.concat({
+					"\t\tstream.write(' ", attribName, "=\"' + \" \".join([str(x) for x in self.", attribName, "])\"')\n",
+				})
+			end,
+			content = function()
+				return table.concat({
+					"\t\tstream.write(\" \".join([str(x) for x in self.getContent()]))\n"
+				})
+			end,
+		},
+		unmarshall = {
+			attribute = function(attribName)
+				return table.concat({
+					"\t\t\tif \"", attribName, "\" == attribute:\n",
+					"\t\t\t\tself.", attribName, " = [float(\"\".join(x.split())) for x in attributes[attribute].split(\" \")]\n",
+				})
+			end,
+			content = function()
+				return table.concat({
+					"\t\tself._content = [float(x) for x in content[0].split(\" \")]\n"
+				})
+			end
+		},
+		test = {
+			assign = function()
+				return table.concat({
+					tostring(math.random() * math.random(-127, 127)),
+					tostring(math.random() * math.random(-127, 127)),
+					tostring(math.random() * math.random(-127, 127))
+				}, " ")
+			end,
+		},
+	}
+]

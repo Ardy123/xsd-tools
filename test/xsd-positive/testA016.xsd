@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema>
+	<element name="fooTest">
+		<simpleType>
+			<list itemType="positiveInteger" />
+		</simpleType>
+	</element>
+	<element name="trex">
+		<simpleType>
+			<list itemType="positiveInteger" />
+		</simpleType>
+	</element>
+</schema>

@@ -1,0 +1,115 @@
+<?xml version="1.0"?>
+<schema>
+
+	<element name="root">
+		<complexType>
+			<sequence>
+				<element ref="test1" minOccurs="0"/>
+				<element ref="test2" minOccurs="0"/>
+				<element ref="test3" minOccurs="0"/>
+				<element ref="test4" minOccurs="0"/>
+				<element ref="test5" minOccurs="0"/>
+			</sequence>
+		</complexType>
+	</element>
+
+	<element name="test1" type="A" block="restriction" />
+	<element name="test2" type="A" block="#all" />
+	<element name="test3"  type="A" block="extension" />
+	<element name="test4" type="CA" block="extension" />
+	<element name="test5" type="CA" block="restriction" />
+	<element name="sa" substitutionGroup="test1"/>
+
+	<simpleType name="base-A">
+		<restriction base="int">
+			<minExclusive value="0"/>
+			<maxInclusive value="10"/>
+		</restriction>
+	</simpleType>
+
+	<simpleType name="base-B">
+		<restriction base="string">
+			<minLength value="0"/>
+			<maxLength value="10"/>
+		</restriction>
+	</simpleType>
+
+	<simpleType name="A">
+		<restriction base="base-A">
+			<enumeration value="1"/>
+			<enumeration value="2"/>
+			<enumeration value="3"/>
+			<enumeration value="4"/>
+		</restriction>
+	</simpleType>
+
+	<simpleType name="B">
+		<restriction base="base-B">
+			<enumeration value="a"/>
+			<enumeration value="b"/>
+			<enumeration value="c123456789"/>
+		</restriction>
+	</simpleType>
+
+	<simpleType name="Union-A">
+		<union memberTypes="A"/>
+	</simpleType>
+
+	<simpleType name="Union-AB">
+		<union memberTypes="A B"/>
+	</simpleType>
+
+	<simpleType name="List-A">
+		<list itemType="A"/>
+	</simpleType>
+
+	<simpleType name="List-AB">
+		<list itemType="Union-AB"/>
+	</simpleType>
+
+	<simpleType name="R-A">
+		<restriction base="A">
+			<enumeration value="1"/>
+			<enumeration value="2"/>
+		</restriction>	
+	</simpleType>
+
+	<complexType name="E-A">
+		<simpleContent>
+			<extension base="A">
+				<attribute name="att" type="int"/>
+			</extension>
+		</simpleContent>
+	</complexType>
+
+	<complexType name="CA">
+		<sequence>
+			<element name="x" minOccurs="0" maxOccurs="2"/>
+			<element name="y" minOccurs="0"/>
+		</sequence>
+	</complexType>
+
+	<complexType name="R-CA">
+		<complexContent>
+			<restriction base="CA">
+				<sequence>
+					<element name="x" minOccurs="1" maxOccurs="1"/>
+				</sequence>
+			</restriction>	
+		</complexContent>
+	</complexType>
+
+	<complexType name="E-CA">
+		<complexContent>
+			<extension base="CA">
+				<sequence>
+					<element name="z"/>
+				</sequence>
+			</extension>	
+		</complexContent>
+	</complexType>
+
+</schema>
+
+
+

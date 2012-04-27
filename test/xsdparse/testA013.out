@@ -1,0 +1,24 @@
+name = testA013
+dependents = {
+	foo = {
+		name = foo
+		dependents = {
+			name = {
+				name = name
+				dependents = {}
+				content = {
+					type = string
+				}
+				attributes = {}
+			}
+		}
+		content = {}
+		attributes = {
+			myAttr = {
+				type = string
+			}
+		}
+	}
+}
+content = {}
+attributes = {}

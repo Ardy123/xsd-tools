@@ -1,0 +1,48 @@
+[@lua --include any shared 'helper' templates
+	return include 'shared/schemaEx'
+][@lua -- include python type info
+	return include 'python-xml/python_type_info'
+][@lua --rename any non-c-safe names to c-safe names & sort dependencies so that they are matched correctly
+	schema = schema.c_safeNames()
+]import cStringIO
+import [@lua return schema.root]
+
+test = [
+[@lua --output each test xml file
+	local outbuf = stringBuffer:new()
+	local function dpOutput(_, node)
+		outbuf:append(table.concat({'<', node.name}))
+		table.map(node.attributes, function(attribName, attrib)
+			outbuf:append(table.concat({
+				' ', attribName, '=\\"', py_type_info[attrib.type].test.assign(), '\\"',
+			}))
+		end)
+		outbuf:append('>')
+		if next(node.content) then
+			outbuf:append(py_type_info[node.content.type].test.assign())
+		end
+		if next(node.dependents) then
+			table.map(node.dependents, dpOutput)
+		end
+		outbuf:append(table.concat({'</', node.name, '>'}))
+	end
+	table.map(schema.types[schema.root].dependents, function(name, node)
+		outbuf:append('\t"<?xml version=\\"1.0\\" encoding=\\"UTF-8\\" ?>\\n" \\\n\t"')
+		dpOutput(name, node)
+		outbuf:append('",\n')
+	end)
+	return outbuf:str()
+]]
+
+
+def runTest(xmlstr):
+	outStr = cStringIO.StringIO()
+	root = [@lua return schema.root].xml_[@lua return schema.root]()
+	root.unmarshall(cStringIO.StringIO(xmlstr))
+	root.marshall(outStr)
+	testval = outStr.getvalue() 
+	assert testval == xmlstr
+
+for testxml in test:
+	runTest(testxml)
+

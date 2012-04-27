@@ -1,0 +1,13 @@
+name = elemA016
+dependents = {
+	xmlns = {
+		name = xmlns
+		dependents = {}
+		content = {
+			type = string
+		}
+		attributes = {}
+	}
+}
+content = {}
+attributes = {}

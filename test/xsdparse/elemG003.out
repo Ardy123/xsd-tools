@@ -1,0 +1,20 @@
+name = elemG003
+dependents = {
+	myElem = {
+		name = myElem
+		dependents = {
+			ele1 = {
+				name = ele1
+				dependents = {}
+				content = {
+					type = string
+				}
+				attributes = {}
+			}
+		}
+		content = {}
+		attributes = {}
+	}
+}
+content = {}
+attributes = {}

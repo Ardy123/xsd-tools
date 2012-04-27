@@ -1,0 +1,38 @@
+[@lua --define python list long type
+	pythontype_listLong = {
+		marshall = {
+			attribute = function(attribName)
+				return table.concat({
+					"\t\tstream.write(' ", attribName, "=\"' + \" \".join([str(x) for x in self.", attribName, "])\"')\n",
+				})
+			end,
+			content = function()
+				return table.concat({
+					"\t\tstream.write(\" \".join([str(x) for x in self.getContent()]))\n"
+				})
+			end,
+		},
+		unmarshall = {
+			attribute = function(attribName)
+				return table.concat({
+					"\t\t\tif \"", attribName, "\" == attribute:\n",
+					"\t\t\t\tself.", attribName, " = [long(\"\".join(x.split())) for x in attributes[attribute].split(\" \")]\n",
+				})
+			end,
+			content = function()
+				return table.concat({
+					"\t\tself._content = [long(x) for x in content[0].split(\" \")]\n"
+				})
+			end
+		},
+		test = {
+			assign = function()
+				return table.concat({
+					string.format("%.0f", math.floor(math.random() * 9223372036854775807.0)),
+					string.format("%.0f", math.floor(math.random() * 9223372036854775807.0)),
+					string.format("%.0f", math.floor(math.random() * 9223372036854775807.0))
+				}, " ")
+			end,
+		},
+	}
+]

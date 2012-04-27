@@ -1,0 +1,36 @@
+[@lua --define python String type
+	pythontype_listString = {
+		marshall = {
+			attribute = function(attribName)
+				return table.concat({
+					"\t\tstream.write(' ", attribName, "=\"' + \" \".join(self.", attribName, ") + '\"')\n",
+				})
+			end,
+			content = function()
+				return table.concat({
+					"\t\tstream.write(\" \".join(self.getContent()))\n",
+				})
+			end,
+		},
+		unmarshall = {
+			attribute = function(attribName)
+				return table.concat({
+					"\t\t\tself.", attribName," = attributes[attribute].split(\" \")\n",
+				})
+			end,
+			content = function()
+				return table.concat({
+					"\t\tself._content = content[0].split(\" \")\n"
+				})
+			end
+		},
+		test = {
+			assign = function()
+				local tbl = { 'arch', 'Ancestor', 'Interaction', 'Productivity', 'Jelly', 'Glue', 'Way'}
+				return table.concat({
+					tbl[math.random(1, #tbl)], tbl[math.random(1, #tbl)], tbl[math.random(1, #tbl)]
+				}, " ")
+			end,
+		}
+	}
+]

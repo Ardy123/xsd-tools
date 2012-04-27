@@ -1,0 +1,21 @@
+name = testA018
+dependents = {
+	gooTest = {
+		name = gooTest
+		dependents = {}
+		content = {
+			type = list(hexBinary)
+		}
+		attributes = {}
+	}
+	fooTest = {
+		name = fooTest
+		dependents = {}
+		content = {
+			type = list(base64Binary)
+		}
+		attributes = {}
+	}
+}
+content = {}
+attributes = {}

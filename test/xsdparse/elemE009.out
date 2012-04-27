@@ -1,0 +1,21 @@
+name = elemE009
+dependents = {
+	myElem = {
+		name = myElem
+		dependents = {}
+		content = {
+			type = string
+		}
+		attributes = {}
+	}
+	foo = {
+		name = foo
+		dependents = {}
+		content = {
+			type = string
+		}
+		attributes = {}
+	}
+}
+content = {}
+attributes = {}

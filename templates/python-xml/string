@@ -1,0 +1,39 @@
+[@lua --define python String type
+	pythontype_string = {
+		marshall = {
+			attribute = function(attribName)
+				return table.concat({
+					"\t\tstream.write(' ", attribName, "=\"' + self.", attribName, " + '\"')\n",
+				})
+			end,
+			content = function()
+				return table.concat({
+					"\t\tfor node in self.getContent():\n",
+					"\t\t\tif isinstance(node, _xmlelement):\n",
+					"\t\t\t\tnode.marshall(stream)\n",
+					"\t\t\telse:\n",
+					"\t\t\t\tstream.write(str(node))\n",
+				})
+			end,
+		},
+		unmarshall = {
+			attribute = function(attribName)
+				return table.concat({
+					"\t\t\tif \"", attribName, "\" == attribute:\n",
+					"\t\t\t\tself.", attribName, " = attributes[attribute]\n",
+				})
+			end,
+			content = function()
+				return table.concat({
+					"\t\tself._content = content\n"
+				})
+			end
+		},
+		test = {
+			assign = function()
+				local tbl = { 'arch', 'Ancestor', 'Interaction', 'Productivity', 'Jelly', 'Glue', 'Way'}
+				return tbl[math.random(1, #tbl)]
+			end,
+		},
+	}
+]

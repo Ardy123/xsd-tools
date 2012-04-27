@@ -1,0 +1,13 @@
+name = testA019
+dependents = {
+	foo = {
+		name = foo
+		dependents = {}
+		content = {
+			type = int
+		}
+		attributes = {}
+	}
+}
+content = {}
+attributes = {}

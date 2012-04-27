@@ -1,0 +1,28 @@
+name = testA003
+dependents = {
+	AddressElm = {
+		name = AddressElm
+		dependents = {
+			city = {
+				name = city
+				dependents = {}
+				content = {
+					type = string
+				}
+				attributes = {}
+			}
+			street = {
+				name = street
+				dependents = {}
+				content = {
+					type = string
+				}
+				attributes = {}
+			}
+		}
+		content = {}
+		attributes = {}
+	}
+}
+content = {}
+attributes = {}

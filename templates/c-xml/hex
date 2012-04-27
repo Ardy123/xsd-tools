@@ -1,0 +1,130 @@
+[@lua --define xml_hex type
+	ctype_hex = {
+		type = 'c_type',
+		c_type = {
+			name = function() 
+				return 'xml_hex'
+			end,
+			definition = function() 
+				return table.concat({
+					'typedef struct {\n',
+					'\tuint8_t*\tm_pBuffer;\n',
+					'\tuint32_t\tm_size;\n',
+					'} xml_hex;\n',
+				})
+			end,
+			statement = function(varName) 
+				return table.concat({
+					'xml_hex\tm_', varName, ';\n',
+				})
+			end,
+		},
+		delete = {
+			definition = function() 
+				return table.concat({
+					'static void _destroy_xmlhex(xml_marshaller* pMarshaller, xml_hex* pObj) {\n',
+					'\tif(pObj->m_pBuffer) { \n',
+					'\tpObj->m_pBuffer = pMarshaller->realloc(pMarshaller, pObj->m_pBuffer, 0);\n',
+					'\t}\n',
+					'}\n',
+				})
+			end,
+			statement = function(obj) 
+				return table.concat({
+					'_destroy_xmlhex(pMarshaller, &', obj, ');\n',
+				})
+			end,
+		},
+		buildVar = function(obj, member) 
+			return table.concat({obj,'m_',member})
+		end,
+		binding = {
+			marshall = {
+				definition = function() 
+					return table.concat({
+						'static void _marshall_xmlhex(xml_marshaller* pMarshaller, xml_buffer* pOutBuffer, const xml_hex* pObj) {\n',
+						'\tint ndx;\n',
+						'\tstatic const char hexTbl[] = { \'0\', \'1\', \'2\', \'3\', \'4\', \'5\', \'6\', \'7\', \'8\', \'9\', \'A\', \'B\', \'C\', \'D\', \'E\', \'F\' };\n',
+						'\tuint8_t* pHexBuf = pMarshaller->realloc(pMarshaller, NULL, (pObj->m_size * 2) + 1);\n',
+						'\tfor(ndx = 0; ndx < pObj->m_size; ++ndx) {\n',
+						'\t\tpHexBuf[ndx << 1] = hexTbl[pObj->m_pBuffer[ndx] >> 4];\n',
+						'\t\tpHexBuf[(ndx << 1) + 1] = hexTbl[pObj->m_pBuffer[ndx] & 0x0F];\n',
+						'\t}\n',
+						'\tpHexBuf[ndx << 1] = 0;\n',
+						'\t_cstr_append(pMarshaller, pOutBuffer, pHexBuf);\n',
+						'\tpMarshaller->realloc(pMarshaller, pHexBuf, 0);\n',
+						'}\n',
+					})
+				end,
+				statement = function(dst, obj)
+					return table.concat({
+						'_marshall_xmlhex(pMarshaller, ', dst, ', &', obj, ');\n',
+					})
+				end,
+			},
+			unmarshall = {
+				definition = function() 
+					return table.concat({
+						'static void _unmarshall_xmlhex(xml_marshaller* pMarshaller, const char* pContent, xml_hex* pObj) {\n',
+						'\tstatic const unsigned char hexTbl[256] = {\n',
+						'\t\t-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,\n',
+						'\t\t-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,\n',
+						'\t\t-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,\n',
+			 			'\t\t0,  1,  2,  3,  4,  5,  6,  7,  8,  9, -1, -1, -1, -1, -1, -1,\n',
+						'\t\t-1, 10, 11, 12, 13, 14, 15, -1, -1, -1, -1, -1, -1, -1, -1, -1,\n',
+						'\t\t-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,\n',
+						'\t\t-1, 10, 11, 12, 13, 14, 15, -1, -1, -1, -1, -1, -1, -1, -1, -1\n',
+						'\t\t-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,\n',
+						'\t\t-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,\n',
+						'\t\t-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,\n',
+						'\t\t-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,\n',
+						'\t\t-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,\n',
+						'\t\t-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,\n',
+						'\t\t-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,\n',
+						'\t\t-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,\n',
+						'\t\t-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1\n',
+						'\t};\n',
+						'\tconst size_t contentSz = strlen(pContent);\n',
+						'\tuint8_t *pOutItr, shiftFlag = 0x4, accum = 0;\n',
+						'\tpObj->m_pBuffer = pMarshaller->realloc(pMarshaller, NULL, contentSz / 2);\n',
+						'\tfor (pOutItr = pObj->m_pBuffer; *pContent; ++pContent) {\n',
+						'\t\tconst unsigned char bin = hexTbl[*pContent];\n',
+						'\t\t\tif(255 != bin) {\n',
+						'\t\t\t\taccum |= bin << shiftFlag;\n',
+						'\t\t\t\tshiftFlag ^= 0x4;\n',
+						'\t\t\t\tif (shiftFlag) {\n',
+						'\t\t\t\t*pOutItr++ = accum;\n',
+						'\t\t\t\taccum = 0;\n',
+						'\t\t\t}\n',
+						'\t\t}\n',
+						'\t}\n',
+						'\tpObj->m_size = pOutItr - pObj->m_pBuffer;\n',
+						'}\n',
+					})
+				end,
+				statement = function(src, obj)
+					return table.concat({
+						'_unmarshall_xmlhex(pMarshaller, ', src, ', &', obj, ');\n',
+					})
+				end,
+			},
+		},
+		test = {
+			assign = function()
+				local str = string.format(
+					'%X%X%X',
+					math.random(0, 65535),
+					math.random(0, 65535),
+					math.random(0, 65535)
+				)
+				return string.format('{ .m_pBuffer = \"%s\", .m_size = %d }', str, str:len())
+			end,
+			assert = function(obj1, obj2)
+				return table.concat({
+					string.format("\tassert(%s.m_size ==  %s.m_size);\n", obj1, obj2),
+					string.format("\tassert(!memcmp(%s.m_pBuffer, %s.m_pBuffer, %s.m_size));\n", obj1, obj2, obj2),
+				})
+			end
+		},
+	}
+]

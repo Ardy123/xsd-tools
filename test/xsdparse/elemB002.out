@@ -1,0 +1,13 @@
+name = elemB002
+dependents = {
+	foo = {
+		name = foo
+		dependents = {}
+		content = {
+			type = string
+		}
+		attributes = {}
+	}
+}
+content = {}
+attributes = {}

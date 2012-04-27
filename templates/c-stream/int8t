@@ -1,0 +1,59 @@
+[@lua --define int8_t type
+	ctype_int8t = {
+		type = 'c_type',
+		c_type = {
+			name = function() 
+				return 'int8_t'
+			end,
+			definition = function() 
+				return ''
+			end,
+			statement = function(varName) 
+				return table.concat({
+					'int8_t\tm_', varName, ';\n',
+				})
+			end,
+		},
+		delete = {
+			definition = function() 
+				return ''
+			end,
+			statement = function(obj) 
+				return ''
+			end,
+		},
+		buildVar = function(obj, member) 
+			return table.concat({obj,'m_',member})
+		end,
+		binding = {
+			marshall = {
+				definition = function() 
+					return ''
+				end,
+				statement = function(dst, obj)
+					return string.format(
+						'buffer_append(pMarshaller, %s, &%s, sizeof(int8_t));\n',
+						dst,
+						obj
+					)
+				end,
+			},
+			unmarshall = {
+				definition = function() 
+					return ''
+				end,
+				statement = function(src, obj)
+					return string.format('%s = _streamRead(%s, int8_t);\n', obj, src)
+				end,
+			},
+		},
+		test = {
+			assign = function()
+				return tostring(math.random(-127, 127))
+			end,
+			assert = function(obj1, obj2)
+				return string.format("assert(%s == %s);\n", obj1, obj2)
+			end
+		},
+	}
+]

@@ -1,0 +1,35 @@
+[@lua --define python boolean type
+	pythontype_bool = {
+		marshall = {
+			attribute = function(attribName)
+				return table.concat({
+					"\t\tstream.write(' ", attribName, "=\"' + str(self.", attribName, ") + '\"')\n",
+				})
+			end,
+			content = function()
+				return table.concat({
+					"\t\tstream.write(str(self._content[0]))\n"
+				})
+			end,
+		},
+		unmarshall = {
+			attribute = function(attribName)
+				return table.concat({
+					"\t\t\tif \"", attribName, "\" == attribute:\n",
+					"\t\t\t\tself.", attribName, " = bool(\"\".join(attributes[attribute].split()))\n",
+				})
+			end,
+			content = function()
+				return table.concat({
+					"\t\tself._content = [bool(\"\".join(content[0].split()))]\n"
+				})
+			end
+		},
+		test = {
+			assign = function()
+				local tbl = { 'true', 'false', 'True', 'False', '0', '1', 'TRUE', 'FALSE'}
+				return tbl[tostring(math.random(0, #tbl))]
+			end,
+		},
+	}
+]

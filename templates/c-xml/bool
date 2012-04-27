@@ -1,0 +1,67 @@
+[@lua --define bool type
+	ctype_bool = {
+		type = 'c_type',
+		c_type = {
+			name = function() 
+				return 'xml_bool'
+			end,
+			definition = function() 
+				return "typedef uint8_t xml_bool;\n"
+			end,
+			statement = function(varName) 
+				return table.concat({
+					'xml_bool\tm_', varName, ';\n',
+				})
+			end,
+		},
+		delete = {
+			definition = function() 
+				return ''
+			end,
+			statement = function(obj) 
+				return ''
+			end,
+		},
+		buildVar = function(obj, member) 
+			return table.concat({obj,'m_',member})
+		end,
+		binding = {
+			marshall = {
+				definition = function() 
+					return ''
+				end,
+				statement = function(dst, obj)
+					return table.concat({
+						'_cstr_append(pMarshaller, ', dst, ', (', obj, ') ? "true" : "false");\n',
+					})
+				end,
+			},
+			unmarshall = {
+				definition = function() 
+					return table.concat({
+						'void _unmarshall_bool(xml_marshaller* pMarshaller, const char* pContent, xml_bool* pObj) {\n',
+						'\tif(isDigit(pContent[0]) {\n',
+						'\t\tpVal = (0 != *pContent[0]);\n',
+						'\t} else {',
+						'\t\tpVal = (0 == strcncmp(pContent, "true", 6));\n',
+						'\t}\n',
+						'}\n',
+					})
+				end,
+				statement = function(src, obj)
+					return table.concat({
+						'_unmarshall_bool(pMarshaller, ', src, ', &', obj, ');\n',
+					})
+				end,
+			},
+		},
+		test = {
+			assign = function()
+				return tostring(math.random(0, 255))
+			end,
+			assert = function(obj1, obj2)
+				return string.format("assert(%s == %s);\n", obj1, obj2)
+			end
+		}
+	}
+]

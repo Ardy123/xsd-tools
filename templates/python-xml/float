@@ -1,0 +1,34 @@
+[@lua --define python float type
+	pythontype_float = {
+		marshall = {
+			attribute = function(attribName)
+				return table.concat({
+					"\t\tstream.write(' ", attribName, "=\"' + str(self.", attribName, ") + '\"')\n",
+				})
+			end,
+			content = function()
+				return table.concat({
+					"\t\tstream.write(str(self._content[0]))\n"
+				})
+			end,
+		},
+		unmarshall = {
+			attribute = function(attribName)
+				return table.concat({
+					"\t\t\tif \"", attribName, "\" == attribute:\n",
+					"\t\t\t\tself.", attribName, " = float(\"\".join(attributes[attribute].split()))\n",
+				})
+			end,
+			content = function()
+				return table.concat({
+					"\t\tself._content = [float(\"\".join(content[0].split()))]\n"
+				})
+			end
+		},
+		test = {
+			assign = function()
+				return tostring(math.random() * math.random(-127, 127))
+			end,
+		},
+	}
+]

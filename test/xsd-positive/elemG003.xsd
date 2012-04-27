@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<schema>
+	<element name="myElem">
+		<complexType>
+			<all>
+				<element name="ele1" type="string"/>
+			</all>
+		</complexType>
+	</element>
+</schema>

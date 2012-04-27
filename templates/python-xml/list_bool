@@ -1,0 +1,36 @@
+[@lua --define python list bool type
+	pythontype_listBool = {
+		marshall = {
+			attribute = function(attribName)
+				return table.concat({
+					"\t\tstream.write(' ", attribName, "=\"' + \" \".join([str(x) for x in self.", attribName, "])\"')\n",
+				})
+			end,
+			content = function()
+				return table.concat({
+					"\t\tstream.write(\" \".join([str(x) for x in self.getContent()]))\n"
+				})
+			end,
+		},
+		unmarshall = {
+			attribute = function(attribName)
+				return table.concat({
+					"\t\t\tif \"", attribName, "\" == attribute:\n",
+					"\t\t\t\tself.", attribName, " = [bool(\"\".join(x.split())) for x in attributes[attribute].split(\" \")]\n",
+				})
+			end,
+			content = function()
+				return table.concat({
+					"\t\tself._content = [bool(x) for x in content[0].split(\" \")]\n"
+				})
+			end
+		},
+		test = {
+			assign = function()
+				return table.concat({
+					tostring(math.random(0, 255)),tostring(math.random(0, 255)), tostring(math.random(0, 255))
+				}, " ")
+			end,
+		},
+	}
+]

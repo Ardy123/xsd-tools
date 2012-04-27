@@ -1,0 +1,160 @@
+name = elemT058
+dependents = {
+	test3 = {
+		name = test3
+		dependents = {}
+		content = {
+			type = int
+		}
+		attributes = {}
+	}
+	test1 = {
+		name = test1
+		dependents = {}
+		content = {
+			type = int
+		}
+		attributes = {}
+	}
+	test2 = {
+		name = test2
+		dependents = {}
+		content = {
+			type = int
+		}
+		attributes = {}
+	}
+	root = {
+		name = root
+		dependents = {
+			test3 = {
+				name = test3
+				dependents = {}
+				content = {
+					type = int
+				}
+				attributes = {}
+			}
+			test1 = {
+				name = test1
+				dependents = {}
+				content = {
+					type = int
+				}
+				attributes = {}
+			}
+			test2 = {
+				name = test2
+				dependents = {}
+				content = {
+					type = int
+				}
+				attributes = {}
+			}
+			test5 = {
+				name = test5
+				dependents = {
+					y = {
+						name = y
+						dependents = {}
+						content = {
+							type = string
+						}
+						attributes = {}
+					}
+					x = {
+						name = x
+						dependents = {}
+						content = {
+							type = string
+						}
+						attributes = {}
+					}
+				}
+				content = {}
+				attributes = {}
+			}
+			test4 = {
+				name = test4
+				dependents = {
+					y = {
+						name = y
+						dependents = {}
+						content = {
+							type = string
+						}
+						attributes = {}
+					}
+					x = {
+						name = x
+						dependents = {}
+						content = {
+							type = string
+						}
+						attributes = {}
+					}
+				}
+				content = {}
+				attributes = {}
+			}
+		}
+		content = {}
+		attributes = {}
+	}
+	sa = {
+		name = sa
+		dependents = {}
+		content = {
+			type = int
+		}
+		attributes = {}
+	}
+	test5 = {
+		name = test5
+		dependents = {
+			y = {
+				name = y
+				dependents = {}
+				content = {
+					type = string
+				}
+				attributes = {}
+			}
+			x = {
+				name = x
+				dependents = {}
+				content = {
+					type = string
+				}
+				attributes = {}
+			}
+		}
+		content = {}
+		attributes = {}
+	}
+	test4 = {
+		name = test4
+		dependents = {
+			y = {
+				name = y
+				dependents = {}
+				content = {
+					type = string
+				}
+				attributes = {}
+			}
+			x = {
+				name = x
+				dependents = {}
+				content = {
+					type = string
+				}
+				attributes = {}
+			}
+		}
+		content = {}
+		attributes = {}
+	}
+}
+content = {}
+attributes = {}

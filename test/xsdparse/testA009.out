@@ -1,0 +1,13 @@
+name = testA009
+dependents = {
+	fooTest = {
+		name = fooTest
+		dependents = {}
+		content = {
+			type = list(string)
+		}
+		attributes = {}
+	}
+}
+content = {}
+attributes = {}

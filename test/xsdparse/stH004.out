@@ -1,0 +1,28 @@
+name = stH004
+dependents = {
+	root = {
+		name = root
+		dependents = {
+			fooTest = {
+				name = fooTest
+				dependents = {}
+				content = {
+					type = string
+				}
+				attributes = {}
+			}
+		}
+		content = {}
+		attributes = {}
+	}
+	fooTest = {
+		name = fooTest
+		dependents = {}
+		content = {
+			type = string
+		}
+		attributes = {}
+	}
+}
+content = {}
+attributes = {}

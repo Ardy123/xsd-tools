@@ -1,0 +1,13 @@
+name = testA022
+dependents = {
+	gooTest = {
+		name = gooTest
+		dependents = {}
+		content = {
+			type = list(hexBinary)
+		}
+		attributes = {}
+	}
+}
+content = {}
+attributes = {}

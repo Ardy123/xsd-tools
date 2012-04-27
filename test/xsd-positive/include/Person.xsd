@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<schema>
+    <complexType name="PersonType">
+        <sequence>
+           <element name="Name" type="string"/>
+           <element name="SSN" type="string"/>
+        </sequence>
+    </complexType>
+</schema> 

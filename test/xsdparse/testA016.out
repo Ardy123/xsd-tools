@@ -1,0 +1,21 @@
+name = testA016
+dependents = {
+	trex = {
+		name = trex
+		dependents = {}
+		content = {
+			type = list(positiveInteger)
+		}
+		attributes = {}
+	}
+	fooTest = {
+		name = fooTest
+		dependents = {}
+		content = {
+			type = list(positiveInteger)
+		}
+		attributes = {}
+	}
+}
+content = {}
+attributes = {}

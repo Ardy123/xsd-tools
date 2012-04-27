@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema>
+	<element name="fooTest" type="ListOfZips" />
+	<simpleType name="ListOfZips">
+		<list itemType="string" />
+	</simpleType>
+</schema>

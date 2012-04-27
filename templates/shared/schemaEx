@@ -1,0 +1,80 @@
+[@lua -- add a dependency sort to the schema table
+	--sort dependencies so that they are matched correctly 
+	local function topoSort(node)
+		depOrder = {}
+		local function visit(node)
+			if node.visit then return end
+			node.visit = true
+			table.map(node.dependents, (function(k,v)visit(v)end))
+			depOrder[#depOrder + 1] = node
+		end
+		visit(node)
+		return depOrder
+	end
+	-- add function to schema table
+	schema.sortDependencies = function() 
+		return topoSort(schema.types[schema.root])
+	end
+][@lua -- add a c-safe NCName filter to schema table
+	 --add a 'c-safe' method to the table 
+	local function renameNames()
+		local ret = {
+			types = { [schema.root]={} }, 
+			root  = schema.root,
+		}
+		local function renameNCName(name, tbl, retries)
+			retries = retries or 1
+			local rplcStr = string.rep('_', retries)
+			local newName = name:gsub('^[%d]', rplcStr):gsub('-',rplcStr)
+			if newName ~= name and tbl[newName] then
+				return renameNCName(name, tbl, retries + 1)
+			else
+				return newName
+			end
+		end
+		local function recurse(nodeName, node, tbl)
+			tbl.name = renameNCName(nodeName, schema.types)
+			tbl.attributes = tbl.attributes or {}
+			tbl.content = tbl.content or {}
+			table.map(node.attributes, function(k,v)
+				tbl.attributes[renameNCName(k,node.attributes)] = v
+			end)
+			tbl.dependents = tbl.dependents or {}
+			table.map(node.dependents, function(k,v)
+				local CSafeName = renameNCName(k, schema.types)
+				tbl.dependents[CSafeName], ret.types[CSafeName] = v, v
+				recurse(k, v, tbl.dependents[CSafeName])
+			end)
+		end
+		recurse(schema.root, schema.types[schema.root],ret.types[schema.root])
+		return ret
+	end
+	-- add function to schema table
+	schema.c_safeNames = function()
+		local ret = renameNames()
+		table.map(schema, function(k, v) 
+			if "function" == type(v) then 
+				ret[k]=v 
+			end
+		end)
+		return ret
+	end	
+	schema.python_safeNames = function()
+		return schema.c_safeNames()
+	end
+][@lua -- find all unique types used in xsd
+	schema.uniqueTypes = function()
+		local ret = {}
+		local function recurse(k, v)
+			if next(v.content) then
+				ret[v.content.type] = v.content.type
+			end
+			table.map(v.attributes, function(k,v)
+				ret[v.type]= v.type
+			end)
+			table.map(v.dependents, recurse)
+		end
+		recurse(schema.root, schema.types[schema.root])
+		return ret
+	end
+]

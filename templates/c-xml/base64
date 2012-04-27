@@ -1,0 +1,107 @@
+[@lua --define xml_base64 type
+	ctype_base64 = {
+		type = 'c_type',
+		c_type = {
+			name = function() 
+				return 'xml_base64'
+			end,
+			definition = function() 
+				return table.concat({
+					'typedef struct {\n',
+					'\tuint8_t*\tm_pBuffer;\n',
+					'\tuint32_t\tm_size;\n',
+					'} xml_base64;\n',
+				})
+			end,
+			statement = function(varName) 
+				return table.concat({
+					'xml_base64\tm_', varName, ';\n',
+				})
+			end,
+		},
+		delete = {
+			definition = function() 
+				return table.concat({
+					'static void _destroy_xmlbase64(xml_marshaller* pMarshaller, xml_base64* pObj) {\n',
+					'\tif(pObj->m_pBuffer) { \n',
+					'\tpObj->m_pBuffer = pMarshaller->realloc(pMarshaller, pObj->m_pBuffer, 0);\n',
+					'\t}\n',
+					'}\n',
+				})
+			end,
+			statement = function(obj) 
+				return table.concat({
+					'_destroy_xmlbase64(pMarshaller, &', obj, ');\n',
+				})
+			end,
+		},
+		buildVar = function(obj, member) 
+			return table.concat({obj,'m_',member})
+		end,
+		binding = {
+			marshall = {
+				definition = function() 
+					return table.concat({
+						'static void _marshall_xmlbase64(xml_marshaller* pMarshaller, xml_buffer* pOutBuffer, const xml_base64* pObj) {\n',
+						'\tbase64_encodestate base64Encoder;\n',
+						'\tconst size_t srcSz = pObj->m_size;\n',
+						'\t/* size calc from http://www.obviex.com/Articles/CiphertextSize.aspx, +2 for /n and null termination */\n',
+						'\tconst size_t b64Sz = ((srcSz + 2 - ((srcSz + 2) % 3)) / 3 * 4) + 2;\n',
+						'\tsize_t encodedCnt = 0;\n',
+						'\tchar* outStr = pMarshaller->realloc(pMarshaller, NULL, b64Sz);\n',
+						'\tmemset(outStr, 0, b64Sz);\n',
+						'\tbase64_init_encodestate(&base64Encoder);\n',
+						'\tencodedCnt = base64_encode_block(pObj->m_pBuffer, srcSz, outStr, &base64Encoder);\n',
+						'\tbase64_encode_blockend(outStr + encodedCnt, &base64Encoder);\n',
+						'\t_cstr_append(pMarshaller, pOutBuffer, outStr);\n',
+						'\toutStr = pMarshaller->realloc(pMarshaller, outStr, 0);\n',
+						'}\n',
+					})
+				end,
+				statement = function(dst, obj)
+					return table.concat({
+						'_marshall_xmlbase64(pMarshaller, ', dst, ', &', obj, ');\n',
+					})
+				end,
+			},
+			unmarshall = {
+				definition = function() 
+					return table.concat({
+						'static void _unmarshall_xmlbase64(xml_marshaller* pMarshaller, const char* pContent, xml_base64* pObj) {\n',
+						'\tbase64_decodestate base64Decoder;\n',
+						'\tconst size_t srcLen = strlen(pContent);\n',
+						'\tconst size_t dataSz = ((srcLen * 3) / 4) + 1;\n',
+						'\tpObj->m_pBuffer =  pMarshaller->realloc(pMarshaller, NULL, dataSz);\n',
+						'\tmemset(pObj->m_pBuffer, 0, dataSz);\n',
+						'\tbase64_init_decodestate(&base64Decoder);\n',
+						'\tbase64_decode_block(pContent, srcLen, pObj->m_pBuffer, &base64Decoder);\n',
+						'\tpObj->m_size = strlen(pObj->m_pBuffer);\n',
+						'}\n',
+					})
+				end,
+				statement = function(src, obj)
+					return table.concat({
+						'_unmarshall_xmlbase64(pMarshaller, ', src, ', &', obj, ');\n',
+					})
+				end,
+			},
+		},
+		test = {
+			assign = function()
+				local str = string.format(
+					'%X%X%X',
+					math.random(0, 65535),
+					math.random(0, 65535),
+					math.random(0, 65535)
+				)
+				return string.format('{ .m_pBuffer = \"%s\", .m_size = %d }', str, str:len())
+			end,
+			assert = function(obj1, obj2)
+				return table.concat({
+					string.format("\tassert(%s.m_size ==  %s.m_size);\n", obj1, obj2),
+					string.format("\tassert(!memcmp(%s.m_pBuffer, %s.m_pBuffer, %s.m_size));\n", obj1, obj2, obj2),
+				})
+			end
+		},
+	}
+]

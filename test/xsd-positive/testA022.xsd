@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema>
+	<element name="gooTest">
+		<simpleType>
+			<list itemType="hexBinary" />
+		</simpleType>
+	</element>
+</schema>

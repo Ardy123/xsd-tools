@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<schema>
+	<complexType name="CA">
+		<sequence>
+			<element name="x" minOccurs="0" maxOccurs="2"/>
+			<element name="y" minOccurs="0"/>
+		</sequence>
+	</complexType>
+	<complexType name="E-CA">
+		<complexContent>
+			<extension base="CA">
+				<sequence>
+					<element name="z"/>
+				</sequence>
+			</extension>	
+		</complexContent>
+	</complexType>
+	<element name="test" type="E-CA"/>
+</schema>

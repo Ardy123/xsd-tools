@@ -1,0 +1,50 @@
+name = testA005
+dependents = {
+	Company = {
+		name = Company
+		dependents = {
+			Product = {
+				name = Product
+				dependents = {
+					Type = {
+						name = Type
+						dependents = {}
+						content = {
+							type = string
+						}
+						attributes = {}
+					}
+				}
+				content = {}
+				attributes = {}
+			}
+			Person = {
+				name = Person
+				dependents = {
+					Name = {
+						name = Name
+						dependents = {}
+						content = {
+							type = string
+						}
+						attributes = {}
+					}
+					SSN = {
+						name = SSN
+						dependents = {}
+						content = {
+							type = string
+						}
+						attributes = {}
+					}
+				}
+				content = {}
+				attributes = {}
+			}
+		}
+		content = {}
+		attributes = {}
+	}
+}
+content = {}
+attributes = {}

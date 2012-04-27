@@ -1,0 +1,38 @@
+[@lua --define python hex type
+	pythontype_listHex = {
+		marshall = {
+			attribute = function(attribName)
+				return table.concat({
+					"\t\tstream.write(' ", attribName, "=\"' + \" \".join([x.encode(\"hex\") for x in self.", attribName, "])\"')\n",
+				})
+			end,
+			content = function()
+				return table.concat({
+					"\t\tstream.write(\" \".join([x.encode(\"hex\") for x in self.getContent()]))\n",
+				})
+			end,
+		},
+		unmarshall = {
+			attribute = function(attribName)
+				return table.concat({
+					"\t\t\tif \"", attribName, "\" == attribute:\n",
+					"\t\t\t\tself.", attribName, " = [\"\".join(x.split()).decode(\"hex\") for x in attributes[attribute].split(\" \")]\n"
+				})
+			end,
+			content = function()
+				return table.concat({
+					"\t\tself._content = [\"\".join(x.split()).decode(\"hex\") for x in content[0].split(\" \")]\n",
+				})
+			end
+		},
+		test = {
+			assign = function()
+				return table.concat({
+					string.format('%x%x%x', math.random(0, 65535), math.random(0, 65535), math.random(0, 65535)),
+					string.format('%x%x%x', math.random(0, 65535), math.random(0, 65535), math.random(0, 65535)),
+					string.format('%x%x%x', math.random(0, 65535), math.random(0, 65535), math.random(0, 65535)),
+				}, " ")
+			end,
+		},
+	}
+]
