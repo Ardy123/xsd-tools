@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <schema>
-	<include schemaLocation="/home/ardy/code/QVXLabs/xsdtools/test/xsd-positive/include/RefTest1.xsd"/>
+	<include schemaLocation="include/RefTest1.xsd"/>
 	<element name="test2">
 		<complexType>
 			<sequence>
