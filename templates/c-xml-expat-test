@@ -16,12 +16,14 @@
 		end
 	end)
 	typeSansRoot = table.filter(schema.types, function(k,v) return v.name ~= schema.root and v or nil end)
+][@lua -- create friendly root schema name
+	schemaName = schema.types[schema.root].name:gsub("_xsd$", "")
 ]
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include <assert.h>
-#include "xml_[@lua return schema.root].h"
+#include "xml_[@lua return schemaName].h"
 
 [@lua -- output test data
 	local outbuf = stringBuffer:new()

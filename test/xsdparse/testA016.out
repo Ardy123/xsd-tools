@@ -1,4 +1,4 @@
-name = testA016
+name = testA016_xsd
 dependents = {
 	trex = {
 		name = trex

@@ -1,4 +1,4 @@
-name = testA018
+name = testA018_xsd
 dependents = {
 	gooTest = {
 		name = gooTest

@@ -1,4 +1,4 @@
-name = testA002
+name = testA002_xsd
 dependents = {
 	myElem = {
 		name = myElem

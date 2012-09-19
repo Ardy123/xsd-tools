@@ -1,4 +1,4 @@
-name = elemA016
+name = elemA016_xsd
 dependents = {
 	xmlns = {
 		name = xmlns

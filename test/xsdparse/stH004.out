@@ -1,4 +1,4 @@
-name = stH004
+name = stH004_xsd
 dependents = {
 	root = {
 		name = root

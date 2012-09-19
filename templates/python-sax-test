@@ -4,8 +4,10 @@
 	return include 'python-xml/python_type_info'
 ][@lua --rename any non-c-safe names to c-safe names & sort dependencies so that they are matched correctly
 	schema = schema.c_safeNames()
+][@lua -- create friendly root schema name
+	schemaName = schema.types[schema.root].name:gsub("_xsd$", "")
 ]import cStringIO
-import [@lua return schema.root]
+import [@lua return schemaName]
 
 test = [
 [@lua --output each test xml file
@@ -37,7 +39,7 @@ test = [
 
 def runTest(xmlstr):
 	outStr = cStringIO.StringIO()
-	root = [@lua return schema.root].xml_[@lua return schema.root]()
+	root = [@lua return schemaName].xml_[@lua return schema.root]()
 	root.unmarshall(cStringIO.StringIO(xmlstr))
 	root.marshall(outStr)
 	testval = outStr.getvalue() 

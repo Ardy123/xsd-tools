@@ -80,12 +80,14 @@ LuaProcessor::~LuaProcessor() {
 /* virtual */ void
 LuaProcessor::ProcessSchema(const XSD::Elements::Schema* pNode) {
 	if (pNode->isRootSchema()) {
+		/* create a name for the root schema object */
+		const string schemaName = pNode->Name() + "_xsd";
 		/* create root schema object */
 		LuaSchema schema = LuaAdapter(_luaState()).Schema();
-		schema.SetName(pNode->Name());
-		schema.AddType(pNode->Name());
+		schema.SetName(schemaName);
+		schema.AddType(schemaName);
 		/* parse schema children */
-		LuaProcessor luaPrcssr(pNode->Name(), _luaState());
+		LuaProcessor luaPrcssr(schemaName, _luaState());
 		pNode->ParseChildren(luaPrcssr);
 	} else
 		pNode->ParseChildren(*this);

@@ -1,4 +1,4 @@
-name = testA020
+name = testA020_xsd
 dependents = {
 	binBlob = {
 		name = binBlob

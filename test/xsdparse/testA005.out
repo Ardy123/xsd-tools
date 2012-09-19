@@ -1,4 +1,4 @@
-name = testA005
+name = testA005_xsd
 dependents = {
 	Company = {
 		name = Company
