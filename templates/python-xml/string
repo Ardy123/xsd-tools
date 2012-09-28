@@ -3,7 +3,7 @@
 		marshall = {
 			attribute = function(attribName)
 				return table.concat({
-					"\t\tstream.write(' ", attribName, "=\"' + self.", attribName, " + '\"')\n",
+					"\t\tstream.write(' ", attribName, "=\"' + self._", attribName, " + '\"')\n",
 				})
 			end,
 			content = function()
@@ -20,7 +20,7 @@
 			attribute = function(attribName)
 				return table.concat({
 					"\t\t\tif \"", attribName, "\" == attribute:\n",
-					"\t\t\t\tself.", attribName, " = attributes[attribute]\n",
+					"\t\t\t\tself._", attribName, " = attributes[attribute]\n",
 				})
 			end,
 			content = function()

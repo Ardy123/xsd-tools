@@ -10,22 +10,22 @@
 import xml.sax
 
 class _handler(xml.sax.ContentHandler):
-	_elemTbl = {
-[@lua --output element creation functions: 'gooTest':lambda: xml_gooTest()
-	local outbuf = stringBuffer:new()
-	local methodFmtStr = '\t\t\'%s\':lambda: xml_%s(),\n'
-	table.map(depOrderSansRoot, function(k,v) outbuf:append(methodFmtStr:format(v.name, v.name)) end)
-	return outbuf:str()
-]	}
 	def __init__(self):
 		xml.sax.ContentHandler.__init__(self)
+		self._elemTbl = {
+[@lua --output element creation functions: 'gooTest':lambda: xml_gooTest()
+	local outbuf = stringBuffer:new()
+	local methodFmtStr = '\t\t\t\'%s\':lambda: xml_%s(),\n'
+	table.map(depOrderSansRoot, function(k,v) outbuf:append(methodFmtStr:format(v.name, v.name)) end)
+	return outbuf:str()
+]		}
 		return
 	# methods inherited from xml.sax.ContentHandler
 	def startDocument(self):
 		self._elemStk = [("testA021", {}, [])]
 		return
 	def startElementNS(self, name, qname, SAXAttributes):
-		element = _handler._elemTbl[name[1]]()
+		element = self._elemTbl[name[1]]()
 		elementRecord = (element, self._convertToDictionary(SAXAttributes),  [])   
 		self._elemStk[-1][2].append(element)    
 		self._elemStk.append(elementRecord)        
@@ -97,12 +97,24 @@ class _xmlelement:
 			}))
 		end
 		outbuf:append('\t\treturn\n')
+		-- output 'getters' code for each attribute
+		table.map(node.attributes, function(attributeName, attribute)
+			outbuf:append(table.concat({
+				'\tdef ', attributeName, '(self):\n',
+				'\t\treturn self._', attributeName, '\n'
+			}))
+		end)
+		-- output 'setters' code for each attribute
+		table.map(node.attributes, function(attributeName, attribute)
+			outbuf:append(table.concat({
+				'\tdef set', attributeName:sub(1,1):upper()..attributeName:sub(2), '(self, value):\n',
+				'\t\tself._', attributeName, '= value\n'
+			}))
+		end)
 		outbuf:append('\n')
 	end)
 	return outbuf:str()
-]
-
-class xml_[@lua return schema.root](_handler, _xmlelement):
+]class xml_[@lua return schema.root](_handler, _xmlelement):
 	def __init__(self):
 		_handler.__init__(self)
 		_xmlelement.__init__(self)

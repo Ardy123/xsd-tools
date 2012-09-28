@@ -3,7 +3,7 @@
 		marshall = {
 			attribute = function(attributeName)
 				return table.concat({
-					"\t\tstream.write(' ", attributeName, " = \\'' + self.", attributeName, ".encode(\"base64\") + '\\'')\n",
+					"\t\tstream.write(' ", attributeName, " = \\'' + self._", attributeName, ".encode(\"base64\") + '\\'')\n",
 				})
 			end,
 			content = function()
@@ -16,7 +16,7 @@
 			attribute = function(attribName)
 				return table.concat({
 					"\t\t\tif \"", attribName, "\" == attribute:\n",
-					"\t\t\t\tself.", attribName, " = attributes[attribute].decode(\"base64\")\n",
+					"\t\t\t\tself._", attribName, " = attributes[attribute].decode(\"base64\")\n",
 				})
 			end,
 			content = function()
