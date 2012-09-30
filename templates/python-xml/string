@@ -29,6 +29,9 @@
 				})
 			end
 		},
+		default = function(attribName, value)
+			return table.concat({"\t\tself._", attribName, " = \"", value, "\"\n"})
+		end,
 		test = {
 			assign = function()
 				local tbl = { 'arch', 'Ancestor', 'Interaction', 'Productivity', 'Jelly', 'Glue', 'Way'}

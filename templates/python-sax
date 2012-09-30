@@ -57,7 +57,20 @@ class _xmlelement:
 		outbuf:append(table.concat({ 
 			'class xml_', node.name, '(_xmlelement):\n',
 			'\tdef __init__(self):\n',
-			'\t\t_xmlelement.__init__(self)\n',
+			'\t\t_xmlelement.__init__(self)\n'
+		}))
+		-- output default attribute values
+		if next(node.attributes) then
+			table.map(node.attributes, function(attributeName, attribute)
+				if attribute.default then
+					local pyType = py_type_info[attribute.type]
+					outbuf:append(pyType.default(attributeName, attribute.default))
+				else
+					outbuf:append(table.concat({'\t\tself._', attributeName, ' = None\n'}))
+				end
+			end)
+		end
+		outbuf:append(table.concat({
 			'\t\treturn\n',
 			'\tdef marshall(self, stream):\n',
 			'\t\tstream.write(\'<', node.name, '\')\n',

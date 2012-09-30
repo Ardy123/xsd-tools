@@ -25,6 +25,9 @@
 				})
 			end
 		},
+		default = function(attribName, value)
+			return table.concat({"\t\tself._", attribName, " = \"\".join(\"", value, "\".split()).decode(\"hex\")\n"})
+		end,
 		test = {
 			assign = function()
 				return string.format(

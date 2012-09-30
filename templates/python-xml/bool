@@ -25,6 +25,9 @@
 				})
 			end
 		},
+		default = function(attribName, value)
+			return table.concat({"\t\tself._", attribName, " = ", value, "\n"})
+		end,
 		test = {
 			assign = function()
 				local tbl = { 'true', 'false', 'True', 'False', '0', '1', 'TRUE', 'FALSE'}

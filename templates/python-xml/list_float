@@ -25,6 +25,9 @@
 				})
 			end
 		},
+		default = function(attribName, value)
+			return table.concat({"\t\tself._", attribName, " = [float(\"\".join(x.split())) for x in \"", value, "\".split(\" \")]\n"})
+		end,
 		test = {
 			assign = function()
 				return table.concat({

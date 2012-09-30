@@ -25,6 +25,9 @@
 				})
 			end
 		},
+		default = function(attribName, value)
+			return table.concat({"\t\tself._", attribName, " = ", value, "\n"})
+		end,
 		test = {
 			assign = function()
 				return string.format("%.0f", math.floor(math.random() * 2147483647.0))

@@ -25,6 +25,9 @@
 				})
 			end
 		},
+		default = function(attribName, value)
+			return table.concat({"\t\tself._", attribName, " = \"", value, "\".decode(\"base64\")\n"})
+		end,
 		test = {
 			assign = function()
 				return string.format('%x%x%x\\n', math.random(0, 65535), math.random(0, 65535), math.random(0, 65535))

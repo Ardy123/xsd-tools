@@ -25,6 +25,9 @@
 				})
 			end
 		},
+		default = function(attribName, value)
+			return table.concat({"\t\tself._", attribName, " = ", value, "\n"})
+		end,
 		test = {
 			assign = function()
 				return tostring(math.random() * math.random(-127, 127))
