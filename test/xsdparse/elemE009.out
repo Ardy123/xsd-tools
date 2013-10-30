@@ -1,21 +1,18 @@
-name = elemE009_xsd
-dependents = {
-	myElem = {
-		name = myElem
-		dependents = {}
-		content = {
-			type = string
+myElem = {
+	attributes = {}
+	content = {
+		string = {
+			attributes = {}
+			content = {}
 		}
-		attributes = {}
-	}
-	foo = {
-		name = foo
-		dependents = {}
-		content = {
-			type = string
-		}
-		attributes = {}
 	}
 }
-content = {}
-attributes = {}
+foo = {
+	attributes = {}
+	content = {
+		string = {
+			attributes = {}
+			content = {}
+		}
+	}
+}

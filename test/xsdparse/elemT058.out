@@ -1,160 +1,160 @@
-name = elemT058_xsd
-dependents = {
-	test3 = {
-		name = test3
-		dependents = {}
-		content = {
-			type = int
+test3 = {
+	attributes = {}
+	content = {
+		int = {
+			attributes = {}
+			content = {}
 		}
-		attributes = {}
-	}
-	test1 = {
-		name = test1
-		dependents = {}
-		content = {
-			type = int
-		}
-		attributes = {}
-	}
-	test2 = {
-		name = test2
-		dependents = {}
-		content = {
-			type = int
-		}
-		attributes = {}
-	}
-	root = {
-		name = root
-		dependents = {
-			test3 = {
-				name = test3
-				dependents = {}
-				content = {
-					type = int
-				}
-				attributes = {}
-			}
-			test1 = {
-				name = test1
-				dependents = {}
-				content = {
-					type = int
-				}
-				attributes = {}
-			}
-			test2 = {
-				name = test2
-				dependents = {}
-				content = {
-					type = int
-				}
-				attributes = {}
-			}
-			test5 = {
-				name = test5
-				dependents = {
-					y = {
-						name = y
-						dependents = {}
-						content = {
-							type = string
-						}
-						attributes = {}
-					}
-					x = {
-						name = x
-						dependents = {}
-						content = {
-							type = string
-						}
-						attributes = {}
-					}
-				}
-				content = {}
-				attributes = {}
-			}
-			test4 = {
-				name = test4
-				dependents = {
-					y = {
-						name = y
-						dependents = {}
-						content = {
-							type = string
-						}
-						attributes = {}
-					}
-					x = {
-						name = x
-						dependents = {}
-						content = {
-							type = string
-						}
-						attributes = {}
-					}
-				}
-				content = {}
-				attributes = {}
-			}
-		}
-		content = {}
-		attributes = {}
-	}
-	sa = {
-		name = sa
-		dependents = {}
-		content = {
-			type = int
-		}
-		attributes = {}
-	}
-	test5 = {
-		name = test5
-		dependents = {
-			y = {
-				name = y
-				dependents = {}
-				content = {
-					type = string
-				}
-				attributes = {}
-			}
-			x = {
-				name = x
-				dependents = {}
-				content = {
-					type = string
-				}
-				attributes = {}
-			}
-		}
-		content = {}
-		attributes = {}
-	}
-	test4 = {
-		name = test4
-		dependents = {
-			y = {
-				name = y
-				dependents = {}
-				content = {
-					type = string
-				}
-				attributes = {}
-			}
-			x = {
-				name = x
-				dependents = {}
-				content = {
-					type = string
-				}
-				attributes = {}
-			}
-		}
-		content = {}
-		attributes = {}
 	}
 }
-content = {}
-attributes = {}
+test1 = {
+	attributes = {}
+	content = {
+		int = {
+			attributes = {}
+			content = {}
+		}
+	}
+}
+test2 = {
+	attributes = {}
+	content = {
+		int = {
+			attributes = {}
+			content = {}
+		}
+	}
+}
+root = {
+	attributes = {}
+	content = {
+		test3 = {
+			attributes = {}
+			content = {
+				int = {
+					attributes = {}
+					content = {}
+				}
+			}
+		}
+		test1 = {
+			attributes = {}
+			content = {
+				int = {
+					attributes = {}
+					content = {}
+				}
+			}
+		}
+		test2 = {
+			attributes = {}
+			content = {
+				int = {
+					attributes = {}
+					content = {}
+				}
+			}
+		}
+		test5 = {
+			attributes = {}
+			content = {
+				y = {
+					attributes = {}
+					content = {
+						string = {
+							attributes = {}
+							content = {}
+						}
+					}
+				}
+				x = {
+					attributes = {}
+					content = {
+						string = {
+							attributes = {}
+							content = {}
+						}
+					}
+				}
+			}
+		}
+		test4 = {
+			attributes = {}
+			content = {
+				y = {
+					attributes = {}
+					content = {
+						string = {
+							attributes = {}
+							content = {}
+						}
+					}
+				}
+				x = {
+					attributes = {}
+					content = {
+						string = {
+							attributes = {}
+							content = {}
+						}
+					}
+				}
+			}
+		}
+	}
+}
+sa = {
+	attributes = {}
+	content = {
+		int = {
+			attributes = {}
+			content = {}
+		}
+	}
+}
+test5 = {
+	attributes = {}
+	content = {
+		y = {
+			attributes = {}
+			content = {
+				string = {
+					attributes = {}
+					content = {}
+				}
+			}
+		}
+		x = {
+			attributes = {}
+			content = {
+				string = {
+					attributes = {}
+					content = {}
+				}
+			}
+		}
+	}
+}
+test4 = {
+	attributes = {}
+	content = {
+		y = {
+			attributes = {}
+			content = {
+				string = {
+					attributes = {}
+					content = {}
+				}
+			}
+		}
+		x = {
+			attributes = {}
+			content = {
+				string = {
+					attributes = {}
+					content = {}
+				}
+			}
+		}
+	}
+}

@@ -1,21 +1,18 @@
-name = testA017_xsd
-dependents = {
-	gooTest = {
-		name = gooTest
-		dependents = {}
-		content = {
-			type = hexBinary
+gooTest = {
+	attributes = {}
+	content = {
+		hexBinary = {
+			attributes = {}
+			content = {}
 		}
-		attributes = {}
-	}
-	fooTest = {
-		name = fooTest
-		dependents = {}
-		content = {
-			type = base64Binary
-		}
-		attributes = {}
 	}
 }
-content = {}
-attributes = {}
+fooTest = {
+	attributes = {}
+	content = {
+		base64Binary = {
+			attributes = {}
+			content = {}
+		}
+	}
+}

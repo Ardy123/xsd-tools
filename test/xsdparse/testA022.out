@@ -1,13 +1,9 @@
-name = testA022_xsd
-dependents = {
-	gooTest = {
-		name = gooTest
-		dependents = {}
-		content = {
-			type = list(hexBinary)
+gooTest = {
+	attributes = {}
+	content = {
+		list(hexBinary) = {
+			attributes = {}
+			content = {}
 		}
-		attributes = {}
 	}
 }
-content = {}
-attributes = {}

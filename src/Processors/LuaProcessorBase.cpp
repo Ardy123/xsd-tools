@@ -60,13 +60,18 @@
 using namespace std;
 using namespace Processors;
 
-LuaProcessorBase::LuaProcessorBase(const string& rLuaTypeName, lua_State* pLuaState)
-	: m_pLuaState(pLuaState), m_luaTypeName(rLuaTypeName)
+LuaProcessorBase::LuaProcessorBase(LuaAdapter * pLuaAdapter)
+	: m_pLuaAdapter(pLuaAdapter)
 { }
 
 LuaProcessorBase::LuaProcessorBase(const LuaProcessorBase& rProcessor)
-	: m_pLuaState(rProcessor.m_pLuaState), m_luaTypeName(rProcessor.m_luaTypeName)
+	: m_pLuaAdapter(rProcessor.m_pLuaAdapter)
 { }
+
+/* virtual */
+LuaProcessorBase::~LuaProcessorBase() {
+	delete m_pLuaAdapter;
+}
 
 /* virtual */ void
 LuaProcessorBase::ProcessSchema(const XSD::Elements::Schema* pNode) {
@@ -223,12 +228,7 @@ LuaProcessorBase::ProcessAll(const XSD::Elements::All* pNode) {
 	pNode->ParseChildren(*this);
 }
 
-lua_State*
-LuaProcessorBase::_luaState() {
-	return m_pLuaState;
-}
-
-const string&
-LuaProcessorBase::_luaTypeName() const {
-	return m_luaTypeName;
+LuaAdapter *
+LuaProcessorBase::_luaAdapter() const {
+	return m_pLuaAdapter;
 }

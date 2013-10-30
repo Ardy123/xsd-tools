@@ -1,28 +1,23 @@
-name = stH004_xsd
-dependents = {
-	root = {
-		name = root
-		dependents = {
-			fooTest = {
-				name = fooTest
-				dependents = {}
-				content = {
-					type = string
+root = {
+	attributes = {}
+	content = {
+		fooTest = {
+			attributes = {}
+			content = {
+				string = {
+					attributes = {}
+					content = {}
 				}
-				attributes = {}
 			}
 		}
-		content = {}
-		attributes = {}
-	}
-	fooTest = {
-		name = fooTest
-		dependents = {}
-		content = {
-			type = string
-		}
-		attributes = {}
 	}
 }
-content = {}
-attributes = {}
+fooTest = {
+	attributes = {}
+	content = {
+		string = {
+			attributes = {}
+			content = {}
+		}
+	}
+}

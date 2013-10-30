@@ -34,7 +34,7 @@ using namespace std;
 using namespace Processors;
 
 SimpleTypeExtracter::SimpleTypeExtracter()
-	: LuaProcessorBase("", NULL), m_pType(NULL)
+	: LuaProcessorBase(NULL), m_pType(NULL)
 { }
 
 SimpleTypeExtracter::SimpleTypeExtracter(const SimpleTypeExtracter& rProcessor)

@@ -1,98 +1,96 @@
-name = elemT039_xsd
-dependents = {
-	test3 = {
-		name = test3
-		dependents = {
-			y = {
-				name = y
-				dependents = {}
-				content = {
-					type = string
+test3 = {
+	attributes = {}
+	content = {
+		y = {
+			attributes = {}
+			content = {
+				string = {
+					attributes = {}
+					content = {}
 				}
-				attributes = {}
-			}
-			x = {
-				name = x
-				dependents = {}
-				content = {
-					type = string
-				}
-				attributes = {}
 			}
 		}
-		content = {}
-		attributes = {}
-	}
-	test2 = {
-		name = test2
-		dependents = {}
-		content = {
-			type = string
-		}
-		attributes = {}
-	}
-	root = {
-		name = root
-		dependents = {
-			test = {
-				name = test
-				dependents = {}
-				content = {
-					type = int
+		x = {
+			attributes = {}
+			content = {
+				string = {
+					attributes = {}
+					content = {}
 				}
-				attributes = {}
-			}
-			test3 = {
-				name = test3
-				dependents = {
-					y = {
-						name = y
-						dependents = {}
-						content = {
-							type = string
-						}
-						attributes = {}
-					}
-					x = {
-						name = x
-						dependents = {}
-						content = {
-							type = string
-						}
-						attributes = {}
-					}
-				}
-				content = {}
-				attributes = {}
-			}
-			test2 = {
-				name = test2
-				dependents = {}
-				content = {
-					type = string
-				}
-				attributes = {}
 			}
 		}
-		content = {}
-		attributes = {}
-	}
-	s-a = {
-		name = s-a
-		dependents = {}
-		content = {
-			type = int
-		}
-		attributes = {}
-	}
-	test = {
-		name = test
-		dependents = {}
-		content = {
-			type = int
-		}
-		attributes = {}
 	}
 }
-content = {}
-attributes = {}
+test2 = {
+	attributes = {}
+	content = {
+		string = {
+			attributes = {}
+			content = {}
+		}
+	}
+}
+root = {
+	attributes = {}
+	content = {
+		test = {
+			attributes = {}
+			content = {
+				int = {
+					attributes = {}
+					content = {}
+				}
+			}
+		}
+		test3 = {
+			attributes = {}
+			content = {
+				y = {
+					attributes = {}
+					content = {
+						string = {
+							attributes = {}
+							content = {}
+						}
+					}
+				}
+				x = {
+					attributes = {}
+					content = {
+						string = {
+							attributes = {}
+							content = {}
+						}
+					}
+				}
+			}
+		}
+		test2 = {
+			attributes = {}
+			content = {
+				string = {
+					attributes = {}
+					content = {}
+				}
+			}
+		}
+	}
+}
+s-a = {
+	attributes = {}
+	content = {
+		int = {
+			attributes = {}
+			content = {}
+		}
+	}
+}
+test = {
+	attributes = {}
+	content = {
+		int = {
+			attributes = {}
+			content = {}
+		}
+	}
+}

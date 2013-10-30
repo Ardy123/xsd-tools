@@ -20,148 +20,25 @@
  *  You should have received a copy of the GNU General Public License
  *  along with xsd-tools.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
+
+#include <iostream>
 #include "./src/Processors/LuaAdapter.hpp"
+#define SCHEMA_TAG     "schema"
+#define ATTRIBUTE_TAG  "attributes"
+#define CONTENT_TAG    "content"
+#define DEFAULT_TAG    "default"
+#define DEBUG_LUASTACK (0)
 
 using namespace std;
 using namespace Processors;
 
 /* helper functions */
-static void _LuaStackSchemaPush(lua_State* pLuaState);
-static void _LuaStackTypePush(lua_State* pLuaState, const string& rTypeName);
-static void _LuaStackAttribPush(lua_State* pLuaState, const string& rAttribName);
-static void _LuaStackNewTypePush(lua_State* pLuaState, const string& rTypeName);
-
+static void _luaStackDump(lua_State * pLuaState);
+#if (DEBUG_LUASTACK)
+static void _luaStackDumpRec(lua_State * pLuaState, int stackIndex = 0);
+#endif
 /* Class method definitions */
-LuaContent::LuaContent(lua_State* pLuaState, const std::string& rParentName) 
-	: m_pLuaState(pLuaState), m_parentName(rParentName)
-{ }
-
-/* virtual */
-LuaContent::~LuaContent()
-{ }
-
-LuaAttribute::LuaAttribute(lua_State* pLuaState, const string& rAttribName, const string& rParentName)
-	: LuaContent(pLuaState, rParentName), m_attribName(rAttribName)
-{ }
-
-/* virtual */
-LuaAttribute::~LuaAttribute() 
-{ }
-
-void
-LuaAttribute::SetDefault(const std::string& rValue) {
-	_LuaStackSchemaPush(m_pLuaState);
-	_LuaStackTypePush(m_pLuaState, m_parentName);
-	_LuaStackAttribPush(m_pLuaState, m_attribName);
-	lua_pushstring(m_pLuaState, rValue.c_str());
-	lua_setfield(m_pLuaState, -2, "default");
-	lua_settop(m_pLuaState, 0);
-}
-
-LuaType::LuaType(lua_State* pLuaState, const std::string& rTypeName)
-	: m_pLuaState(pLuaState), m_typeName(rTypeName)
-{ }
-
-/* virtual */
-LuaType::~LuaType() 
-{ }
-
-LuaAttribute 
-LuaType::AddAttribute(const string& rName, const XSD::Types::BaseType& rType) {
-	_LuaStackSchemaPush(m_pLuaState);
-	_LuaStackTypePush(m_pLuaState, m_typeName);
-	lua_getfield(m_pLuaState, -1, "attributes");
-	lua_newtable(m_pLuaState);
-	lua_setfield(m_pLuaState, -2, rName.c_str());
-	lua_getfield(m_pLuaState, -1, rName.c_str());
-	lua_pushstring(m_pLuaState, rType.Name());
-	lua_setfield(m_pLuaState, -2, "type");
-	lua_settop(m_pLuaState, 0);
-	return GetAttribute(rName);
-}
-
-LuaAttribute 
-LuaType::GetAttribute(const std::string& rName) {
-	return LuaAttribute(m_pLuaState, rName, m_typeName);
-}
-
-LuaContent
-LuaType::AddContent(const XSD::Types::BaseType& rType) {
-	_LuaStackSchemaPush(m_pLuaState);
-	_LuaStackTypePush(m_pLuaState, m_typeName);
-	lua_getfield(m_pLuaState, -1, "content");
-	lua_pushstring(m_pLuaState, rType.Name());
-	lua_setfield(m_pLuaState, -2, "type");
-	lua_settop(m_pLuaState, 0);
-	return GetContent();
-}
-
-LuaContent 
-LuaType::GetContent() {
-	return LuaContent(m_pLuaState, m_typeName);
-}
-
-void
-LuaType::AddDependent(const LuaType& rLuaType) {
-	_LuaStackSchemaPush(m_pLuaState);
-	_LuaStackTypePush(m_pLuaState, m_typeName);
-	lua_getfield(m_pLuaState, -1, "dependents");
-	lua_getfield(m_pLuaState, -3, rLuaType.m_typeName.c_str());
-	if (lua_isnil(m_pLuaState, -1)) {
-		_LuaStackNewTypePush(m_pLuaState, rLuaType.m_typeName);
-		lua_settop(m_pLuaState, 0);
-		AddDependent(rLuaType);
-		return;
-	}
-	lua_setfield(m_pLuaState, -2, rLuaType.m_typeName.c_str());
-	lua_settop(m_pLuaState, 0);
-}
-
-LuaSchema::LuaSchema(lua_State* pLuaState)
-	: m_pLuaState(pLuaState) {
-	/* test if global table has been made & make it if not */
-	_LuaStackSchemaPush(m_pLuaState);
-	if (lua_isnil(m_pLuaState, -1)) {
-		lua_newtable(m_pLuaState);
-		lua_pushstring(m_pLuaState, "");
-		lua_setfield(m_pLuaState, -2, "root");
-		lua_newtable(m_pLuaState);
-		lua_setfield(m_pLuaState, -2, "types");
-		lua_setglobal(m_pLuaState, "schema");
-	}
-	lua_settop(m_pLuaState, 0);
-}
-
-/* virtual */
-LuaSchema::~LuaSchema()
-{ }
-
-void
-LuaSchema::SetName(const std::string& rName) {
-	_LuaStackSchemaPush(m_pLuaState);
-	lua_pushstring(m_pLuaState, rName.c_str());
-	lua_setfield(m_pLuaState, -2, "root");
-	lua_settop(m_pLuaState, 0);
-}
-
-LuaType
-LuaSchema::AddType(const std::string& rTypeName) {
-	_LuaStackSchemaPush(m_pLuaState);
-	_LuaStackTypePush(m_pLuaState, rTypeName);
-	/* test if type already exists */
-	if (lua_isnil(m_pLuaState, -1)) {
-		_LuaStackNewTypePush(m_pLuaState, rTypeName);
-	}
-	lua_settop(m_pLuaState, 0);
-	return GetType(rTypeName);
-}
-
-LuaType
-LuaSchema::GetType(const std::string& rTypeName) {
-	return LuaType(m_pLuaState, rTypeName);
-}
-
+/* Class LuaAdapter */
 LuaAdapter::LuaAdapter(lua_State* pLuaState)
 	: m_pLuaState(pLuaState)
 { }
@@ -170,37 +47,197 @@ LuaAdapter::LuaAdapter(lua_State* pLuaState)
 LuaAdapter::~LuaAdapter()
 { }
 
-LuaSchema
+LuaSchema *
 LuaAdapter::Schema() {
-	return LuaSchema(m_pLuaState);
-}
-		
-static void _LuaStackSchemaPush(lua_State* pLuaState) {
-	lua_getglobal(pLuaState, "schema");
+	return new LuaSchema(m_pLuaState);
 }
 
-static void _LuaStackTypePush(lua_State* pLuaState, const string& rTypeName) {
-	lua_getfield(pLuaState, -1, "types");
-	lua_getfield(pLuaState, -1, rTypeName.c_str());
+lua_State *
+LuaAdapter::_getLuaState() {
+  return m_pLuaState;
 }
 
-static void _LuaStackAttribPush(lua_State* pLuaState, const string& rAttribName) {
-	lua_getfield(pLuaState, -1, "attributes");
-	lua_getfield(pLuaState, -1, rAttribName.c_str());
+void
+LuaAdapter::_setLuaState(lua_State * pLuaState) {
+	m_pLuaState = pLuaState;
 }
 
-static void _LuaStackNewTypePush(lua_State* pLuaState, const string& rTypeName) {
-	_LuaStackSchemaPush(pLuaState);
-	lua_getfield(pLuaState, -1, "types");
+/* Class LuaContent */
+LuaContent::LuaContent() 
+	: LuaAdapter(NULL) 
+{ }
+
+LuaContent::LuaContent(lua_State* pLuaState) 
+	: LuaAdapter(pLuaState) { 
+	/* push content table to stack top */
+	lua_getfield(pLuaState, -1, CONTENT_TAG);	
+}
+
+/* virtual */
+LuaContent::~LuaContent() {  
+	lua_pop(_getLuaState(), 1);
+}
+
+LuaType *
+LuaContent::Type(const std::string& rTypeName) {
+	return new LuaType(_getLuaState(), rTypeName);
+}
+
+/* Class LuaSchema */
+LuaSchema::LuaSchema(lua_State* pLuaState) {
+	/* set the lua state without calling the content constructor */
+	_setLuaState(pLuaState);
+	/* test if global table has been made & make it if not */
+	lua_getglobal(pLuaState, SCHEMA_TAG);
+	if (lua_isnil(pLuaState, -1)) {
+		lua_pop(pLuaState, 1);
+		lua_newtable(pLuaState);
+		lua_setglobal(pLuaState, SCHEMA_TAG);
+		lua_getglobal(pLuaState, SCHEMA_TAG);
+	}
+	/* debug */
+	_luaStackDump(pLuaState);
+}
+
+/* virtual */
+LuaSchema::~LuaSchema() 
+{ }
+
+/* Class LuaType */
+LuaType::LuaType(lua_State* pLuaState, const std::string& rTypeName)
+	: LuaAdapter(pLuaState) { 
+	/* create new table for type and append it as a child element to the current
+	   element on stack */
 	lua_newtable(pLuaState);
 	lua_setfield(pLuaState, -2, rTypeName.c_str());
 	lua_getfield(pLuaState, -1, rTypeName.c_str());
+	/* create new table for type attributes */
 	lua_newtable(pLuaState);
-	lua_setfield(pLuaState, -2, "attributes");
+	lua_setfield(pLuaState, -2, ATTRIBUTE_TAG);
+	/* create new table for type contents */
 	lua_newtable(pLuaState);
-	lua_setfield(pLuaState, -2, "content");
+	lua_setfield(pLuaState, -2, CONTENT_TAG);
+	/* debug */
+	_luaStackDump(pLuaState);
+}
+
+/* virtual */
+LuaType::~LuaType() { 
+	lua_pop(_getLuaState(), 1);
+}
+
+LuaAttribute *
+LuaType::Attribute(const string& rName, const XSD::Types::BaseType& rType) {
+	return new LuaAttribute(_getLuaState(), rName, rType);
+}
+
+LuaAttribute *
+LuaType::Attribute(	const string& rName, 
+					const XSD::Types::BaseType& rType, 
+					const std::string& rDefault) {
+	return new LuaAttribute(_getLuaState(), rName, rType, rDefault);
+}
+
+LuaContent *
+LuaType::Content() {
+	return new LuaContent(_getLuaState()); 
+}
+
+/* Class LuaAttribute */
+LuaAttribute::LuaAttribute(	lua_State * pLuaState, 
+							const string& rName,
+							const XSD::Types::BaseType& rType)
+	: LuaAdapter(pLuaState) {
+	/* push attribute table to stack top */
+	lua_getfield(pLuaState, -1, ATTRIBUTE_TAG);
+	/* create emtpty table for attribute name/type pair */
 	lua_newtable(pLuaState);
-	lua_setfield(pLuaState, -2, "dependents");
-	lua_pushstring(pLuaState, rTypeName.c_str());
-	lua_setfield(pLuaState, -2, "name");
+	delete (new LuaType(pLuaState, rType.Name()));
+	/* append attribute to attribute table */
+	lua_setfield(pLuaState, -2, rName.c_str());
+	/* debug */
+	_luaStackDump(pLuaState);
+}
+
+LuaAttribute::LuaAttribute(	lua_State * pLuaState, 
+							const std::string& rName, 
+							const XSD::Types::BaseType& rType,
+							const std::string& rDefault) 
+	: LuaAdapter(pLuaState) {
+	/* push attribute table to stack top */
+	lua_getfield(pLuaState, -1, ATTRIBUTE_TAG);
+	/* create emtpty table for attribute name/type pair */
+	lua_newtable(pLuaState);
+	LuaType * pType = new LuaType(pLuaState, rType.Name());
+	/* append default value to type definition */
+	lua_pushstring(pLuaState, rDefault.c_str());
+	lua_setfield(pLuaState, -2, DEFAULT_TAG);
+	/* pop off attribute type from lua stack */
+	delete pType;
+	/* append attribute to attribute table */
+	lua_setfield(pLuaState, -2, rName.c_str());
+	/* debug */
+	_luaStackDump(pLuaState);
+}
+
+/* virtual */
+LuaAttribute::~LuaAttribute() {
+	lua_pop(_getLuaState(), 1);
+}
+
+static void _luaStackDump(lua_State * pLuaState) {
+#if (DEBUG_LUASTACK)
+	cout << "LStack:[";
+	_luaStackDumpRec(pLuaState, 0);
+	cout << "]" << endl;
+#endif
+}
+
+static void _luaStackDumpRec(lua_State * pLuaState, int stackIndex) {
+#if (DEBUG_LUASTACK)
+	const int stkTop = lua_gettop(pLuaState);
+	/* base case */
+	if (stackIndex == stkTop) 
+		return;
+	/* general case */
+	switch (lua_type(pLuaState, stackIndex)) {
+	case LUA_TNIL:
+		cout << "nil";
+		break;
+	case LUA_TNUMBER: {
+		lua_Number val = lua_tonumber(pLuaState, stackIndex);
+		cout << val;
+		break;
+	}
+	case LUA_TBOOLEAN: {
+		bool val = (lua_toboolean(pLuaState, stackIndex) == 1);
+		cout << val;
+		break;
+	}
+	case LUA_TSTRING: {
+		const char * pCStr = lua_tolstring(pLuaState, stackIndex, NULL);
+		cout << "\"" << pCStr << "\"";
+		break;
+	}
+	case LUA_TTABLE:
+		cout << "tbl";
+		break;
+	case LUA_TFUNCTION:
+		cout << "fnc";
+		break;	
+	case LUA_TUSERDATA:
+		cout << "user_data";
+		break;
+	case LUA_TTHREAD:
+		cout << "thread";
+		break;
+	case LUA_TLIGHTUSERDATA:
+		cout << "light_user_data";
+		break;
+	default:
+		break;
+	}
+	cout << " ";
+	_luaStackDumpRec(pLuaState, stackIndex + 1);
+#endif
 }

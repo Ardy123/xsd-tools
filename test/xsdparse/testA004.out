@@ -1,36 +1,32 @@
-name = testA004_xsd
-dependents = {
-	test = {
-		name = test
-		dependents = {
-			y = {
-				name = y
-				dependents = {}
-				content = {
-					type = string
+test = {
+	attributes = {}
+	content = {
+		y = {
+			attributes = {}
+			content = {
+				string = {
+					attributes = {}
+					content = {}
 				}
-				attributes = {}
-			}
-			x = {
-				name = x
-				dependents = {}
-				content = {
-					type = string
-				}
-				attributes = {}
-			}
-			z = {
-				name = z
-				dependents = {}
-				content = {
-					type = string
-				}
-				attributes = {}
 			}
 		}
-		content = {}
-		attributes = {}
+		x = {
+			attributes = {}
+			content = {
+				string = {
+					attributes = {}
+					content = {}
+				}
+			}
+		}
+		z = {
+			attributes = {}
+			content = {
+				string = {
+					attributes = {}
+					content = {}
+				}
+			}
+		}
 	}
 }
-content = {}
-attributes = {}

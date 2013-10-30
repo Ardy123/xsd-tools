@@ -1,13 +1,9 @@
-name = elemA016_xsd
-dependents = {
-	xmlns = {
-		name = xmlns
-		dependents = {}
-		content = {
-			type = string
+xmlns = {
+	attributes = {}
+	content = {
+		string = {
+			attributes = {}
+			content = {}
 		}
-		attributes = {}
 	}
 }
-content = {}
-attributes = {}
