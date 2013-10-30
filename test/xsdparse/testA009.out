@@ -1,13 +1,9 @@
-name = testA009_xsd
-dependents = {
-	fooTest = {
-		name = fooTest
-		dependents = {}
-		content = {
-			type = list(string)
+fooTest = {
+	attributes = {}
+	content = {
+		list(string) = {
+			attributes = {}
+			content = {}
 		}
-		attributes = {}
 	}
 }
-content = {}
-attributes = {}

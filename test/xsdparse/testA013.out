@@ -1,24 +1,21 @@
-name = testA013_xsd
-dependents = {
-	foo = {
-		name = foo
-		dependents = {
-			name = {
-				name = name
-				dependents = {}
-				content = {
-					type = string
-				}
+foo = {
+	attributes = {
+		myAttr = {
+			string = {
 				attributes = {}
+				content = {}
 			}
 		}
-		content = {}
-		attributes = {
-			myAttr = {
-				type = string
+	}
+	content = {
+		name = {
+			attributes = {}
+			content = {
+				string = {
+					attributes = {}
+					content = {}
+				}
 			}
 		}
 	}
 }
-content = {}
-attributes = {}

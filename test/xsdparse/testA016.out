@@ -1,21 +1,18 @@
-name = testA016_xsd
-dependents = {
-	trex = {
-		name = trex
-		dependents = {}
-		content = {
-			type = list(positiveInteger)
+trex = {
+	attributes = {}
+	content = {
+		list(positiveInteger) = {
+			attributes = {}
+			content = {}
 		}
-		attributes = {}
-	}
-	fooTest = {
-		name = fooTest
-		dependents = {}
-		content = {
-			type = list(positiveInteger)
-		}
-		attributes = {}
 	}
 }
-content = {}
-attributes = {}
+fooTest = {
+	attributes = {}
+	content = {
+		list(positiveInteger) = {
+			attributes = {}
+			content = {}
+		}
+	}
+}

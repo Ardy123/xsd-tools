@@ -26,15 +26,16 @@
 #include <string>
 #include <lua5.1/lua.hpp>
 #include "./src/util.hpp"
+#include "./src/Processors/LuaAdapter.hpp"
 #include "./src/XSDParser/Types.hpp"
 #include "./src/XSDParser/ProcessorBase.hpp"
 
 namespace Processors {
 	class LuaProcessorBase : public XSD::BaseProcessor {
 	public:
-		LuaProcessorBase(const std::string& rLuaTypeName, lua_State* pLuaState);
+		LuaProcessorBase(LuaAdapter * pLuaAdapter);
 		LuaProcessorBase(const LuaProcessorBase& rProcessor);
-		virtual ~LuaProcessorBase() {}
+		virtual ~LuaProcessorBase();
 		virtual void ProcessSchema(const XSD::Elements::Schema* pNode);
 		virtual void ProcessElement(const XSD::Elements::Element* pNode);
 		virtual void ProcessUnion(const XSD::Elements::Union* pNode);
@@ -67,11 +68,9 @@ namespace Processors {
 		virtual void ProcessDocumentation(const XSD::Elements::Documentation* pNode);
 		virtual void ProcessAll(const XSD::Elements::All* pNode);
 	protected:
-		lua_State* 			_luaState();
-		const std::string&	_luaTypeName() const;
+		LuaAdapter *  	_luaAdapter() const;
 	private:
-		lua_State*		m_pLuaState;
-		std::string		m_luaTypeName;
+		mutable LuaAdapter * m_pLuaAdapter;
 	};
 }
 #endif /* LUAPROCBASE_HPP_ */

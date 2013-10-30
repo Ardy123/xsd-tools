@@ -18,7 +18,7 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+ *  along with xsd-tools.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 #ifndef LUAADAPTER_HPP_
@@ -33,59 +33,71 @@ namespace Processors {
 	class LuaType;
 	class LuaAttribute;
 	class LuaContent;
-	/* helper classes to manipulate Lua objects */
-	class LuaSchema {
-		friend class LuaAdapter;
-	public:
-		virtual ~LuaSchema();
-		void SetName(const std::string& rName);
-		LuaType AddType(const std::string& rTypeName);
-		LuaType GetType(const std::string& rTypeName);
-	protected:
-		LuaSchema(lua_State* pLuaState);
-		lua_State*	m_pLuaState;
-	};
-	class LuaType {
-		friend class LuaSchema;
-	public:
-		virtual ~LuaType();
-		LuaAttribute AddAttribute(const std::string& rName, const XSD::Types::BaseType& rType);
-		LuaAttribute GetAttribute(const std::string& rName);
-		LuaContent AddContent(const XSD::Types::BaseType& rType);
-		LuaContent GetContent();
-		void AddDependent(const LuaType& rLuaType);
-	protected:
-		LuaType(lua_State* pLuaState, const std::string& rTypeName);
-		lua_State* 			m_pLuaState;
-		const std::string	m_typeName;
-	};
-	class LuaContent {
-		friend class LuaType;
-	public:
-		virtual ~LuaContent();
-	protected:
-		lua_State* 			m_pLuaState;
-		const std::string 	m_parentName;
-		LuaContent(lua_State* pLuaState, const std::string& rParentName);
-	};
-	class LuaAttribute : public LuaContent {
-		friend class LuaType;
-	public:
-		virtual ~LuaAttribute();
-		void SetDefault(const std::string& rValue);
-	protected:
-		LuaAttribute(lua_State* pLuaState, const std::string& rAttribName, const std::string& rParentName);
-		const std::string	m_attribName;
-	};
+	class LuaSchema;
+	/* The lua adapter classes enable the stack of recursive processors to maintain an object stack that represents
+	   the output schema. Each time the processor adds a new item (element type def or attribute) on to the schema 
+	   table, it creates a new processor which intern references one of these objects */
 	/* core class */
 	class LuaAdapter {
 	public:
-		LuaAdapter(lua_State* pLuaState);
+		LuaAdapter(lua_State * pLuaState);
 		virtual ~LuaAdapter();
-		LuaSchema Schema();
+		LuaSchema * Schema();
+	protected:
+		lua_State * _getLuaState();
+		void _setLuaState(lua_State * pLuaState);
 	private:
-		lua_State*	m_pLuaState;
+		lua_State *	m_pLuaState;
 		LuaAdapter(const LuaAdapter&);
+	};
+	/* lua content class */
+	class LuaContent : public LuaAdapter {
+		friend class LuaType;
+	public:
+		virtual ~LuaContent();
+		LuaType * Type(const std::string& rTypeName);
+	protected:
+		LuaContent();
+		LuaContent(lua_State* pLuaState);
+	};
+	/* lua schema class */
+	class LuaSchema : public LuaContent {
+		friend class LuaAdapter;
+	public:
+		virtual ~LuaSchema();
+	protected:
+		LuaSchema(lua_State* pLuaState);
+	};
+
+	/* lua type class */
+	class LuaType : public LuaAdapter {
+		friend class LuaSchema;
+		friend class LuaContent;
+		friend class LuaAttribute;
+	public:
+		virtual ~LuaType();
+		LuaAttribute * Attribute(	const std::string& rName, 
+									const XSD::Types::BaseType& rType);
+		LuaAttribute * Attribute(	const std::string& rName, 
+									const XSD::Types::BaseType& rType,
+									const std::string& rDefault);
+		LuaContent * Content();
+	protected:
+		LuaType(lua_State * pLuaState, const std::string& rTypeName);
+	};
+	/* lua attribute class */
+	class LuaAttribute : public LuaAdapter {
+		friend class LuaType;
+	public:
+		virtual ~LuaAttribute();
+	protected:
+		LuaAttribute(	lua_State * pLuaState,
+						const std::string& rAttribName,
+						const XSD::Types::BaseType& rType);
+		LuaAttribute(	lua_State * pLuaState,
+						const std::string& rAttribName,
+						const XSD::Types::BaseType& rType,
+						const std::string& rDefault);
 	};
 }
 #endif /* LUAADAPTER_HPP_ */

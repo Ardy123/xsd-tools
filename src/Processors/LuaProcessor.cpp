@@ -62,17 +62,18 @@
 using namespace std;
 using namespace Processors;
 
-LuaProcessor::LuaProcessor(lua_State* pLuaState)
-	: LuaProcessorBase("", pLuaState)
+LuaProcessor::LuaProcessor(lua_State * pLuaState)
+	: LuaProcessorBase(new LuaAdapter(pLuaState))
 { }
 
 LuaProcessor::LuaProcessor(const LuaProcessor& rProcessor)
 	: LuaProcessorBase(rProcessor)
 { }
 
-LuaProcessor::LuaProcessor(const std::string& rLuaTypeName, lua_State* pLuaState)
-	: LuaProcessorBase(rLuaTypeName, pLuaState)
+LuaProcessor::LuaProcessor(LuaAdapter * pLuaAdapter)
+	: LuaProcessorBase(pLuaAdapter)
 { }
+
 /* virtual */
 LuaProcessor::~LuaProcessor() {
 }
@@ -80,40 +81,31 @@ LuaProcessor::~LuaProcessor() {
 /* virtual */ void
 LuaProcessor::ProcessSchema(const XSD::Elements::Schema* pNode) {
 	if (pNode->isRootSchema()) {
-		/* create a name for the root schema object */
-		const string schemaName = pNode->Name() + "_xsd";
-		/* create root schema object */
-		LuaSchema schema = LuaAdapter(_luaState()).Schema();
-		schema.SetName(schemaName);
-		schema.AddType(schemaName);
+		/* create root schema table and append it to stack */
+		LuaProcessor processor(_luaAdapter()->Schema());
+		pNode->ParseChildren(processor);
+	} else {
 		/* parse schema children */
-		LuaProcessor luaPrcssr(schemaName, _luaState());
-		pNode->ParseChildren(luaPrcssr);
-	} else
 		pNode->ParseChildren(*this);
+	}
 }
 
 /* virtual */ void
 LuaProcessor::ProcessElement(const XSD::Elements::Element* pNode) {
-	LuaSchema schema = LuaAdapter(_luaState()).Schema();
 	/* don't process element if it can't occur */
 	if (pNode->HasMaxOccurs() && (0 == pNode->MaxOccurs()))
 		return;
 	/* output the element */
 	if (!pNode->HasRef()) {
-		/* create new type record */
-		LuaType newType = schema.AddType(pNode->Name());
-		/* add this struct as a dependency list of the parent struct */
-		schema.GetType(_luaTypeName()).AddDependent(newType);
-		/* process element type */
 		auto_ptr<XSD::Types::BaseType> pElmType(pNode->Type());
-		LuaProcessor luaPrcssr(pNode->Name(), _luaState());
+		/* process element type */
+		/* inserts basic type. Handle array types the same as basic types */
+		LuaContent * pLuaContent = dynamic_cast<LuaContent*>(_luaAdapter());
+		LuaProcessor luaPrcssr(pLuaContent->Type(pNode->Name()));
 		luaPrcssr._parseType(*pElmType);
 	} else {
 		auto_ptr<XSD::Elements::Element> pRefElm(pNode->RefElement());
-		/* update the struct's dependency tree */
-		LuaType refLuaType = schema.GetType(pRefElm->Name());
-		schema.GetType(_luaTypeName()).AddDependent(refLuaType);
+		ProcessElement(pRefElm.get());
 	}
 }
 
@@ -141,20 +133,43 @@ LuaProcessor::ProcessList(const XSD::Elements::List* pNode) {
 	_parseType(Types::ArrayType(typeXtr.Extract(*pTypeLst)));
 }
 
+/* virtual */ void 
+LuaProcessor::ProcessSequence(const XSD::Elements::Sequence * pNode) {
+	/* open into content section of lua element object */
+	LuaType * pLuaType = dynamic_cast<LuaType*>(_luaAdapter());
+	LuaProcessor luaPrcssr(pLuaType->Content());
+	pNode->ParseChildren(luaPrcssr);
+}
+
+/* virtual */ void 
+LuaProcessor::ProcessChoice(const XSD::Elements::Choice * pNode) {
+	/* open into content section of lua element object */
+	LuaType * pLuaType = dynamic_cast<LuaType*>(_luaAdapter());
+	LuaProcessor luaPrcssr(pLuaType->Content());
+	pNode->ParseChildren(luaPrcssr);
+}
+
 /* virtual */ void
 LuaProcessor::ProcessAttribute(const XSD::Elements::Attribute* pNode) {
 	if (pNode->HasRef()) {
 		auto_ptr<XSD::Elements::Attribute> pRefAtt(pNode->RefAttribute());
 		ProcessAttribute(pRefAtt.get());
 	} else {
-		auto_ptr<XSD::Types::BaseType> pType(pNode->Type());
-		/* extract xsd native type from simple type */
+		/* extract xsd native type from simple type and add it */
 		SimpleTypeExtracter typeXtr;
-		/* add attribute */
-		LuaSchema schema = LuaAdapter(_luaState()).Schema();
-		LuaAttribute attrib = schema.GetType(_luaTypeName()).AddAttribute(pNode->Name(), typeXtr.Extract(*pType));
+		auto_ptr<XSD::Types::BaseType> pType(pNode->Type());
+		LuaType * pLuaType = dynamic_cast<LuaType*>(_luaAdapter());
 		if (pNode->HasDefault()) {
-			attrib.SetDefault(pNode->Default());
+			auto_ptr<LuaAttribute> pAttribute(	
+				pLuaType->Attribute(	pNode->Name(), 
+									typeXtr.Extract(*pType), 
+									pNode->Default())
+				);
+		} else {
+			auto_ptr<LuaAttribute> pAttribute(
+				pLuaType->Attribute(	pNode->Name(), 
+									typeXtr.Extract(*pType))
+				);
 		}
 	}
 }
@@ -197,17 +212,28 @@ LuaProcessor::ProcessInclude(const XSD::Elements::Include* pNode) {
 	pSchema->ParseChildren(*this);
 }
 
+/* virtual */ void 
+LuaProcessor::ProcessAll(const XSD::Elements::All * pNode) {
+	/* open into content section of lua element object */
+	LuaType * pLuaType = dynamic_cast<LuaType*>(_luaAdapter());
+	LuaProcessor luaPrcssr(pLuaType->Content());
+	pNode->ParseChildren(luaPrcssr);
+}
+
 /* virtual */ void
 LuaProcessor::_parseType(const XSD::Types::BaseType& rXSDType) {
 	if(XSD_ISTYPE(&rXSDType, XSD::Types::SimpleType)) {
-		const XSD::Types::SimpleType* pSimpleType = static_cast<const XSD::Types::SimpleType*>(&rXSDType);
+		const XSD::Types::SimpleType* pSimpleType = 
+			static_cast<const XSD::Types::SimpleType*>(&rXSDType);
 		pSimpleType->m_pValue->ParseElement(*this);
 	} else if(XSD_ISTYPE(&rXSDType, XSD::Types::ComplexType)) {
-		const XSD::Types::ComplexType* pComplexType = static_cast<const XSD::Types::ComplexType*>(&rXSDType);
+		const XSD::Types::ComplexType* pComplexType = 
+			static_cast<const XSD::Types::ComplexType*>(&rXSDType);
 		pComplexType->m_pValue->ParseElement(*this);
 	} else {
-		/* handle array types the same as basic types */
-		LuaSchema schema = LuaAdapter(_luaState()).Schema();
-		schema.GetType(_luaTypeName()).AddContent(rXSDType);
+		/* inserts basic type. Handles array types the same as basic types */
+		LuaType * pLuaType = dynamic_cast<LuaType*>(_luaAdapter());
+		auto_ptr<LuaContent> pLuaContent(pLuaType->Content());
+		delete (pLuaContent->Type(rXSDType.Name()));
 	}
 }

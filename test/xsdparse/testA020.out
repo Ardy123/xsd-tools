@@ -1,13 +1,9 @@
-name = testA020_xsd
-dependents = {
-	binBlob = {
-		name = binBlob
-		dependents = {}
-		content = {
-			type = base64Binary
+binBlob = {
+	attributes = {}
+	content = {
+		base64Binary = {
+			attributes = {}
+			content = {}
 		}
-		attributes = {}
 	}
 }
-content = {}
-attributes = {}

@@ -1,44 +1,41 @@
-name = testA001_xsd
-dependents = {
-	AddressElm = {
-		name = AddressElm
-		dependents = {
-			country = {
-				name = country
-				dependents = {}
-				content = {
-					type = string
+AddressElm = {
+	attributes = {}
+	content = {
+		country = {
+			attributes = {}
+			content = {
+				string = {
+					attributes = {}
+					content = {}
 				}
-				attributes = {}
-			}
-			zipcode = {
-				name = zipcode
-				dependents = {}
-				content = {
-					type = integer
-				}
-				attributes = {}
-			}
-			city = {
-				name = city
-				dependents = {}
-				content = {
-					type = string
-				}
-				attributes = {}
-			}
-			street = {
-				name = street
-				dependents = {}
-				content = {
-					type = string
-				}
-				attributes = {}
 			}
 		}
-		content = {}
-		attributes = {}
+		zipcode = {
+			attributes = {}
+			content = {
+				integer = {
+					attributes = {}
+					content = {}
+				}
+			}
+		}
+		city = {
+			attributes = {}
+			content = {
+				string = {
+					attributes = {}
+					content = {}
+				}
+			}
+		}
+		street = {
+			attributes = {}
+			content = {
+				string = {
+					attributes = {}
+					content = {}
+				}
+			}
+		}
 	}
 }
-content = {}
-attributes = {}

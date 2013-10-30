@@ -15,7 +15,7 @@ function printTable(t, depth)
 		end
 	end
 function main(template)
-	printTable(schema.types[schema.root], 0)
+	printTable(schema, 0)
 end
 main("")
 return(out:str())

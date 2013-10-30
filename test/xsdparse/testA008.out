@@ -1,13 +1,9 @@
-name = testA008_xsd
-dependents = {
-	fooTest = {
-		name = fooTest
-		dependents = {}
-		content = {
-			type = list(positiveInteger)
+fooTest = {
+	attributes = {}
+	content = {
+		list(positiveInteger) = {
+			attributes = {}
+			content = {}
 		}
-		attributes = {}
 	}
 }
-content = {}
-attributes = {}

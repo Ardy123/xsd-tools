@@ -1,28 +1,23 @@
-name = testA007_xsd
-dependents = {
-	AddressElm = {
-		name = AddressElm
-		dependents = {
-			city = {
-				name = city
-				dependents = {}
-				content = {
-					type = string
+AddressElm = {
+	attributes = {}
+	content = {
+		city = {
+			attributes = {}
+			content = {
+				string = {
+					attributes = {}
+					content = {}
 				}
-				attributes = {}
-			}
-			street = {
-				name = street
-				dependents = {}
-				content = {
-					type = string
-				}
-				attributes = {}
 			}
 		}
-		content = {}
-		attributes = {}
+		street = {
+			attributes = {}
+			content = {
+				string = {
+					attributes = {}
+					content = {}
+				}
+			}
+		}
 	}
 }
-content = {}
-attributes = {}
