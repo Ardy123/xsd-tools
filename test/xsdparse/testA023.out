@@ -1,0 +1,23 @@
+customer = {
+	attributes = {}
+	content = {
+		firstName = {
+			attributes = {}
+			content = {
+				string = {
+					attributes = {}
+					content = {}
+				}
+			}
+		}
+		lastName = {
+			attributes = {}
+			content = {
+				string = {
+					attributes = {}
+					content = {}
+				}
+			}
+		}
+	}
+}
