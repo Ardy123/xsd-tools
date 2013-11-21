@@ -47,8 +47,9 @@ namespace XSD {
 			virtual ~Schema();
 			void ParseChildren(BaseProcessor& rProcessor) const throw(XMLException);
 			void ParseElement(BaseProcessor& rProcessor) const throw(XMLException);
-			std::string Name() const throw(XMLException);;
-			const std::string& URI() const throw(XMLException);;
+			const std::string Name() const throw(XMLException);
+			const std::string& URI() const throw(XMLException);
+			const std::string Namespace() const throw(XMLException);
 			bool isTypeRelated(const Types::BaseType* pType) const throw(XMLException);
 			bool isRootSchema() const;
 		};

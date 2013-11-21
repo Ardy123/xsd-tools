@@ -109,67 +109,68 @@ Node::_FindChildXMLElement(const char* pXMLElmTag, const char* pAttrib, const ch
 
 Node*
 Node::_ConstructNode(const TiXmlElement* pElm, const Schema& rRoot, const Parser& rParser) const {
-	if (boost::iequals(std::string(Attribute::XSDTag()), pElm->ValueStr())) {
+	const std::string elementName = _StripNamespace(pElm->ValueStr());
+	if (boost::iequals(std::string(Attribute::XSDTag()), elementName)) {
 		return new Attribute(*pElm, rRoot, rParser);
-	} else if (boost::iequals(std::string(Choice::XSDTag()), pElm->ValueStr())) {
+	} else if (boost::iequals(std::string(Choice::XSDTag()), elementName)) {
 		return new Choice(*pElm, rRoot, rParser);
-	} else if (boost::iequals(std::string(Element::XSDTag()), pElm->ValueStr())) {
+	} else if (boost::iequals(std::string(Element::XSDTag()), elementName)) {
 		return new Element(*pElm, rRoot, rParser);
-	} else if (boost::iequals(std::string(List::XSDTag()), pElm->ValueStr())) {
+	} else if (boost::iequals(std::string(List::XSDTag()), elementName)) {
 		return new List(*pElm, rRoot, rParser);
-	} else if (boost::iequals(std::string(Restriction::XSDTag()), pElm->ValueStr())) {
+	} else if (boost::iequals(std::string(Restriction::XSDTag()), elementName)) {
 		return new Restriction(*pElm, rRoot, rParser);
-	} else if (boost::iequals(std::string(Sequence::XSDTag()), pElm->ValueStr())) {
+	} else if (boost::iequals(std::string(Sequence::XSDTag()), elementName)) {
 		return new Sequence(*pElm, rRoot, rParser);
-	} else if (boost::iequals(std::string(Union::XSDTag()), pElm->ValueStr())) {
+	} else if (boost::iequals(std::string(Union::XSDTag()), elementName)) {
 		return new Union(*pElm, rRoot, rParser);
-	} else if (boost::iequals(std::string(Schema::XSDTag()), pElm->ValueStr())) {
+	} else if (boost::iequals(std::string(Schema::XSDTag()), elementName)) {
 		return new Schema(*pElm, rRoot, rParser, std::string(""));
-	} else if (boost::iequals(std::string(SimpleType::XSDTag()), pElm->ValueStr())) {
+	} else if (boost::iequals(std::string(SimpleType::XSDTag()), elementName)) {
 		return new SimpleType(*pElm, rRoot, rParser);
-	} else if (boost::iequals(std::string(ComplexType::XSDTag()), pElm->ValueStr())) {
+	} else if (boost::iequals(std::string(ComplexType::XSDTag()), elementName)) {
 		return new ComplexType(*pElm, rRoot, rParser);
-	} else if (boost::iequals(std::string(Group::XSDTag()), pElm->ValueStr())) {
+	} else if (boost::iequals(std::string(Group::XSDTag()), elementName)) {
 		return new Group(*pElm, rRoot, rParser);
-	} else if (boost::iequals(std::string(Any::XSDTag()), pElm->ValueStr())) {
+	} else if (boost::iequals(std::string(Any::XSDTag()), elementName)) {
 		return new Any(*pElm, rRoot, rParser);
-	} else if (boost::iequals(std::string(ComplexContent::XSDTag()), pElm->ValueStr())) {
+	} else if (boost::iequals(std::string(ComplexContent::XSDTag()), elementName)) {
 		return new ComplexContent(*pElm, rRoot, rParser);
-	} else if (boost::iequals(std::string(Extension::XSDTag()), pElm->ValueStr())) {
+	} else if (boost::iequals(std::string(Extension::XSDTag()), elementName)) {
 		return new Extension(*pElm, rRoot, rParser);
-	} else if (boost::iequals(std::string(SimpleContent::XSDTag()), pElm->ValueStr())) {
+	} else if (boost::iequals(std::string(SimpleContent::XSDTag()), elementName)) {
 		return new SimpleContent(*pElm, rRoot, rParser);
-	} else if (boost::iequals(std::string(MinExclusive::XSDTag()), pElm->ValueStr())) {
+	} else if (boost::iequals(std::string(MinExclusive::XSDTag()), elementName)) {
 		return new MinExclusive(*pElm, rRoot, rParser);
-	} else if (boost::iequals(std::string(MaxExclusive::XSDTag()), pElm->ValueStr())) {
+	} else if (boost::iequals(std::string(MaxExclusive::XSDTag()), elementName)) {
 		return new MaxExclusive(*pElm, rRoot, rParser);
-	} else if (boost::iequals(std::string(MinInclusive::XSDTag()), pElm->ValueStr())) {
+	} else if (boost::iequals(std::string(MinInclusive::XSDTag()), elementName)) {
 		return new MinInclusive(*pElm, rRoot, rParser);
-	} else if (boost::iequals(std::string(MaxInclusive::XSDTag()), pElm->ValueStr())) {
+	} else if (boost::iequals(std::string(MaxInclusive::XSDTag()), elementName)) {
 		return new MaxInclusive(*pElm, rRoot, rParser);
-	} else if (boost::iequals(std::string(MinLength::XSDTag()), pElm->ValueStr())) {
+	} else if (boost::iequals(std::string(MinLength::XSDTag()), elementName)) {
 		return new MinLength(*pElm, rRoot, rParser);
-	} else if (boost::iequals(std::string(MaxLength::XSDTag()), pElm->ValueStr())) {
+	} else if (boost::iequals(std::string(MaxLength::XSDTag()), elementName)) {
 		return new MaxLength(*pElm, rRoot, rParser);
-	} else if (boost::iequals(std::string(Enumeration::XSDTag()), pElm->ValueStr())) {
+	} else if (boost::iequals(std::string(Enumeration::XSDTag()), elementName)) {
 		return new Enumeration(*pElm, rRoot, rParser);
-	} else if (boost::iequals(std::string(FractionDigits::XSDTag()), pElm->ValueStr())) {
+	} else if (boost::iequals(std::string(FractionDigits::XSDTag()), elementName)) {
 		return new FractionDigits(*pElm, rRoot, rParser);
-	} else if (boost::iequals(std::string(Pattern::XSDTag()), pElm->ValueStr())) {
+	} else if (boost::iequals(std::string(Pattern::XSDTag()), elementName)) {
 		return new Pattern(*pElm, rRoot, rParser);
-	} else if (boost::iequals(std::string(TotalDigits::XSDTag()), pElm->ValueStr())) {
+	} else if (boost::iequals(std::string(TotalDigits::XSDTag()), elementName)) {
 		return new TotalDigits(*pElm, rRoot, rParser);
-	} else if (boost::iequals(std::string(WhiteSpace::XSDTag()), pElm->ValueStr())) {
+	} else if (boost::iequals(std::string(WhiteSpace::XSDTag()), elementName)) {
 		return new WhiteSpace(*pElm, rRoot, rParser);
-	} else if (boost::iequals(std::string(AttributeGroup::XSDTag()), pElm->ValueStr())) {
+	} else if (boost::iequals(std::string(AttributeGroup::XSDTag()), elementName)) {
 		return new AttributeGroup(*pElm, rRoot, rParser);
-	} else if (boost::iequals(std::string(Include::XSDTag()), pElm->ValueStr())) {
+	} else if (boost::iequals(std::string(Include::XSDTag()), elementName)) {
 		return new Include(*pElm, rRoot, rParser);
-	} else if (boost::iequals(std::string(Annotation::XSDTag()), pElm->ValueStr())) {
+	} else if (boost::iequals(std::string(Annotation::XSDTag()), elementName)) {
 		return new Annotation(*pElm, rRoot, rParser);
-	} else if (boost::iequals(std::string(Documentation::XSDTag()), pElm->ValueStr())) {
+	} else if (boost::iequals(std::string(Documentation::XSDTag()), elementName)) {
 		return new Documentation(*pElm, rRoot, rParser);
-	} else if (boost::iequals(std::string(All::XSDTag()), pElm->ValueStr())) {
+	} else if (boost::iequals(std::string(All::XSDTag()), elementName)) {
 		return new All(*pElm, rRoot, rParser);
 	} else
 		throw XMLException(*pElm, XMLException::InvallidChildXMLElement);
@@ -178,16 +179,17 @@ Node::_ConstructNode(const TiXmlElement* pElm, const Schema& rRoot, const Parser
 
 Node*
 Node::_FindXSDElm(const char* pName, const char* pTypeName) const throw(XMLException) {
+	std::string elementName = QualifyElementName(pTypeName);
 	/* search root document */
 	Node* pRetNode = NULL;
-	const TiXmlElement* pElm = m_rDocRoot._FindChildXMLElement(pTypeName, "name", pName);
+	const TiXmlElement* pElm = m_rDocRoot._FindChildXMLElement(elementName.c_str(), "name", pName);
 	/* search all included documents */
 	if (!pElm) {
 		const TiXmlElement* pIncludElm = m_rDocRoot.m_rXmlElm.FirstChildElement(XSD::Elements::Include::XSDTag());
 		for ( ; pIncludElm; pIncludElm = pIncludElm->NextSiblingElement(XSD::Elements::Include::XSDTag()) ) {
 			std::auto_ptr<Include> pNode(static_cast<Include*>(_ConstructNode(pIncludElm, m_rDocRoot, m_rParser)));
 			const Schema* pSchema = pNode->QuerySchema();
-			if (NULL != (pElm = pSchema->_FindChildXMLElement(pTypeName, "name", pName))) {
+			if (NULL != (pElm = pSchema->_FindChildXMLElement(elementName.c_str(), "name", pName))) {
 				pRetNode = _ConstructNode(pElm, *pSchema, pSchema->m_rParser);
 				break;
 			}
@@ -207,8 +209,9 @@ Node::_FindXSDNode(const char* pName, const char* pTypeName) const throw(XMLExce
 
 Node*
 Node::_FindChildXSDNode(const char* pXMLTag) const throw(XMLException) {
+	std::string elementName = QualifyElementName(pXMLTag);
 	/* search all nodes in root document */
-	const TiXmlElement* pElm = m_rXmlElm.FirstChildElement(pXMLTag);
+	const TiXmlElement* pElm = m_rXmlElm.FirstChildElement(elementName.c_str());
 	if (NULL == pElm)
 		throw XMLException(*pElm, XMLException::MissingChildXMLElement);
 	return _ConstructNode(pElm, m_rDocRoot, m_rParser);
@@ -235,10 +238,11 @@ Node::_Attribute(const char* pAttrib) const throw (XMLException) {
 Types::BaseType*
 Node::_Type(const char* pType) const throw(XMLException) {
 	/* search for type name */
-	Types::BaseType* pRetType = m_rParser.QueryTypesDb().FindType(pType);
+	std::string typeName = _StripNamespace(std::string(pType));
+	Types::BaseType* pRetType = m_rParser.QueryTypesDb().FindType(typeName.c_str());
 	if (typeid(*pRetType) == typeid(Types::Unknown)) {
-		Node* pSimpleType	= _FindXSDElm(pType, SimpleType::XSDTag());
-		Node* pComplexType	= _FindXSDElm(pType, ComplexType::XSDTag());
+		Node* pSimpleType	= _FindXSDElm(typeName.c_str(), SimpleType::XSDTag());
+		Node* pComplexType	= _FindXSDElm(typeName.c_str(), ComplexType::XSDTag());
 		if (NULL != pSimpleType) {
 			delete pRetType;
 			pRetType = new Types::SimpleType(static_cast<SimpleType*>(pSimpleType));
@@ -253,7 +257,19 @@ Node::_Type(const char* pType) const throw(XMLException) {
 	return pRetType;
 }
 
-
+const std::string 
+Node::_StripNamespace(const std::string& rQName) const throw(XMLException) {
+	std::string xmlNamespace = m_rDocRoot.Namespace();
+	/* verify that the namespace is in the qualified name */
+	if (0 == rQName.find(xmlNamespace)) {
+		if (xmlNamespace.length() > 0) {
+			return rQName.substr(xmlNamespace.length() + 1);
+		} else {
+			return rQName;
+		}
+	}
+	return rQName;
+}
 
 
 
@@ -271,7 +287,8 @@ Node::NextSibling() const throw(XMLException) {
 
 const TiXmlElement*
 Node::ContentElement(const char* pElemName) const throw(XMLException) {
-	const TiXmlElement* pElm = m_rXmlElm.FirstChildElement(pElemName);
+	std::string elementName = QualifyElementName(pElemName);
+	const TiXmlElement* pElm = m_rXmlElm.FirstChildElement(elementName.c_str());
 	if (!pElm) throw XMLException(m_rXmlElm,XMLException::MissingChildXMLElement);
 	return pElm;
 }
@@ -284,7 +301,8 @@ Node::HasAttribute(const char* pAttrib) const throw() {
 
 bool
 Node::HasContent(const char* pElemName) const throw() {
-	return (NULL != m_rXmlElm.FirstChildElement(pElemName));
+	std::string elementName = QualifyElementName(pElemName);
+	return (NULL != m_rXmlElm.FirstChildElement(elementName.c_str()));
 }
 
 bool
@@ -313,4 +331,15 @@ Node::operator == (const Node& elm) const {
 bool
 Node::operator == (const Node& elm) {
 	return &m_rXmlElm == &elm.m_rXmlElm;
+}
+
+std::string 
+Node::QualifyElementName(const char* pElemName) const throw() {
+	std::string elementName(pElemName);
+	std::string xmlNamespace = m_rDocRoot.Namespace();
+	/* verify that the namespace is in the qualified name */
+	if (0 != elementName.find(xmlNamespace)) {
+		return xmlNamespace + ":" + elementName;
+	}
+	return elementName;
 }

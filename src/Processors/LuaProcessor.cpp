@@ -101,8 +101,15 @@ LuaProcessor::ProcessElement(const XSD::Elements::Element* pNode) {
 		/* process element type */
 		/* inserts basic type. Handle array types the same as basic types */
 		LuaContent * pLuaContent = dynamic_cast<LuaContent*>(_luaAdapter());
-		LuaProcessor luaPrcssr(pLuaContent->Type(pNode->Name()));
-		luaPrcssr._parseType(*pElmType);
+		if (NULL == pLuaContent) {
+		  /* enter the type content table & add elements, then leave */
+		  LuaType * pLuaType = dynamic_cast<LuaType*>(_luaAdapter());
+		  LuaProcessor processor(pLuaType->Content());
+		  processor.ProcessElement(pNode);
+		} else {
+		  LuaProcessor luaPrcssr(pLuaContent->Type(pNode->Name()));
+		  luaPrcssr._parseType(*pElmType);
+		}
 	} else {
 		auto_ptr<XSD::Elements::Element> pRefElm(pNode->RefElement());
 		ProcessElement(pRefElm.get());
@@ -136,17 +143,23 @@ LuaProcessor::ProcessList(const XSD::Elements::List* pNode) {
 /* virtual */ void 
 LuaProcessor::ProcessSequence(const XSD::Elements::Sequence * pNode) {
 	/* open into content section of lua element object */
+	/*
 	LuaType * pLuaType = dynamic_cast<LuaType*>(_luaAdapter());
 	LuaProcessor luaPrcssr(pLuaType->Content());
 	pNode->ParseChildren(luaPrcssr);
+	*/
+	pNode->ParseChildren(*this);
 }
 
 /* virtual */ void 
 LuaProcessor::ProcessChoice(const XSD::Elements::Choice * pNode) {
 	/* open into content section of lua element object */
+	/*
 	LuaType * pLuaType = dynamic_cast<LuaType*>(_luaAdapter());
 	LuaProcessor luaPrcssr(pLuaType->Content());
 	pNode->ParseChildren(luaPrcssr);
+	*/
+	pNode->ParseChildren(*this);
 }
 
 /* virtual */ void
@@ -215,9 +228,12 @@ LuaProcessor::ProcessInclude(const XSD::Elements::Include* pNode) {
 /* virtual */ void 
 LuaProcessor::ProcessAll(const XSD::Elements::All * pNode) {
 	/* open into content section of lua element object */
+	  /*
 	LuaType * pLuaType = dynamic_cast<LuaType*>(_luaAdapter());
 	LuaProcessor luaPrcssr(pLuaType->Content());
 	pNode->ParseChildren(luaPrcssr);
+	*/
+	pNode->ParseChildren(*this);
 }
 
 /* virtual */ void

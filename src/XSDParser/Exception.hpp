@@ -43,6 +43,7 @@ namespace XSD {
 			RestrictionTypeMismatch,
 			ProtocolNotSupported,
 			URINotValid,
+			NamespaceMismatch,
 		};
 		struct ErrorInfo {
 			const int m_errorId;

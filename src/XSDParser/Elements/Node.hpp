@@ -54,6 +54,7 @@ namespace XSD {
 			Node* _FindXSDRef(const char* pRefAttribStr, const char* pTypeName) const throw (XMLException);
 			std::string _Attribute(const char* pAttrib) const throw (XMLException);
 			Types::BaseType* _Type(const char* pType) const throw(XMLException);
+			const std::string _StripNamespace(const std::string& rQName) const throw(XMLException);
 		protected:
 			const TiXmlElement&		m_rXmlElm;
 			const Schema&			m_rDocRoot;
@@ -66,6 +67,7 @@ namespace XSD {
 			bool HasContent(const char* pElemName) const throw();
 			bool HasContent() const throw();
 			bool IsRootNode() const throw ();
+			std::string QualifyElementName(const char* pElemName) const throw();
 			template<typename T> T GetAttribute(const char* pAttrib) const throw(XMLException) {
 				T retVal;
 				std::stringstream sstrm(_Attribute(pAttrib));
