@@ -1,0 +1,36 @@
+letter = {
+	attributes = {}
+	content = {
+		orderid = {
+			attributes = {}
+			content = {
+				positiveInteger = {
+					attributes = {}
+					content = {}
+				}
+			}
+		}
+		string = {
+			attributes = {}
+			content = {}
+		}
+		name = {
+			attributes = {}
+			content = {
+				string = {
+					attributes = {}
+					content = {}
+				}
+			}
+		}
+		shipdate = {
+			attributes = {}
+			content = {
+				date = {
+					attributes = {}
+					content = {}
+				}
+			}
+		}
+	}
+}

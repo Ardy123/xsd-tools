@@ -225,22 +225,14 @@ Restriction::_findElm(const TiXmlElement* pTreeBase, const TiXmlElement* pNode) 
 
 bool
 Restriction::isParentComplexContent() const throw(XMLException) {
-	const TiXmlElement* pNode = Node::GetXMLElm().Parent()->ToElement();
-	if (pNode) {
-		if (0 == strcmp(pNode->Value(), ComplexContent::XSDTag()))
-			return true;
-	}
-	return false;
+	std::auto_ptr<Node> pParent(Node::Parent());
+	return XSD_ISELEMENT(pParent.get(), XSD::Elements::ComplexContent);
 }
 
 bool
 Restriction::isParentSimpleContent() const throw(XMLException) {
-	const TiXmlElement* pNode = Node::GetXMLElm().Parent()->ToElement();
-	if (pNode) {
-		if (0 == strcmp(pNode->Value(), SimpleContent::XSDTag()))
-			return true;
-	}
-	return false;
+	std::auto_ptr<Node> pParent(Node::Parent());
+	return XSD_ISELEMENT(pParent.get(), XSD::Elements::SimpleContent);
 }
 
 Types::BaseType*

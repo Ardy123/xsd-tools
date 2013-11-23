@@ -62,30 +62,33 @@ Attribute::ParseChildren(BaseProcessor& rProcessor) const throw(XMLException) {
 void
 Attribute::ParseElement(BaseProcessor& rProcessor) const throw(XMLException) {
 	if (!HasName()) {
-		if (0 == strcmp(m_rXmlElm.Parent()->Value(), Schema::XSDTag()))
-			throw XMLException(m_rXmlElm, XMLException::MissingAttribute);
+		/* if the attribute is a child of the schema root, it must have a name */
+		std::auto_ptr<Node> pParent(Node::Parent());
+		if (XSD_ISELEMENT(pParent.get(), SimpleType))
+			throw XMLException(m_rXmlElm, XMLException::InvalidAttribute);
+	} else if (HasRef()) {
+		/* an attribute cannot have a name and ref */
+		throw XMLException(m_rXmlElm, XMLException::InvalidAttribute);
 	}
 	if (HasType()) {
+		/* an attribute cannot have a type field and a type defined as child */
 		if (Node::HasContent(SimpleType::XSDTag()))
 			throw XMLException(m_rXmlElm, XMLException::InvalidAttribute);
 	} else if (!Node::HasContent(SimpleType::XSDTag())) {
+		/* an attribute must have a type defined as a child if a type is not defined */
 		throw XMLException(m_rXmlElm, XMLException::MissingChildXMLElement);
+	}
+	if (HasDefault() && HasFixed()) {
+		/* attributes cannot have fixed values and default values at the same time */
+		throw XMLException(m_rXmlElm, XMLException::InvalidAttribute);
 	}
 	/* if the node is a reference, check its reference */
 	if (HasRef()) {
-		std::auto_ptr<XSD::Elements::Attribute> pRefElm(RefAttribute());
-		if (!HasName()) {
-			if (0 == strcmp(m_rXmlElm.Parent()->Value(), Schema::XSDTag()))
-				throw XMLException(m_rXmlElm, XMLException::MissingAttribute);
-		}
-		if (pRefElm->HasType()) {
-			if (pRefElm->HasContent(SimpleType::XSDTag()))
-				throw XMLException(m_rXmlElm, XMLException::InvalidAttribute);
-		} else if (!Node::HasContent(SimpleType::XSDTag())) {
-			throw XMLException(m_rXmlElm, XMLException::MissingChildXMLElement);
-		}
+		std::auto_ptr<Node> pRefElm(RefAttribute());
+		pRefElm->ParseElement(rProcessor);
+	} else {
+		rProcessor.ProcessAttribute(this);
 	}
-	rProcessor.ProcessAttribute(this);
 }
 
 bool
@@ -118,6 +121,25 @@ Attribute::Default() const throw(XMLException) {
 	return std::string(Node::GetAttribute<const char*>("default"));
 }
 
+std::string 
+Attribute::Fixed() const throw(XMLException) {
+	return std::string(Node::GetAttribute<const char*>("fixed"));
+}
+
+Attribute::AttributeUse 
+Attribute::Use() const throw(XMLException) {
+	std::string use(Node::GetAttribute<const char*>("use"));
+	if (!use.compare("optional")) {
+		return Attribute::OPTIONAL;
+	} else if (!use.compare("prohibited")) {
+		return Attribute::PROHIBITIED;
+	} else if (!use.compare("required")) {
+		return Attribute::REQUIRED;
+	}
+	throw XMLException(Node::GetXMLElm(), XMLException::InvalidAttributeValue);
+	return Attribute::OPTIONAL;
+}
+
 bool
 Attribute::HasName() const {
 	return this->HasAttribute("name");
@@ -138,6 +160,16 @@ Attribute::HasDefault() const {
 	return this->HasAttribute("default");
 }
 
+bool
+Attribute::HasFixed() const {
+	return this->HasAttribute("fixed");
+}
+
+bool
+Attribute::HasUse() const {
+	return this->HasAttribute("use");
+}
+			
 Types::BaseType*
 Attribute::_type() const throw(XMLException) {
 	Types::BaseType* pType = Node::GetAttribute<Types::BaseType*>("type");

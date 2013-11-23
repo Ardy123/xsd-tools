@@ -4,6 +4,7 @@ foo = {
 			string = {
 				attributes = {}
 				content = {}
+				use = optional
 			}
 		}
 	}

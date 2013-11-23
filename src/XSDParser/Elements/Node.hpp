@@ -54,6 +54,7 @@ namespace XSD {
 			Node* _FindXSDRef(const char* pRefAttribStr, const char* pTypeName) const throw (XMLException);
 			std::string _Attribute(const char* pAttrib) const throw (XMLException);
 			Types::BaseType* _Type(const char* pType) const throw(XMLException);
+			const std::string _StripNamespace(const std::string& rQName) const throw(XMLException);
 		protected:
 			const TiXmlElement&		m_rXmlElm;
 			const Schema&			m_rDocRoot;
@@ -62,10 +63,12 @@ namespace XSD {
 			Node(const Node& rCpy);
 			Types::BaseType* LookupType(const char* pType) const throw(XMLException) { return _Type(pType); }
 			Node* FirstChild() const throw(XMLException);
+			Node* Parent() const throw(XMLException);
 			bool HasAttribute(const char* pAttrib) const throw();
 			bool HasContent(const char* pElemName) const throw();
 			bool HasContent() const throw();
 			bool IsRootNode() const throw ();
+			std::string QualifyElementName(const char* pElemName) const throw();
 			template<typename T> T GetAttribute(const char* pAttrib) const throw(XMLException) {
 				T retVal;
 				std::stringstream sstrm(_Attribute(pAttrib));
@@ -86,10 +89,10 @@ namespace XSD {
 			virtual void ParseChildren(BaseProcessor& rProcessor) const throw(XMLException) = 0;
 			virtual void ParseElement(BaseProcessor& rProcessor) const throw(XMLException) = 0;
 			virtual bool isTypeRelated(const Types::BaseType* pType) const throw(XMLException) = 0;
+			Node* NextSibling() const throw(XMLException);
 			bool operator == (const Node& elm) const;
 			bool operator == (const Node& elm);
 			inline const TiXmlElement& GetXMLElm() const { return m_rXmlElm;}
-			Node* NextSibling() const throw(XMLException);
 		};
 		template<> bool Node::GetAttribute<bool>(const char* pAttrib) const throw(XMLException);
 		template<> const char* Node::GetAttribute<const char*>(const char* pAttrib) const throw (XMLException);

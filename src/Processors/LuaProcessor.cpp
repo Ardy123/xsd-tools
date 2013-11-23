@@ -23,6 +23,7 @@
 
 #include <sstream>
 #include <memory>
+#include <assert.h>
 #include "./src/XSDParser/Parser.hpp"
 #include "./src/XSDParser/Elements/Schema.hpp"
 #include "./src/XSDParser/Elements/Element.hpp"
@@ -101,8 +102,15 @@ LuaProcessor::ProcessElement(const XSD::Elements::Element* pNode) {
 		/* process element type */
 		/* inserts basic type. Handle array types the same as basic types */
 		LuaContent * pLuaContent = dynamic_cast<LuaContent*>(_luaAdapter());
-		LuaProcessor luaPrcssr(pLuaContent->Type(pNode->Name()));
-		luaPrcssr._parseType(*pElmType);
+		if (NULL == pLuaContent) {
+			/* enter the type content table & add elements, then leave */
+			LuaType * pLuaType = dynamic_cast<LuaType*>(_luaAdapter());
+			LuaProcessor processor(pLuaType->Content());
+			processor.ProcessElement(pNode);
+		} else {
+			LuaProcessor luaPrcssr(pLuaContent->Type(pNode->Name()));
+			luaPrcssr._parseType(*pElmType);
+		}
 	} else {
 		auto_ptr<XSD::Elements::Element> pRefElm(pNode->RefElement());
 		ProcessElement(pRefElm.get());
@@ -135,18 +143,12 @@ LuaProcessor::ProcessList(const XSD::Elements::List* pNode) {
 
 /* virtual */ void 
 LuaProcessor::ProcessSequence(const XSD::Elements::Sequence * pNode) {
-	/* open into content section of lua element object */
-	LuaType * pLuaType = dynamic_cast<LuaType*>(_luaAdapter());
-	LuaProcessor luaPrcssr(pLuaType->Content());
-	pNode->ParseChildren(luaPrcssr);
+	pNode->ParseChildren(*this);
 }
 
 /* virtual */ void 
 LuaProcessor::ProcessChoice(const XSD::Elements::Choice * pNode) {
-	/* open into content section of lua element object */
-	LuaType * pLuaType = dynamic_cast<LuaType*>(_luaAdapter());
-	LuaProcessor luaPrcssr(pLuaType->Content());
-	pNode->ParseChildren(luaPrcssr);
+	pNode->ParseChildren(*this);
 }
 
 /* virtual */ void
@@ -159,18 +161,61 @@ LuaProcessor::ProcessAttribute(const XSD::Elements::Attribute* pNode) {
 		SimpleTypeExtracter typeXtr;
 		auto_ptr<XSD::Types::BaseType> pType(pNode->Type());
 		LuaType * pLuaType = dynamic_cast<LuaType*>(_luaAdapter());
+		auto_ptr<string> pDefault(NULL);
+		auto_ptr<string> pFixed(NULL);
+		auto_ptr<string> pUse(new string("optional"));
 		if (pNode->HasDefault()) {
-			auto_ptr<LuaAttribute> pAttribute(	
-				pLuaType->Attribute(	pNode->Name(), 
-									typeXtr.Extract(*pType), 
-									pNode->Default())
-				);
-		} else {
-			auto_ptr<LuaAttribute> pAttribute(
-				pLuaType->Attribute(	pNode->Name(), 
-									typeXtr.Extract(*pType))
-				);
+			pDefault.reset(new string(pNode->Default()));
 		}
+		if (pNode->HasFixed()) {
+			pFixed.reset(new string(pNode->Fixed()));
+		}
+		if (pNode->HasUse()) {
+			switch (pNode->Use()) {
+			case XSD::Elements::Attribute::OPTIONAL:
+				pUse.reset(new string("optional"));
+				break;
+			case XSD::Elements::Attribute::PROHIBITIED:
+				pUse.reset(new string("prohibited"));
+				break;
+			case XSD::Elements::Attribute::REQUIRED:
+				pUse.reset(new string("required"));
+				break;
+			default:
+				assert(	(pNode->Use() != XSD::Elements::Attribute::OPTIONAL) &&
+						(pNode->Use() != XSD::Elements::Attribute::PROHIBITIED) &&
+						(pNode->Use() != XSD::Elements::Attribute::REQUIRED));
+			}
+		}
+		auto_ptr<LuaAttribute> pAttribute(	
+			pLuaType->Attribute(	pNode->Name(), 
+								typeXtr.Extract(*pType), 
+								pDefault.get(),
+								pFixed.get(),
+								pUse.get()
+							   )
+			);
+	}
+}
+
+/* virtual */ void 
+LuaProcessor::ProcessComplexType(const XSD::Elements::ComplexType* pNode) {
+	/* add a string to the content type if it is mixed mode */
+	if (pNode->Mixed()) {
+		/* inserts basic type. Handle array types the same as basic types */
+		LuaContent * pLuaContent = dynamic_cast<LuaContent*>(_luaAdapter());
+		if (NULL == pLuaContent) {
+			/* enter the type content table & add elements, then leave */
+			LuaType * pLuaType = dynamic_cast<LuaType*>(_luaAdapter());
+			LuaProcessor processor(pLuaType->Content());
+			processor.ProcessComplexType(pNode);
+		} else {
+			auto_ptr<XSD::Types::String> pType(new XSD::Types::String());
+			delete (pLuaContent->Type(pType->Name()));
+			pNode->ParseChildren(*this);
+		}
+	} else {
+		pNode->ParseChildren(*this);
 	}
 }
 
@@ -214,10 +259,7 @@ LuaProcessor::ProcessInclude(const XSD::Elements::Include* pNode) {
 
 /* virtual */ void 
 LuaProcessor::ProcessAll(const XSD::Elements::All * pNode) {
-	/* open into content section of lua element object */
-	LuaType * pLuaType = dynamic_cast<LuaType*>(_luaAdapter());
-	LuaProcessor luaPrcssr(pLuaType->Content());
-	pNode->ParseChildren(luaPrcssr);
+	pNode->ParseChildren(*this);
 }
 
 /* virtual */ void

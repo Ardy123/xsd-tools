@@ -1,0 +1,68 @@
+letter = {
+	attributes = {}
+	content = {
+		shipdate = {
+			attributes = {}
+			content = {
+				date = {
+					attributes = {}
+					content = {}
+				}
+			}
+		}
+		string = {
+			attributes = {}
+			content = {}
+		}
+		name = {
+			attributes = {}
+			content = {
+				string = {
+					attributes = {}
+					content = {}
+				}
+			}
+		}
+		address = {
+			attributes = {}
+			content = {
+				state = {
+					attributes = {}
+					content = {
+						string = {
+							attributes = {}
+							content = {}
+						}
+					}
+				}
+				zipcode = {
+					attributes = {}
+					content = {
+						string = {
+							attributes = {}
+							content = {}
+						}
+					}
+				}
+				city = {
+					attributes = {}
+					content = {
+						string = {
+							attributes = {}
+							content = {}
+						}
+					}
+				}
+				address = {
+					attributes = {}
+					content = {
+						string = {
+							attributes = {}
+							content = {}
+						}
+					}
+				}
+			}
+		}
+	}
+}

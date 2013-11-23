@@ -115,14 +115,8 @@ Extension::Base() const throw(XMLException) {
 
 bool
 Extension::isParentComplex() const throw(XMLException) {
-	const TiXmlElement* pNode = Node::GetXMLElm().Parent()->ToElement();
-	if (pNode) {
-		const char* pt1 = pNode->Value();
-		const char* pt2 = ComplexContent::XSDTag();
-		if (0 == strcmp(pNode->Value(), ComplexContent::XSDTag()))
-			return true;
-	}
-	return false;
+	std::auto_ptr<Node> pParent(Node::Parent());
+	return XSD_ISELEMENT(pParent.get(), XSD::Elements::ComplexContent);
 }
 
 /* static */ bool

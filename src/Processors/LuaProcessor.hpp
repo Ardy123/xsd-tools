@@ -41,6 +41,7 @@ namespace Processors {
 		virtual void ProcessSequence(const XSD::Elements::Sequence* pNode);
 		virtual void ProcessChoice(const XSD::Elements::Choice* pNode );
 		virtual void ProcessAttribute(const XSD::Elements::Attribute* pNode);
+		virtual void ProcessComplexType(const XSD::Elements::ComplexType* pNode);
 		virtual void ProcessGroup(const XSD::Elements::Group* pNode);
 		virtual void ProcessAny(const XSD::Elements::Any* pNode);
 		virtual void ProcessExtension(const XSD::Elements::Extension* pNode);

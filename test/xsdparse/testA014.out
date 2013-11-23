@@ -2,9 +2,10 @@ foo = {
 	attributes = {
 		myAttr = {
 			string = {
+				attributes = {}
 				default = default string
 				content = {}
-				attributes = {}
+				use = optional
 			}
 		}
 	}

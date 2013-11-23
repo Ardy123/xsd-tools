@@ -68,7 +68,7 @@ Schema::ParseElement(BaseProcessor& rProcessor) const throw(XMLException) {
 	rProcessor.ProcessSchema(this);
 }
 
-std::string
+const std::string
 Schema::Name() const throw(XMLException) {
 	return _extractName(m_documentURI);
 }
@@ -76,6 +76,20 @@ Schema::Name() const throw(XMLException) {
 const std::string&
 Schema::URI() const throw(XMLException) {
 	return m_documentURI;
+}
+
+const std::string
+Schema::Namespace() const throw(XMLException) {
+	/* search for xmlns attribute (sans the namespace prefix) */
+	const TiXmlAttribute * pAttrib = m_rXmlElm.FirstAttribute();
+	for ( ; pAttrib && (std::string::npos == std::string(pAttrib->Name()).find("xmlns:"));
+			pAttrib = pAttrib->Next()) { }
+	/* extract the namespace prefix if attribute found */
+	if (pAttrib) {
+		std::string attribName(pAttrib->Name());
+		return attribName.substr(attribName.find(":") + 1);
+	}
+	return std::string("");
 }
 
 bool
