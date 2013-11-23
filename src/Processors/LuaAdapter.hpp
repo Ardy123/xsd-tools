@@ -77,10 +77,10 @@ namespace Processors {
 	public:
 		virtual ~LuaType();
 		LuaAttribute * Attribute(	const std::string& rName, 
-									const XSD::Types::BaseType& rType);
-		LuaAttribute * Attribute(	const std::string& rName, 
 									const XSD::Types::BaseType& rType,
-									const std::string& rDefault);
+									const std::string * pDefault,
+									const std::string * pFixed,
+									const std::string * pUse);
 		LuaContent * Content();
 	protected:
 		LuaType(lua_State * pLuaState, const std::string& rTypeName);
@@ -93,11 +93,11 @@ namespace Processors {
 	protected:
 		LuaAttribute(	lua_State * pLuaState,
 						const std::string& rAttribName,
-						const XSD::Types::BaseType& rType);
-		LuaAttribute(	lua_State * pLuaState,
-						const std::string& rAttribName,
 						const XSD::Types::BaseType& rType,
-						const std::string& rDefault);
+						const std::string * pDefault,
+						const std::string * pFixed,
+						const std::string * pUse
+					);
 	};
 }
 #endif /* LUAADAPTER_HPP_ */

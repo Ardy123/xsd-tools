@@ -118,6 +118,25 @@ Attribute::Default() const throw(XMLException) {
 	return std::string(Node::GetAttribute<const char*>("default"));
 }
 
+std::string 
+Attribute::Fixed() const throw(XMLException) {
+	return std::string(Node::GetAttribute<const char*>("fixed"));
+}
+
+Attribute::AttributeUse 
+Attribute::Use() const throw(XMLException) {
+	std::string use(Node::GetAttribute<const char*>("use"));
+	if (!use.compare("optional")) {
+		return Attribute::OPTIONAL;
+	} else if (!use.compare("prohibited")) {
+		return Attribute::PROHIBITIED;
+	} else if (!use.compare("required")) {
+		return Attribute::REQUIRED;
+	}
+	throw XMLException(Node::GetXMLElm(), XMLException::InvalidAttributeValue);
+	return Attribute::OPTIONAL;
+}
+
 bool
 Attribute::HasName() const {
 	return this->HasAttribute("name");
@@ -138,6 +157,16 @@ Attribute::HasDefault() const {
 	return this->HasAttribute("default");
 }
 
+bool
+Attribute::HasFixed() const {
+	return this->HasAttribute("fixed");
+}
+
+bool
+Attribute::HasUse() const {
+	return this->HasAttribute("use");
+}
+			
 Types::BaseType*
 Attribute::_type() const throw(XMLException) {
 	Types::BaseType* pType = Node::GetAttribute<Types::BaseType*>("type");

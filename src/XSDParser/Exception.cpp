@@ -56,6 +56,7 @@ static const char* _ERRORTBL[] ={
 		ENUM_STR(ProtocolNotSupported),
 		ENUM_STR(URINotValid),
 		ENUM_STR(NamespaceMismatch),
+		ENUM_STR(InvalidAttributeValue),
 };
 
 /*

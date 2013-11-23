@@ -27,6 +27,8 @@
 #define ATTRIBUTE_TAG  "attributes"
 #define CONTENT_TAG    "content"
 #define DEFAULT_TAG    "default"
+#define FIXED_TAG      "fixed"
+#define USE_TAG        "use"
 #define DEBUG_LUASTACK (0)
 
 using namespace std;
@@ -127,15 +129,12 @@ LuaType::~LuaType() {
 }
 
 LuaAttribute *
-LuaType::Attribute(const string& rName, const XSD::Types::BaseType& rType) {
-	return new LuaAttribute(_getLuaState(), rName, rType);
-}
-
-LuaAttribute *
 LuaType::Attribute(	const string& rName, 
 					const XSD::Types::BaseType& rType, 
-					const std::string& rDefault) {
-	return new LuaAttribute(_getLuaState(), rName, rType, rDefault);
+					const std::string * pDefault,
+					const std::string * pFixed,
+					const std::string * pUse) {
+	return new LuaAttribute(_getLuaState(), rName, rType, pDefault, pFixed, pUse);
 }
 
 LuaContent *
@@ -145,24 +144,11 @@ LuaType::Content() {
 
 /* Class LuaAttribute */
 LuaAttribute::LuaAttribute(	lua_State * pLuaState, 
-							const string& rName,
-							const XSD::Types::BaseType& rType)
-	: LuaAdapter(pLuaState) {
-	/* push attribute table to stack top */
-	lua_getfield(pLuaState, -1, ATTRIBUTE_TAG);
-	/* create emtpty table for attribute name/type pair */
-	lua_newtable(pLuaState);
-	delete (new LuaType(pLuaState, rType.Name()));
-	/* append attribute to attribute table */
-	lua_setfield(pLuaState, -2, rName.c_str());
-	/* debug */
-	_luaStackDump(pLuaState);
-}
-
-LuaAttribute::LuaAttribute(	lua_State * pLuaState, 
 							const std::string& rName, 
 							const XSD::Types::BaseType& rType,
-							const std::string& rDefault) 
+							const std::string * pDefault,
+							const std::string * pFixed,
+							const std::string * pUse) 
 	: LuaAdapter(pLuaState) {
 	/* push attribute table to stack top */
 	lua_getfield(pLuaState, -1, ATTRIBUTE_TAG);
@@ -170,8 +156,20 @@ LuaAttribute::LuaAttribute(	lua_State * pLuaState,
 	lua_newtable(pLuaState);
 	LuaType * pType = new LuaType(pLuaState, rType.Name());
 	/* append default value to type definition */
-	lua_pushstring(pLuaState, rDefault.c_str());
-	lua_setfield(pLuaState, -2, DEFAULT_TAG);
+	if (pDefault) {
+		lua_pushstring(pLuaState, pDefault->c_str());
+		lua_setfield(pLuaState, -2, DEFAULT_TAG);
+	}
+	/* append fixed value to type definition */
+	if (pFixed) {
+		lua_pushstring(pLuaState, pFixed->c_str());
+		lua_setfield(pLuaState, -2, FIXED_TAG);
+	}
+	/* append use [optional|prohibited|required] value to type definition */
+	if (pUse) {
+		lua_pushstring(pLuaState, pUse->c_str());
+		lua_setfield(pLuaState, -2, USE_TAG);
+	}
 	/* pop off attribute type from lua stack */
 	delete pType;
 	/* append attribute to attribute table */

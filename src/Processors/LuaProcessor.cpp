@@ -23,6 +23,7 @@
 
 #include <sstream>
 #include <memory>
+#include <assert.h>
 #include "./src/XSDParser/Parser.hpp"
 #include "./src/XSDParser/Elements/Schema.hpp"
 #include "./src/XSDParser/Elements/Element.hpp"
@@ -172,18 +173,40 @@ LuaProcessor::ProcessAttribute(const XSD::Elements::Attribute* pNode) {
 		SimpleTypeExtracter typeXtr;
 		auto_ptr<XSD::Types::BaseType> pType(pNode->Type());
 		LuaType * pLuaType = dynamic_cast<LuaType*>(_luaAdapter());
+		auto_ptr<string> pDefault(NULL);
+		auto_ptr<string> pFixed(NULL);
+		auto_ptr<string> pUse(NULL);
 		if (pNode->HasDefault()) {
-			auto_ptr<LuaAttribute> pAttribute(	
-				pLuaType->Attribute(	pNode->Name(), 
-									typeXtr.Extract(*pType), 
-									pNode->Default())
-				);
-		} else {
-			auto_ptr<LuaAttribute> pAttribute(
-				pLuaType->Attribute(	pNode->Name(), 
-									typeXtr.Extract(*pType))
-				);
+			pDefault.reset(new string(pNode->Default()));
 		}
+		if (pNode->HasFixed()) {
+			pFixed.reset(new string(pNode->Fixed()));
+		}
+		if (pNode->HasUse()) {
+			switch (pNode->Use()) {
+			case XSD::Elements::Attribute::OPTIONAL:
+				  pUse.reset(new string("optional"));
+				  break;
+			case XSD::Elements::Attribute::PROHIBITIED:
+				  pUse.reset(new string("prohibited"));
+				  break;
+			case XSD::Elements::Attribute::REQUIRED:
+				  pUse.reset(new string("required"));
+				  break;
+			default:
+				assert(	(pNode->Use() != XSD::Elements::Attribute::OPTIONAL) &&
+						(pNode->Use() != XSD::Elements::Attribute::PROHIBITIED) &&
+						(pNode->Use() != XSD::Elements::Attribute::REQUIRED));
+			}
+		}
+		auto_ptr<LuaAttribute> pAttribute(	
+			pLuaType->Attribute(	pNode->Name(), 
+								typeXtr.Extract(*pType), 
+								pDefault.get(),
+								pFixed.get(),
+								pUse.get()
+							   )
+			);
 	}
 }
 

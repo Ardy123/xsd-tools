@@ -40,6 +40,11 @@ namespace XSD {
 			Types::BaseType* _type() const throw(XMLException);
 			static Types::BaseType* _parseType(const Attribute& rAttrib) throw(XMLException);
 		public:
+			typedef enum {
+				OPTIONAL,
+				PROHIBITIED,
+				REQUIRED
+			} AttributeUse;
 			Attribute(const TiXmlElement& elm, const Schema& docRoot, const Parser& rParser);
 			Attribute(const Attribute& rAttrib);
 			void ParseChildren(BaseProcessor& rProcessor) const throw(XMLException);
@@ -49,10 +54,14 @@ namespace XSD {
 			Attribute* RefAttribute() const throw(XMLException);
 			Types::BaseType* Type() const throw(XMLException);
 			std::string Default() const throw(XMLException);
+			std::string Fixed() const throw(XMLException);
+			AttributeUse Use() const throw(XMLException);
 			bool HasName() const;
 			bool HasRef() const;
 			bool HasType() const;
 			bool HasDefault() const;
+			bool HasFixed() const;
+			bool HasUse() const;
 		};
 	}	/* namespace Elements */
 } /* namespace XSD */
