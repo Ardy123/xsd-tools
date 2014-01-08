@@ -1,13 +1,41 @@
 [@lua
+local function UpperFirstChar(str)
+   return (str:gsub("^%l", string.upper))
+end
+
 ItemStrategy = {
-   declaration = function(type, var)
-			if type.metaInfo['primative'] then
+   declaration = function(type, var, default)
+		    --dbgPrint('ItemStrategy.declaraion(',type,')')
+		    if type.metaInfo['primative'] then
+		       if nil ~= defualt then
+			  local fmt = '\tprivate %s _%s = %s;\n'
+			  return fmt:format(
+			     type.typename, 
+			     var, 
+			     type.declrFmt:format(default)
+			  )
+		       else
 			  local fmt = '\tprivate %s _%s;\n'
 			  return fmt:format(type.typename, var)
-			else
+		       end
+		    else
+		       if nil ~= default then
+			  local fmt = '\tprivate %s _%s = new %s(%s);\n'
+			  return fmt:format(
+			     type.typename,
+			     var,
+			     type.typename,
+			     type.declrFmt:format(default)
+			  )
+		       else
 			  local fmt = '\tprivate %s _%s = new %s();\n'
-			  return fmt:format(type.typename, var, type.typename)
-			end
+			  return fmt:format(
+			     type.typename, 
+			     var, 
+			     type.typename
+			  )
+		       end
+		    end
 		 end,
    marshall = function(type, var, tag)
 		 local fmt = '\t\tretObj.%s(\"%s\", _%s);\n'
@@ -24,7 +52,7 @@ ItemStrategy = {
 		 '\t\treturn _%s;\n',
 		 '\t}\n'
 	      }
-	      str[1] = fmt[1]:format(type.typename, var)
+	      str[1] = fmt[1]:format(type.typename, UpperFirstChar(var))
 	      str[2] = fmt[2]:format(var)
 	      str[3] = fmt[3]
 	      return table.concat(str)
@@ -32,11 +60,11 @@ ItemStrategy = {
    seter = function(type, var)
 	      local str = {}
 	      local fmt = {
-		 '\tpublic void set%s(%s %s) {\n',
-		 '\t\t_%s = %s;\n',
+		 '\tpublic void set%s(%s %sVal) {\n',
+		 '\t\t_%s = %sVal;\n',
 		 '\t}\n'
 	      }
-	      str[1] = fmt[1]:format(var, type.typename, var)
+	      str[1] = fmt[1]:format(UpperFirstChar(var), type.typename, var)
 	      str[2] = fmt[2]:format(var, var)
 	      str[3] = fmt[3]
 	      return table.concat(str)	      

@@ -46,6 +46,7 @@ namespace Core {
 		void Load(const uint8_t* pBuf, size_t bufSz) throw(LuaException);
 		void Execute(const std::string& templateName) throw(LuaException);
 		void Close() throw();
+		void SetSchemaName(const std::string& schemaName) throw();
 		lua_State* LuaState() throw();
 	private:
 		lua_State*	m_pLuaState;

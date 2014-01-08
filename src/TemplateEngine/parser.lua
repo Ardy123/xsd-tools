@@ -57,6 +57,7 @@ function parser:new(obj)
 		schema=_G.schema,
 		dbgPrint=_G.print,
 		sdbm_hash=_G.sdbm_hash,
+		__SCHEMA_NAME__=_G.__SCHEMA_NAME__,
 		include= (function(file) return obj:include(file) end)
 	})}
 	setmetatable(obj, self)

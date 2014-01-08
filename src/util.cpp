@@ -28,8 +28,8 @@
 
 using namespace std;
 
-uint32_t Util::SDBMHash(const string& string)
-{
+uint32_t 
+Util::SDBMHash(const string& string) {
 	string::const_iterator itr = string.begin();
 	uint32_t hash = 0;
 	uint32_t c;
@@ -38,3 +38,14 @@ uint32_t Util::SDBMHash(const string& string)
 	return hash;
 }
 
+std::string
+Util::ExtractResourceName(const std::string& uri) {
+	const int queryNdx	= uri.find("?");
+	const int resNdx		= uri.rfind("/", queryNdx);
+	return uri.substr(resNdx + 1, (std::string::npos != queryNdx) ? (queryNdx - resNdx) - 1 : queryNdx);
+}
+
+std::string
+Util::StripFileExtension(const std::string& filename) {
+	return filename.substr(0, filename.rfind("."));
+}

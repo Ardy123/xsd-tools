@@ -1,4 +1,8 @@
 [@lua
+local function UpperFirstChar(str)
+   return (str:gsub("^%l", string.upper))
+end
+
 ListItemStrategy = {
    declaration = function(type, var)
 		    local fmt = '\tprivate Vector<%s> _%s = new Vector<%s>();\n'
@@ -60,7 +64,7 @@ ListItemStrategy = {
 		 '\t\treturn _%s;\n',
 		 '\t}\n'
 	      }
-	      str[1] = fmt[1]:format(type.typename, var)
+	      str[1] = fmt[1]:format(type.typename, UpperFirstChar(var))
 	      str[2] = fmt[2]:format(var)
 	      str[3] = fmt[3]
 	      return table.concat(str)
@@ -68,11 +72,11 @@ ListItemStrategy = {
    seter = function(type, var)
 	      local str = {}
 	      local fmt = {
-		 '\tpublic void set%s(Vector<%s> %s) {\n',
-		 '\t\t_%s = %s;\n',
+		 '\tpublic void set%s(Vector<%s> %sVal) {\n',
+		 '\t\t_%s = %sVal;\n',
 		 '\t}\n'
 	      }
-	      str[1] = fmt[1]:format(var, type.typename, var)
+	      str[1] = fmt[1]:format(UpperFirstChar(var), type.typename, var)
 	      str[2] = fmt[2]:format(var, var)
 	      str[3] = fmt[3]
 	      return table.concat(str)	      

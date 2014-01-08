@@ -2,9 +2,10 @@
 	--sort dependencies so that they are matched correctly 
 	local function topoSort(node)
 		depOrder = {}
+		visitLst = {}
 		local function visit(node)
-			if node.visit then return end
-			node.visit = true
+			if nil ~= visitLst[node.name] then return end
+			visitLst[node.name] = true
 			table.map(node.dependents, (function(k,v)visit(v)end))
 			depOrder[#depOrder + 1] = node
 		end

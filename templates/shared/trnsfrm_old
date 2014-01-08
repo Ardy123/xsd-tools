@@ -1,0 +1,89 @@
+[@lua
+function trnsfrm_oldFmt(tbl)
+	local State = {
+		Initialize = 0,
+		Element = 1,
+		Content = 2,
+		AttributeNames = 3,
+		AttributeType = 4
+	}
+	local StateName = {
+		[0] = 'Initialize',
+		[1] = 'Element',
+		[2] = 'Content',
+		[3] = 'AttribtueNames',
+		[4] = 'AttributeType'
+	}
+	local function isBaseType(type)
+		return (next(type.attributes) == nil and next(type.content) == nil)
+	end
+	local outTblRoot = {
+		root = __SCHEMA_NAME__,
+		types = {}
+	}
+	local function trnsfrm_r(tbl, state, outTbl)
+		--dbgPrint(StateName[state])
+		if state == State.Initialize then
+			outTbl.types[__SCHEMA_NAME__] = {
+				dependents={},
+				content={},
+				attributes={},
+				name=__SCHEMA_NAME__
+			}
+			trnsfrm_r(tbl, State.Content, outTbl.types[__SCHEMA_NAME__])
+			return outTbl
+		elseif state == State.Element then
+			if nil == outTbl['dependents'] then
+				outTbl['dependents'] = {}
+			end
+			if nil == outTbl['content'] then
+				outTbl['content'] = {}
+			end
+			if nil == outTbl['attributes'] then
+				outTbl['attributes'] = {}
+			end
+			for k, v in pairs(tbl) do
+				if k == 'content' then
+					trnsfrm_r(v, State.Content, outTbl)
+				elseif k == 'attributes' then
+					trnsfrm_r(v, State.AttributeNames, outTbl)
+				end
+			end
+			return outTbl
+		elseif state == State.Content then
+			local Substate = {
+				ContentNotFound = 0,
+				ContentFound = 1
+			}
+			local substate = Substate.ContentNotFound
+			for k, v in pairs(tbl) do
+				if isBaseType(v) and substate == Substate.ContentNotFound then
+					outTbl['content'] = { type = k }
+					substate = Substate.ContentFound
+				elseif not isBaseType(v) then
+					outTbl.dependents[k]={}
+					outTbl.dependents[k].name = k
+					outTblRoot.types[k] = trnsfrm_r(v, State.Element, outTbl.dependents[k])
+				end
+			end
+			return outTbl
+		elseif state == State.AttributeNames then
+			for k, v in pairs(tbl) do
+				outTbl.attributes[k] = {}
+				trnsfrm_r(v, State.AttributeType, outTbl.attributes[k])
+			end
+			return outTbl
+		elseif state == State.AttributeType then
+			attribName, attribDef = next(tbl)
+			if nil ~= attribName then
+				outTbl.type= attribName
+				if nil ~= attribDef.default then
+					outTbl.default = attribDef.default
+				end
+			end
+			return outTbl
+		end
+	end
+	return trnsfrm_r(tbl, State.Initialize, outTblRoot)
+end
+]
