@@ -3,17 +3,18 @@ local out = stringBuffer:new()
 function printTable(t, depth)
 	for k,v in pairs(t) do
 		if "table" == type(v) then
-			if nill == next(v) then out:append(string.rep("\t", depth)..k.." = {}\n")
+			if nill == next(v) then 
+				out:append(string.rep("\t", depth)..k.." = {}\n")
 			else
 				out:append(string.rep("\t", depth)..k.." = {\n")
 				printTable(v, depth + 1)
 				out:append(string.rep("\t", depth).."}\n")
-				end
- 			else
- 				out:append(string.rep("\t", depth)..k.." = "..v.."\n")
 			end
+		else
+			out:append(string.rep("\t", depth)..k.." = "..v.."\n")
 		end
 	end
+end
 function main(template)
 	printTable(schema, 0)
 end
