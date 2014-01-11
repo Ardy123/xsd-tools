@@ -55,6 +55,7 @@ int main(int argc, const char* argv[]) {
 			pDocRoot = parser.Parse(xsdName);
 			pDocRoot->ParseElement(luaPrcssr);
 			/* execute lua template processing engine */
+			luaScriptAdapter.SetSchemaName(xsdName);
 			luaScriptAdapter.Load(pNginScript, nginScriptSz);
 			luaScriptAdapter.Execute(resource.GetTemplatePath(tmpltName));
 		} catch (XSD::XMLException& e) {

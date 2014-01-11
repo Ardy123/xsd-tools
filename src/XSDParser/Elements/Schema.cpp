@@ -23,6 +23,7 @@
 
 #include <memory>
 #include <tinyxml.h>
+#include "./src/util.hpp"
 #include "./src/XSDParser/Elements/Schema.hpp"
 #include "./src/XSDParser/Elements/Element.hpp"
 #include "./src/XSDParser/Elements/Include.hpp"
@@ -104,8 +105,5 @@ Schema::isRootSchema() const {
 
 /* static */ std::string
 Schema::_extractName(const std::string& uri) {
-	const int queryNdx	= uri.find("?");
-	const int resExtNdx	= uri.rfind(".", queryNdx);
-	const int resNdx	= uri.rfind("/", queryNdx);
-	return uri.substr(resNdx + 1, (std::string::npos != resExtNdx) ? (resExtNdx - resNdx) - 1 : resExtNdx);
+	return Util::StripFileExtension(Util::ExtractResourceName(uri));
 }

@@ -1,4 +1,7 @@
-[@lua --include any shared 'helper' templates
+[@lua --include and transform old format
+	include 'shared/trnsfrm_old'
+	schema = trnsfrm_oldFmt(schema)
+][@lua --include any shared 'helper' templates
 	return include 'shared/schemaEx'
 ][@lua -- include python type info
 	include 'python-xml/python_type_info'

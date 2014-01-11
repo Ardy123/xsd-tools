@@ -118,6 +118,12 @@ LuaScriptAdapter::Close() throw() {
 	lua_close(m_pLuaState);
 }
 
+void 
+LuaScriptAdapter::SetSchemaName(const std::string& schemaName) throw() {
+	lua_pushstring(m_pLuaState, (Util::StripFileExtension(Util::ExtractResourceName(schemaName)) + "_xsd").c_str());
+	lua_setglobal(m_pLuaState, "__SCHEMA_NAME__");
+}
+
 lua_State*
 LuaScriptAdapter::LuaState() throw() {
 	return m_pLuaState;

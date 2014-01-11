@@ -4,7 +4,7 @@
 ][@lua --include any shared 'helper' templates
 	return include 'shared/schemaEx'
 ][@lua --include xsd to c type mapping
-	return include 'c-xml/c_type_info'
+	return include 'c-stream/c_type_info'
 ][@lua --generate helper globals
 	schema = schema.c_safeNames()
 	uniqueXSDTypes = schema.uniqueTypes()
@@ -26,7 +26,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <assert.h>
-#include "xml_[@lua return schemaName].h"
+#include "xmlb_[@lua return schemaName].h"
 
 [@lua -- output test data
 	local outbuf = stringBuffer:new()
@@ -51,8 +51,7 @@
 		local prcssType = function(ncname, xsdType)
 			local c_type = c_type_info[xsdType.type]
 			if "c_list" == c_type.type then
-				local cVarName = listTypeVarMap[c_type]
-				table.insert(valTbl, c_type.buildVar('.',ncname)..' = '..c_type.test.assign(cVarName))
+				table.insert(valTbl, c_type.buildVar('.',ncname)..' = '..c_type.test.assign(listTypeVarMap[c_type]))
 			else
 				table.insert(valTbl, c_type.buildVar('.',ncname)..' = '..c_type.test.assign())
 			end
@@ -62,24 +61,23 @@
 			prcssType("Content", node.content) 
 		end
 		outbuf:append(table.concat({
-			"static const xml_", node.name, " ", node.name, "Tst = {", table.concat(valTbl, ','),"};\n",
+			"static const xmlb_", node.name, " ", node.name, "Tst = {", table.concat(valTbl, ','),"};\n",
 		}));
 		-- inc the ID
 		ID = ID + 1
 	end)
 	return outbuf:str()
 ]
-
-static void* reallocCb(struct xml_marshaller* pThis, void* pMem, size_t size) {
+static void* reallocCb(struct xmlb_marshaller* pThis, void* pMem, size_t size) {
 	return realloc(pMem, size);
 }
-
 [@lua -- output unmarshal functions
 	local outbuf = stringBuffer:new()
 	table.map(typeSansRoot, function(_, node)
 		outbuf:append(table.concat({
-			"static void unmarshall_", node.name, "(struct xml_marshaller* pThis, const xml_", node.name, "* pObj, uint32_t parent) {\n",
+			"static void unmarshall_", node.name, "(struct xmlb_marshaller* pThis, const xmlb_", node.name, "* pObj, uint32_t parent) {\n",
 		}))
+		outbuf:append("\tassert(pObj->m_id == "..node.name.."Tst.m_id);\n");
 		local prcssType = function(ncname, xsdtype)
 			local c_type = c_type_info[xsdtype.type]
 			outbuf:append(c_type.test.assert(c_type.buildVar('pObj->', ncname), c_type.buildVar(node.name..'Tst'..'.', ncname)))
@@ -94,8 +92,7 @@ static void* reallocCb(struct xml_marshaller* pThis, void* pMem, size_t size) {
 ]
 
 int main(void) {
-	xml_buffer output;
-	xml_marshaller mrshllr = { 
+	xmlb_marshaller mrshllr = { 
 		.realloc = reallocCb,
 [@lua --output unmarshal function assignments
 	local tbl = {}
@@ -106,6 +103,7 @@ int main(void) {
 ]
 	};
 	/* test marshalling */
+	xmlb_buffer output;
 [@lua --output marshalling struct declrs
 	local outbuf = stringBuffer:new()
 	table.map(typeSansRoot, function(_,node)
@@ -119,11 +117,11 @@ int main(void) {
 ][@lua -- output marshalling start
 	if next(schema.types[schema.root].dependents) then
 		return table.concat({
-			'\tmarshall_', schema.root, ' ', schema.root, ' = marshall(&mrshllr);\n'
+			'\tmarshall_', schema.root, ' ', schema.root, ' = marshallBin(&mrshllr);\n'
 		})
 	else
 		return table.concat({
-			'\tmarshall(&mrshllr);\n'
+			'\tmarshallBin(&mrshllr);\n'
 		})
 	end
 ][@lua --output marshalling statments
@@ -149,9 +147,9 @@ int main(void) {
 	end
 	table.map(schema.types[schema.root].dependents, function(_,v) marshallRec(schema.root, v) end)
 	return outbuf:str()
-]	output = marshall_flush(&mrshllr, 1);
+]	output = marshallBin_flush(&mrshllr, 1);
 	/* test unmarshalling */
-	unmarshall(&mrshllr, &output, 1);
+	unmarshallBin(&mrshllr, &output);
 	/* clean up */
 	output.m_pBuf = realloc(output.m_pBuf, 0);
 	return 0;

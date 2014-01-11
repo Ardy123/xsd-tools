@@ -27,5 +27,7 @@
 #include <string>
 namespace Util {
 uint32_t 	SDBMHash(const std::string& string);
+std::string	ExtractResourceName(const std::string& uri);
+std::string	StripFileExtension(const std::string& filename);
 }
 #endif /* UTIL_HPP_ */

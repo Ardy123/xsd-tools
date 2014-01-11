@@ -1,0 +1,45 @@
+foo = {
+	attributes = {
+		attrib2Optional = {
+			integer = {
+				attributes = {}
+				default = 5
+				content = {}
+				use = optional
+			}
+		}
+		attrib2Required = {
+			integer = {
+				attributes = {}
+				content = {}
+				use = required
+			}
+		}
+		attrib1Optional = {
+			string = {
+				attributes = {}
+				default = test default value
+				content = {}
+				use = optional
+			}
+		}
+		attrib1Required = {
+			string = {
+				attributes = {}
+				content = {}
+				use = required
+			}
+		}
+	}
+	content = {
+		name = {
+			attributes = {}
+			content = {
+				string = {
+					attributes = {}
+					content = {}
+				}
+			}
+		}
+	}
+}

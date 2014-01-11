@@ -188,12 +188,12 @@ LuaProcessor::ProcessAttribute(const XSD::Elements::Attribute* pNode) {
 			}
 		}
 		auto_ptr<LuaAttribute> pAttribute(	
-			pLuaType->Attribute(	pNode->Name(), 
+			pLuaType->Attribute(pNode->Name(), 
 								typeXtr.Extract(*pType), 
 								pDefault.get(),
 								pFixed.get(),
 								pUse.get()
-							   )
+							)
 			);
 	}
 }

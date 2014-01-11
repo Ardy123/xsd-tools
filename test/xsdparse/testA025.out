@@ -53,7 +53,7 @@ letter = {
 						}
 					}
 				}
-				address = {
+				street = {
 					attributes = {}
 					content = {
 						string = {
