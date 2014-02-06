@@ -26,12 +26,12 @@
 	local newContent = {}
 	local newAttributes = {}
 	table.map(XSDElement.attributes, function(attribName, attribObj)
-		local attribName = attribName:gsub('-', '_')
+		local attribName = attribName:gsub('-', '_'):gsub('/', '_')
 		newAttributes[attribName] = attribObj 
 	  end
 	)
 	table.map(XSDElement.content, function(childName, childElement)
-		local childName = childName:gsub('-', '_')
+		local childName = childName:gsub('-', '_'):gsub('/', '_')
 		newContent[childName] = childElement
 	  end
 	)
@@ -116,6 +116,9 @@ public class JSONObjectAdapter {
 	}
 	public JSONObjectAdapter putHex(String key, byte [] buffer) throws JSONException {
 		return new JSONObjectAdapter(_jObj.put(key, Hex.encodeHexString(buffer)));
+	}
+	public boolean has(String key) {
+	   return _jObj.has(key);
 	}
 }
 

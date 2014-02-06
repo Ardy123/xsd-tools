@@ -8,32 +8,31 @@ ItemStrategy = {
 		    --dbgPrint('ItemStrategy.declaraion(',type,')')
 		    if type.metaInfo['primative'] then
 		       if nil ~= defualt then
-			  local fmt = '\tprivate %s _%s = %s;\n'
-			  return fmt:format(
-			     type.typename, 
-			     var, 
-			     type.declrFmt:format(default)
-			  )
+				  local fmt = '\tprivate %s _%s = %s;\n'
+				  return fmt:format(
+					 type.typename, 
+					 var, 
+					 type.declrFmt:format(default)
+				  )
 		       else
-			  local fmt = '\tprivate %s _%s;\n'
-			  return fmt:format(type.typename, var)
+				  local fmt = '\tprivate %s _%s;\n'
+				  return fmt:format(type.typename, var)
 		       end
 		    else
 		       if nil ~= default then
-			  local fmt = '\tprivate %s _%s = new %s(%s);\n'
-			  return fmt:format(
-			     type.typename,
-			     var,
-			     type.typename,
-			     type.declrFmt:format(default)
-			  )
+				  local fmt = '\tprivate %s _%s = new %s(%s);\n'
+				  return fmt:format(
+					 type.typename,
+					 var,
+					 type.typename,
+					 type.declrFmt:format(default)
+				  )
 		       else
-			  local fmt = '\tprivate %s _%s = new %s();\n'
-			  return fmt:format(
-			     type.typename, 
-			     var, 
-			     type.typename
-			  )
+				  local fmt = '\tprivate %s _%s = null;\n'
+				  return fmt:format(
+					 type.typename, 
+					 var
+				  )
 		       end
 		    end
 		 end,

@@ -12,17 +12,17 @@ ListItemStrategy = {
 		 local str = {}
 		 local fmt = {
 		    '\t\t{\n',
-		    '\t\t\tJSONArrayAdapter jArray = new JSONArrayAdapter(new JSONarray());\n',
-		    '\t\t\tfor(%s obj : _%s) {\n',
+		    '\t\t\tJSONArrayAdapter jArray = new JSONArrayAdapter(new JSONArray());\n',
+		    '\t\t\tfor(%s obj : _%s)\n',
 		    '\t\t\t\tjArray.%s(obj);\n',
-		    '\t\t\tretObj.put(jArray.getJSONArray());\n',
+		    '\t\t\tretObj.put(\"%s\", jArray);\n',
 		    '\t\t}\n'
 		 }
 		 str[1] = fmt[1]
 		 str[2] = fmt[2]
 		 str[3] = fmt[3]:format(type.typename, var)
 		 str[4] = fmt[4]:format(type.marshall)
-		 str[5] = fmt[5]
+		 str[5] = fmt[5]:format(tag)
 		 str[6] = fmt[6]
 		 return table.concat(str)
 	      end,
@@ -32,8 +32,8 @@ ListItemStrategy = {
 			local fmt = {
 				'\t\t{\n',
 				'\t\t\tJSONArrayAdapter jArray = jObj.getList(\"%s\");\n',
-				'\t\t\tfor (int i = 0; i < jArray.length(); ++i) {\n',
-				'\t\t\t\t_%s.add(jArray.%s(ndx));\n',
+				'\t\t\tfor (int i = 0; i < jArray.length(); ++i)\n',
+				'\t\t\t\t_%s.add(jArray.%s(i));\n',
 				'\t\t}\n'
 			}
 			str[1] = fmt[1]
@@ -45,8 +45,8 @@ ListItemStrategy = {
 			local fmt = {
 				'\t\t{\n',
 				'\t\t\tJSONArrayAdapter jArray = jObj.getList(\"%s\");\n',
-				'\t\t\tfor (int i = 0; i < jArray.length(); ++i) {\n',
-				'\t\t\t\t_%s.add(new %s(jArray.%s(ndx)));\n',
+				'\t\t\tfor (int i = 0; i < jArray.length(); ++i)\n',
+				'\t\t\t\t_%s.add(new %s(jArray.%s(i)));\n',
 				'\t\t}\n'
 			}
 			str[1] = fmt[1]

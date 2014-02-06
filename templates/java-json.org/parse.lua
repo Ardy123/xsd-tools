@@ -128,9 +128,18 @@ function elementParser(name, XSDElement)
    -- generate default constructor
    local fmt = '\n\tpublic %s() {\n\t}\n\n'
    str:append(fmt:format(name))
-   -- generate unmarshall constructor
+   -- generate default unmarshall constructor
    local fmt = {
       '\tpublic %s(JSONObject jObj) throws JSONException {\n',
+	  '\t\tthis(new JSONObjectAdapter(jObj));\n',
+      '\t}\n\n'
+   }
+   str:append(fmt[1]:format(name))
+   str:append(fmt[2])
+   str:append(fmt[3])
+   -- generate unmarshall constructor
+   local fmt = {
+      '\tpublic %s(JSONObjectAdapter jObj) throws JSONException {\n',
       '\t}\n\n'
    }
    str:append(fmt[1]:format(name))
@@ -215,7 +224,7 @@ function elementParser(name, XSDElement)
    end
    -- generate marshall funciton
    str:append('\tpublic JSONObject marshall() throws JSONException {\n')
-   str:append('\t\tJSONObject retObj = new JSONObject();\n')
+   str:append('\t\tJSONObjectAdapter retObj = new JSONObjectAdapter(new JSONObject());\n')
    -- marshall attributes
    for name, attribute in pairs(XSDElement.attributes) do
       local attribTypeName, attribTypedef = next(attribute)
@@ -253,7 +262,7 @@ function elementParser(name, XSDElement)
 	   str:append(ListItemStrategy.marshall(types[ctntType], ctntType, ctntType))
 	 end
    end
-   str:append('\t\treturn retObj;\n')
+   str:append('\t\treturn retObj.getJSONObject();\n')
    str:append('\t}\n')
    -- add end brace
    str:append('}\n')
