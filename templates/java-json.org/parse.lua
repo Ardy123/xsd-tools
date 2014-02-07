@@ -112,17 +112,17 @@ function elementParser(name, XSDElement)
    -- generate private memebers from content types
    for name, typedef in pairs(XSDElement.content) do
       if isSimpleType(typedef) then
-	 if isListType(name) then
-	    local lstTypeName = listType(name)
-	    str:append(ListItemStrategy.declaration(types[lstTypeName], 'value'))
-	 else
-	    str:append(ItemStrategy.declaration(types[name], 'value'))
-	 end
+		 if isListType(name) then
+			local lstTypeName = listType(name)
+			str:append(ListItemStrategy.declaration(types[lstTypeName], 'value'))
+		 else
+			str:append(ItemStrategy.declaration(types[name], 'value'))
+		 end
       elseif isCollapsibleType(typedef) then
-		local typeName, collapsedType = collapseType(typedef)
-		str:append(ListItemStrategy.declaration(types[typeName], name))
+		 local typeName, collapsedType = collapseType(typedef)
+		 str:append(ListItemStrategy.declaration(types[typeName], name))
       else
-		str:append(ListItemStrategy.declaration(types[name], name))
+		 str:append(ListItemStrategy.declaration(types[name], name))
       end
    end
    -- generate default constructor
@@ -208,18 +208,18 @@ function elementParser(name, XSDElement)
    end
    -- generate 'get'ers from content
    for name, typedef in pairs(XSDElement.content) do
-	if isSimpleType(typedef) then
-	 if isListType(name) then
-	    local lstTypeName = listType(name)
-	    str:append(ListItemStrategy.geter(types[lstTypeName], 'value'))
-	 else
-	    str:append(ListItemStrategy.geter(types[name], 'value'))
-	 end
+	  if isSimpleType(typedef) then
+		 if isListType(name) then
+			local lstTypeName = listType(name)
+			str:append(ListItemStrategy.geter(types[lstTypeName], 'value'))
+		 else
+			str:append(ItemStrategy.geter(types[name], 'value'))
+		 end
       elseif isCollapsibleType(typedef) then
-	 local colTypeName, colType = collapseType(typedef)
-	 str:append(ListItemStrategy.geter(types[colTypeName], name))
+		 local colTypeName, colType = collapseType(typedef)
+		 str:append(ListItemStrategy.geter(types[colTypeName], name))
       else
-	 str:append(ListItemStrategy.geter(types[name], name))
+		 str:append(ListItemStrategy.geter(types[name], name))
       end
    end
    -- generate marshall funciton

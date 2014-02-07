@@ -1,9 +1,9 @@
 [@lua
 type_integer = {
-   typename   = 'long',
+   typename   = 'Long',
    marshall   = 'put',
    unmarshall = 'getLong',
    declrFmt = '%s',
-   metaInfo = { primative = true }
+   metaInfo = { primative = false }
 }
 ]

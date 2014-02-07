@@ -1,9 +1,9 @@
 [@lua
 type_int32 = {
-  typename   = 'int',
+  typename   = 'Integer',
   marshall   = 'put',
   unmarshall = 'getInt',
   declrFmt = '%s',
-  metaInfo = { primative = true }
+  metaInfo = { primative = false }
 }
 ]
