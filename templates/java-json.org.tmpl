@@ -72,6 +72,9 @@ public class JSONObjectAdapter {
 	JSONObject getJSONObject() {
 		return _jObj;
 	}
+	public boolean getBoolean(String key) throws JSONException {
+		return _jObj.getBoolean(key);
+	}	
 	public String getString(String key) throws JSONException {
 		return _jObj.getString(key);
 	}	
@@ -95,6 +98,9 @@ public class JSONObjectAdapter {
 	}
 	public byte[] getHex(String key) throws JSONException, DecoderException {
 		return Hex.decodeHex(_jObj.getString(key).toCharArray());
+	}
+	public JSONObjectAdapter put(String key, boolean value) throws JSONException {
+		return new JSONObjectAdapter(_jObj.put(key, value));
 	}	
 	public JSONObjectAdapter put(String key, String value) throws JSONException {
 		return new JSONObjectAdapter(_jObj.put(key, value));
