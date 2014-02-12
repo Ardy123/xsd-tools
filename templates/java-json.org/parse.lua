@@ -71,6 +71,51 @@ local function defaultAttributeVal(type)
    end
 end
 
+local function outputSeterJavadoc(str, typename, var)
+   -- pattern for 'set'ers properties
+   local fmt = {
+	  '\t/**\n',
+	  '\t * Sets the value of the %sVal property.\n',
+	  '\t *\n',
+	  '\t * @param %sVal\n',
+	  '\t *     allowed object is\n',
+	  '\t *     {@link %s}\n',
+	  '\t */\n',
+   }
+   str:append(fmt[1])
+   str:append(fmt[2]:format(var))
+   str:append(fmt[3])
+   str:append(fmt[4]:format(var))
+   str:append(fmt[5])
+   str:append(fmt[6]:format(typename))
+   str:append(fmt[7])
+end
+
+local function wrapVector(typename)
+   return 'Vector<'..typename..'>'
+end
+
+local function outputGeterJavadoc(str, typename, var)
+   -- pattern for 'set'ers properties
+   local fmt = {
+	  '\t/**\n',
+	  '\t * Gets the value of the %s property.\n',
+	  '\t *\n',
+	  '\t * @return\n',
+	  '\t *     possible object is\n',
+	  '\t *     {@link %s}\n',
+	  '\t */\n',
+   }
+   str:append(fmt[1])
+   str:append(fmt[2]:format(var))
+   str:append(fmt[3])
+   str:append(fmt[4])
+   str:append(fmt[5])
+   str:append(fmt[6]:format(typename))
+   str:append(fmt[7])
+end
+
+
 function elementParser(name, XSDElement) 
    local str = stringBuffer:new()
    -- if type is collapsible, don't output it or if it is a base type or the schema root
@@ -182,44 +227,84 @@ function elementParser(name, XSDElement)
    for name, attribute in pairs(XSDElement.attributes) do
       local attribType, attribTypeDef = next(attribute, nil)
       if not isAttributeFixed(attribTypeDef) then
-	 str:append(ItemStrategy.seter(types[attribType], name))
+		 local javaType = types[attribType]
+		 -- generate javadoc comments
+		 outputSeterJavadoc(str, javaType.typename, name)
+		 -- generate method code
+		 str:append(ItemStrategy.seter(javaType, name))
       end
    end
    -- generate 'set'ers from content
    for name, typedef in pairs(XSDElement.content) do
-	 if isSimpleType(typedef) then
-	   if isListType(name) then
-		 local lstTypeName = listType(name)
-		 str:append(ListItemStrategy.seter(types[lstTypeName], 'value'))
-	   else
-		 str:append(ItemStrategy.seter(types[name], 'value'))
-	   end
-	 elseif isCollapsibleType(typedef) then
-	   local colTypeName, colType = collapseType(typedef)
-	   str:append(ListItemStrategy.seter(types[colTypeName], name))
-	 else
-	   str:append(ListItemStrategy.seter(types[name], name))
-      end
+	  if isSimpleType(typedef) then
+		 if isListType(name) then
+			local lstTypeName = listType(name)
+			local javaType = types[lstTypeName]
+			-- generate javadoc comments
+			outputSeterJavadoc(str, wrapVector(javaType.typename), 'value')
+			-- generate method code
+			str:append(ListItemStrategy.seter(javaType, 'value'))
+		 else
+			local javaType = types[name]
+			-- generate javadoc comments
+			outputSeterJavadoc(str, javaType.typename, 'value')
+			-- generate method code
+			str:append(ItemStrategy.seter(javaType, 'value'))
+		 end
+	  elseif isCollapsibleType(typedef) then
+		 local colTypeName, colType = collapseType(typedef)
+		 local javaType = types[colTypeName]
+		 -- generate javadoc comments
+		 outputSeterJavadoc(str, wrapVector(javaType.typename), name)
+		 -- generate method code
+		 str:append(ListItemStrategy.seter(javaType, name))
+	  else
+		 local javaType = types[name]
+		 -- generate javadoc comments
+		 outputSeterJavadoc(str, wrapVector(javaType.typename), name)
+		 -- generate method code
+		 str:append(ListItemStrategy.seter(javaType, name))
+	  end
    end
    -- generate 'get'ers from attributes
    for name, attribute in pairs(XSDElement.attributes) do
       attribName, attribType = next(attribute)
-      str:append(ItemStrategy.geter(types[attribName], name))
+	  local javaType = types[attribName]
+	  -- generate javadoc comments
+	  outputGeterJavadoc(str, javaType.typename, name)
+	  -- generate method code
+      str:append(ItemStrategy.geter(javaType, name))
    end
    -- generate 'get'ers from content
    for name, typedef in pairs(XSDElement.content) do
 	  if isSimpleType(typedef) then
 		 if isListType(name) then
 			local lstTypeName = listType(name)
-			str:append(ListItemStrategy.geter(types[lstTypeName], 'value'))
+			local javaType = types[lstTypeName]
+			-- generate javadoc comments
+			outputGeterJavadoc(str, wrapVector(javaType.typename), 'value')
+			-- generate method code
+			str:append(ListItemStrategy.geter(javaType, 'value'))
 		 else
-			str:append(ItemStrategy.geter(types[name], 'value'))
+			local javaType = types[name]
+			-- generate javadoc comments
+			outputGeterJavadoc(str, javaType.typename, 'value')
+			-- generate method code
+			str:append(ItemStrategy.geter(javaType, 'value'))
 		 end
       elseif isCollapsibleType(typedef) then
 		 local colTypeName, colType = collapseType(typedef)
-		 str:append(ListItemStrategy.geter(types[colTypeName], name))
+		 local javaType = types[colTypeName]
+		 -- generate javadoc comments
+		 outputGeterJavadoc(str, wrapVector(javaType.typename), name)
+		 -- generate method code
+		 str:append(ListItemStrategy.geter(javaType, name))
       else
-		 str:append(ListItemStrategy.geter(types[name], name))
+		 local javaType = types[name]
+		 -- generate javadoc comments
+		 outputGeterJavadoc(str, wrapVector(javaType.typename), name)
+		 -- generate method code
+		 str:append(ListItemStrategy.geter(javaType, name))
       end
    end
    -- generate marshall funciton
