@@ -23,7 +23,9 @@
 
 #ifndef XSDEXCEPTION_HPP_
 #define XSDEXCEPTION_HPP_
-#define TIXML_USE_STL
+#ifndef TIXML_USE_STL
+  #define TIXML_USE_STL
+#endif /* TIXML_USE_STL */
 #include <tinyxml.h>
 
 namespace XSD {
