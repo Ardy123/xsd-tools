@@ -24,7 +24,7 @@
 #ifndef LUAADAPTER_HPP_
 #define LUAADAPTER_HPP_
 #include <string>
-#include <lua5.1/lua.hpp>
+#include <lua.hpp>
 #include "./src/XSDParser/Types.hpp"
 
 namespace Processors {

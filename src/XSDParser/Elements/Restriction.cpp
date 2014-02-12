@@ -101,7 +101,8 @@ Restriction::ParseChildren(BaseProcessor& rProcessor) const throw(XMLException) 
 					XSD_ISELEMENT(pNode.get(), XSD::Elements::MinInclusive) ||
 					XSD_ISELEMENT(pNode.get(), XSD::Elements::MaxInclusive) ||
 					XSD_ISELEMENT(pNode.get(), XSD::Elements::FractionDigits) ||
-					XSD_ISELEMENT(pNode.get(), XSD::Elements::TotalDigits)) {
+					XSD_ISELEMENT(pNode.get(), XSD::Elements::TotalDigits) ||
+					XSD_ISELEMENT(pNode.get(), XSD::Elements::Annotation)) {
 					/* verify that parent restriction type is numeric */
 					Types::Decimal	allowedBaseType;
 					if (!pBase->isTypeRelated(&allowedBaseType))
@@ -113,7 +114,8 @@ Restriction::ParseChildren(BaseProcessor& rProcessor) const throw(XMLException) 
 				} else if ( XSD_ISELEMENT(pNode.get(), XSD::Elements::MinLength) ||
 							XSD_ISELEMENT(pNode.get(), XSD::Elements::MaxLength) ||
 							XSD_ISELEMENT(pNode.get(), XSD::Elements::Pattern) ||
-							XSD_ISELEMENT(pNode.get(), XSD::Elements::WhiteSpace)) {
+							XSD_ISELEMENT(pNode.get(), XSD::Elements::WhiteSpace) ||
+							XSD_ISELEMENT(pNode.get(), XSD::Elements::Annotation)) {
 					/* verify that parent restriction type is a string */
 					Types::String	allowedBaseType;
 					if (!pBase->isTypeRelated(&allowedBaseType))

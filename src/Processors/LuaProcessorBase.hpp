@@ -24,7 +24,7 @@
 #ifndef LUAPROCBASE_HPP_
 #define LUAPROCBASE_HPP_
 #include <string>
-#include <lua5.1/lua.hpp>
+#include <lua.hpp>
 #include "./src/util.hpp"
 #include "./src/Processors/LuaAdapter.hpp"
 #include "./src/XSDParser/Types.hpp"

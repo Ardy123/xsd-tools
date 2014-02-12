@@ -26,7 +26,7 @@
 #include <string>
 #include <exception>
 #include <stdint.h>
-#include <lua5.1/lua.hpp>
+#include <lua.hpp>
 
 namespace Core {
 	class LuaException : public std::exception {

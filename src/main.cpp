@@ -25,7 +25,7 @@
 #include <string>
 #include <sstream>
 #include <iostream>
-#include <lua5.1/lua.hpp>
+#include <lua.hpp>
 #include "./src/luaScriptAdapter.hpp"
 #include "./src/resource.hpp"
 #include "./src/XSDParser/Parser.hpp"

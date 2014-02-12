@@ -22,7 +22,7 @@
  */
  
 #include <memory>
-#include <lua5.1/lua.hpp>
+#include <lua.hpp>
 #include "./src/XSDParser/Parser.hpp"
 #include "./src/Processors/LuaProcessorBase.hpp"
 #include "./src/XSDParser/Elements/Schema.hpp"

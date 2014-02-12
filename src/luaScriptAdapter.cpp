@@ -24,7 +24,7 @@
 #include <string>
 #include <sstream>
 #include <exception>
-#include <lua5.1/lua.hpp>
+#include <lua.hpp>
 #include "./src/luaScriptAdapter.hpp"
 #include "./src/util.hpp"
 
