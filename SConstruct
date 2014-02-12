@@ -1,4 +1,5 @@
 import BuildUtil
+import os.path
 
 xsdb = { 
 	'src' 	: [	'src/main.cpp',
@@ -60,7 +61,10 @@ xsdb = {
 }
 
 # Get arguments
-release_target = ARGUMENTS.get('conf', 'release')
+release_target      = ARGUMENTS.get('conf', 'release')
+install_prefix      = ARGUMENTS.get('prefix', '/usr/')
+install_target_bin  = os.path.join(install_prefix, 'local/bin/')
+install_target_data = os.path.join(install_prefix, 'share/xsdtools/templates/')
 
 # Setup Environment
 env = BuildUtil.SetupEnv(xsdb, Environment(), release_target)
@@ -69,12 +73,16 @@ env = BuildUtil.SetupEnv(xsdb, Environment(), release_target)
 xsdb = BuildUtil.Program(xsdb, env, release_target)
 
 # Install xsdb
-installxsdb = env.Install('/usr/bin', xsdb)
-installData = env.Command('/usr/share/xsdtools/templates/', 'templates/', Copy("$TARGET", "$SOURCE"))
+installxsdb = env.Install(install_target_bin, xsdb)
+installData = env.Command(install_target_data, 
+                          'templates/', 
+                          Copy("$TARGET", "$SOURCE"))
 env.Alias('install', [installxsdb, installData])
 
 # Uninstall xsdb
-env.Command('uninstall', None, [Delete(installxsdb),Delete('/usr/share/xsdtools/')])
+env.Command('uninstall', 
+            None, 
+            [Delete(installxsdb),Delete(installData)])
 
 # Default build
 Default(xsdb)
