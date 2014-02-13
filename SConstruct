@@ -1,5 +1,9 @@
 import BuildUtil
 import os.path
+import platform
+
+def _getLuaLib():
+    return 'lua5.1' if platform.linux_distribution()[0] == "Ubuntu" else 'lua'
 
 xsdb = { 
 	'src' 	: [	'src/main.cpp',
@@ -53,7 +57,10 @@ xsdb = {
 				'src/TemplateEngine/safeEnv.lua',
 				'src/TemplateEngine/stringbuffer.lua',
 				'src/TemplateEngine/templateEngine.lua'],
-	'libs'	: ['tinyxml', 'libboost_system', 'boost_filesystem', 'lua5.1'],
+	'libs'	: ['tinyxml', 
+                   'libboost_system', 
+                   'boost_filesystem', 
+                   _getLuaLib()],
 	'cflags': { 'debug'  : '-Werror -I. -g',
 				'release': '-Werror -I. -O3 -fomit-frame-pointer' },
 	'luaflags': { 'debug': '', 'release': '-s' },
