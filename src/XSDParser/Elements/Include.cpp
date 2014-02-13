@@ -85,7 +85,11 @@ Include::_schemaURI() const throw(XMLException) {
 			retStr += (path.string() + _extractQuery(uri));
 			return retStr;
 		} else {
+#if defined(BOOST_FILESYSTEM_VERSION) && (BOOST_FILESYSTEM_VERSION > 2)
 			boost::filesystem::path schemaPath = (boost::filesystem::absolute(_extractURIPath(m_rDocRoot.URI()))).branch_path();
+#else
+			boost::filesystem::path schemaPath = (boost::filesystem::complete(_extractURIPath(m_rDocRoot.URI()))).branch_path();
+#endif
 			(schemaPath /= _extractURIPath(uri)).normalize();
 			retStr += schemaPath.string();
 			return retStr;
