@@ -47,6 +47,7 @@ namespace XSD {
 		class MaxInclusive;
 		class MinLength;
 		class MaxLength;
+		class Length;
 		class Enumeration;
 		class FractionDigits;
 		class Pattern;
@@ -82,6 +83,7 @@ namespace XSD {
 		virtual void ProcessMaxInclusive(const Elements::MaxInclusive* pNode) = 0;
 		virtual void ProcessMinLength(const Elements::MinLength* pNode) = 0;
 		virtual void ProcessMaxLength(const Elements::MaxLength* pNode) = 0;
+		virtual void ProcessLength(const Elements::Length* pNode) = 0;
 		virtual void ProcessEnumeration(const Elements::Enumeration* pNode) = 0;
 		virtual void ProcessFractionDigits(const Elements::FractionDigits* pNode) = 0;
 		virtual void ProcessPattern(const Elements::Pattern* pNode) = 0;

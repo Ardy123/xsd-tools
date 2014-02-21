@@ -36,6 +36,7 @@ xsdb = {
 				'src/XSDParser/Elements/MaxInclusive.cpp',
 				'src/XSDParser/Elements/MinLength.cpp',
 				'src/XSDParser/Elements/MaxLength.cpp',
+				'src/XSDParser/Elements/Length.cpp',
 				'src/XSDParser/Elements/FractionDigits.cpp',
 				'src/XSDParser/Elements/Pattern.cpp',
 				'src/XSDParser/Elements/TotalDigits.cpp',

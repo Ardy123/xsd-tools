@@ -57,6 +57,7 @@ namespace Processors {
 		virtual void ProcessMaxInclusive(const XSD::Elements::MaxInclusive* pNode);
 		virtual void ProcessMinLength(const XSD::Elements::MinLength* pNode);
 		virtual void ProcessMaxLength(const XSD::Elements::MaxLength* pNode);
+		virtual void ProcessLength(const XSD::Elements::Length* pNode);
 		virtual void ProcessEnumeration(const XSD::Elements::Enumeration* pNode);
 		virtual void ProcessFractionDigits(const XSD::Elements::FractionDigits* pNode);
 		virtual void ProcessAttributeGroup(const XSD::Elements::AttributeGroup* pNode);

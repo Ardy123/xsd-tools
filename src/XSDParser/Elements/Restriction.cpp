@@ -40,6 +40,7 @@
 #include "./src/XSDParser/Elements/MaxInclusive.hpp"
 #include "./src/XSDParser/Elements/MinLength.hpp"
 #include "./src/XSDParser/Elements/MaxLength.hpp"
+#include "./src/XSDParser/Elements/Length.hpp"
 #include "./src/XSDParser/Elements/Enumeration.hpp"
 #include "./src/XSDParser/Elements/FractionDigits.hpp"
 #include "./src/XSDParser/Elements/Pattern.hpp"
@@ -84,8 +85,20 @@ Restriction::ParseChildren(BaseProcessor& rProcessor) const throw(XMLException) 
 		if (NULL != pNode.get()) {
 			do {
 				if (XSD_ISELEMENT(pNode.get(), XSD::Elements::Attribute) ||
-					XSD_ISELEMENT(pNode.get(), Annotation)) {
-					pNode->ParseElement(rProcessor);
+					XSD_ISELEMENT(pNode.get(), XSD::Elements::MinExclusive) ||
+					XSD_ISELEMENT(pNode.get(), XSD::Elements::MaxExclusive) ||
+					XSD_ISELEMENT(pNode.get(), XSD::Elements::MinInclusive) ||
+					XSD_ISELEMENT(pNode.get(), XSD::Elements::MaxInclusive) ||
+					XSD_ISELEMENT(pNode.get(), XSD::Elements::FractionDigits) ||
+					XSD_ISELEMENT(pNode.get(), XSD::Elements::TotalDigits) ||
+					XSD_ISELEMENT(pNode.get(), XSD::Elements::MinLength) ||
+					XSD_ISELEMENT(pNode.get(), XSD::Elements::MaxLength) ||
+					XSD_ISELEMENT(pNode.get(), XSD::Elements::Length) ||
+					XSD_ISELEMENT(pNode.get(), XSD::Elements::Pattern) ||
+					XSD_ISELEMENT(pNode.get(), XSD::Elements::WhiteSpace) ||
+					XSD_ISELEMENT(pNode.get(), XSD::Elements::Enumeration) ||
+					XSD_ISELEMENT(pNode.get(), XSD::Elements::Annotation)) {
+					  pNode->ParseElement(rProcessor);
 				} else
 					throw XMLException(pNode->GetXMLElm(), XMLException::InvallidChildXMLElement);
 			} while (NULL != (pNode = std::auto_ptr<Node>(pNode->NextSibling())).get());
@@ -113,6 +126,7 @@ Restriction::ParseChildren(BaseProcessor& rProcessor) const throw(XMLException) 
 					}
 				} else if ( XSD_ISELEMENT(pNode.get(), XSD::Elements::MinLength) ||
 							XSD_ISELEMENT(pNode.get(), XSD::Elements::MaxLength) ||
+							XSD_ISELEMENT(pNode.get(), XSD::Elements::Length) ||
 							XSD_ISELEMENT(pNode.get(), XSD::Elements::Pattern) ||
 							XSD_ISELEMENT(pNode.get(), XSD::Elements::WhiteSpace) ||
 							XSD_ISELEMENT(pNode.get(), XSD::Elements::Annotation)) {

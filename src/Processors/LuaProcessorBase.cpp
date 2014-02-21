@@ -46,6 +46,7 @@
 #include "./src/XSDParser/Elements/MaxInclusive.hpp"
 #include "./src/XSDParser/Elements/MinLength.hpp"
 #include "./src/XSDParser/Elements/MaxLength.hpp"
+#include "./src/XSDParser/Elements/Length.hpp"
 #include "./src/XSDParser/Elements/FractionDigits.hpp"
 #include "./src/XSDParser/Elements/Pattern.hpp"
 #include "./src/XSDParser/Elements/TotalDigits.hpp"
@@ -175,6 +176,11 @@ LuaProcessorBase::ProcessMinLength(const XSD::Elements::MinLength* pNode) {
 
 /* virtual */ void
 LuaProcessorBase::ProcessMaxLength(const XSD::Elements::MaxLength* pNode) {
+	pNode->ParseChildren(*this);
+}
+
+/* virtual */ void
+LuaProcessorBase::ProcessLength(const XSD::Elements::Length* pNode) {
 	pNode->ParseChildren(*this);
 }
 

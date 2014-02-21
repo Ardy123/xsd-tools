@@ -45,6 +45,7 @@
 #include "./src/XSDParser/Elements/MaxInclusive.hpp"
 #include "./src/XSDParser/Elements/MinLength.hpp"
 #include "./src/XSDParser/Elements/MaxLength.hpp"
+#include "./src/XSDParser/Elements/Length.hpp"
 #include "./src/XSDParser/Elements/Enumeration.hpp"
 #include "./src/XSDParser/Elements/FractionDigits.hpp"
 #include "./src/XSDParser/Elements/Pattern.hpp"
@@ -152,6 +153,8 @@ Node::_ConstructNode(const TiXmlElement* pElm, const Schema& rRoot, const Parser
 		return new MinLength(*pElm, rRoot, rParser);
 	} else if (boost::iequals(std::string(MaxLength::XSDTag()), elementName)) {
 		return new MaxLength(*pElm, rRoot, rParser);
+	} else if (boost::iequals(std::string(Length::XSDTag()), elementName)) {
+		return new Length(*pElm, rRoot, rParser);
 	} else if (boost::iequals(std::string(Enumeration::XSDTag()), elementName)) {
 		return new Enumeration(*pElm, rRoot, rParser);
 	} else if (boost::iequals(std::string(FractionDigits::XSDTag()), elementName)) {
