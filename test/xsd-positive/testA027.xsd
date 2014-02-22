@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<schema>
+  <element name="message">
+    <complexType>
+	  <simpleContent>
+		<extension base="string">
+		  <attribute name="date" type="dateTime" />
+		</extension>
+	  </simpleContent>
+	</complexType>
+  </element>
+  <element name="changeMessage">
+	<complexType>
+	  <simpleContent>
+		<restriction base="string">
+		  <length value="256" />
+		</restriction>
+	  </simpleContent>
+	</complexType>
+  </element>
+</schema>

@@ -124,9 +124,14 @@ LuaProcessor::ProcessUnion(const XSD::Elements::Union* pNode) {
 
 /* virtual */ void
 LuaProcessor::ProcessRestriction(const XSD::Elements::Restriction* pNode ) { 
-	if (pNode->isParentComplexContent() || pNode->isParentSimpleContent())
+	
+	if (pNode->isParentComplexContent()) {
 		pNode->ParseChildren(*this);
-	else {
+	} else if (pNode->isParentSimpleContent()) {
+		pNode->ParseChildren(*this);
+		auto_ptr<XSD::Types::BaseType> pType(pNode->Base());
+		_parseType(*pType);
+	} else {
 		auto_ptr<XSD::Types::BaseType> pType(pNode->Base());
 		_parseType(*pType);
 	}
