@@ -1,0 +1,26 @@
+message = {
+	attributes = {
+		date = {
+			dateTime = {
+				attributes = {}
+				content = {}
+				use = optional
+			}
+		}
+	}
+	content = {
+		string = {
+			attributes = {}
+			content = {}
+		}
+	}
+}
+changeMessage = {
+	attributes = {}
+	content = {
+		string = {
+			attributes = {}
+			content = {}
+		}
+	}
+}

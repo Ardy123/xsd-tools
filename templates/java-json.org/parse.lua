@@ -211,9 +211,9 @@ function elementParser(name, XSDElement)
       if isSimpleType(ctntTypeDef) then
 		if isListType(ctntType) then
 		  local lstTypeName = listType(ctntType)
-		  str:append(ListItemStrategy.unmarshall(types[lstTypeName],'value', 'value'))
+		  str:append(ListItemStrategy.unmarshall(types[lstTypeName],'value', '$'))
 		else
-		  str:append(ItemStrategy.unmarshall(types[ctntType], 'value', 'value'))
+		  str:append(ItemStrategy.unmarshall(types[ctntType], 'value', '$'))
 		end
 	  elseif isCollapsibleType(ctntTypeDef) then
 		local colTypeName = collapseType(ctntTypeDef)
@@ -336,9 +336,9 @@ function elementParser(name, XSDElement)
 	 if isSimpleType(ctntTypeDef) then
 	   if isListType(ctntType) then
 		 local lstTypeName = listType(ctntType)
-		 str:append(ListItemStrategy.marshall(types[lstTypeName], 'value', 'value'))
+		 str:append(ListItemStrategy.marshall(types[lstTypeName], 'value', '$'))
 	   else
-		 str:append(ItemStrategy.marshall(types[ctntType], 'value', 'value'))
+		 str:append(ItemStrategy.marshall(types[ctntType], 'value', '$'))
 	   end
 	 elseif isCollapsibleType(ctntTypeDef) then
 	   local colTypeName = collapseType(ctntTypeDef)
