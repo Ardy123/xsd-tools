@@ -35,7 +35,7 @@ namespace XSD {
 			XSD_ELEMENT_TAG("restriction")
 		private:
 			Restriction();
-			static bool _isElmRelated(const TiXmlElement* pRstrctn, const TiXmlElement* pBase) throw(XMLException);
+			/*static*/ bool _isElmRelated(const Node* pRstrctn, const TiXmlElement* pBase) const throw(XMLException);
 			static const TiXmlElement* _findElm(const TiXmlElement* pTreeBase, const TiXmlElement* pNode) throw(XMLException);
 		public:
 			Restriction(const TiXmlElement& elm, const Schema& rRoot, const Parser& rParser);

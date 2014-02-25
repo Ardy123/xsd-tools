@@ -165,7 +165,7 @@ Restriction::ParseElement(BaseProcessor& rProcessor) const throw(XMLException) {
 	std::auto_ptr<Types::BaseType> pBase(Base());
 	if (XSD_ISTYPE(pBase.get(), Types::ComplexType)) {
 		Types::ComplexType* pCmplxType = static_cast<Types::ComplexType*>(pBase.get());
-		if (!_isElmRelated(&Node::GetXMLElm(), &pCmplxType->m_pValue->GetXMLElm()))
+		if (!_isElmRelated(this, &pCmplxType->m_pValue->GetXMLElm()))
 			throw XMLException(GetXMLElm(), XMLException::RestrictionTypeMismatch);
 	}
 	/* process element */
@@ -193,17 +193,21 @@ Restriction::isTypeRelated(const Types::BaseType* pType) const throw(XMLExceptio
 }
 
 /*static */ bool
-Restriction::_isElmRelated(const TiXmlElement* pRstrctn, const TiXmlElement* pBase) throw(XMLException) {
-	const TiXmlElement* pRstrctnChld = pRstrctn->FirstChildElement();
-	for (; pRstrctnChld ; pRstrctnChld = pRstrctnChld->NextSiblingElement()) {
-		/* find node in pBase */
-		const TiXmlElement* pFndElm = _findElm(pBase, pRstrctnChld);
-		if (pFndElm) {
-			if (pRstrctnChld->FirstChildElement())
-				if (_isElmRelated(pRstrctnChld, pFndElm) == false )
+Restriction::_isElmRelated(const Node* pRstrctn, const TiXmlElement* pBase) const throw(XMLException) {
+	std::auto_ptr<Node> pRstrctnChld(pRstrctn->FirstChild());
+	/* iterate through children comparing against parent type */
+	if (NULL != pRstrctnChld.get()) {
+	  do {
+			if (!(XSD_ISELEMENT(pRstrctnChld.get(), Annotation))) {
+				/* find node in parent XSD type */
+				const TiXmlElement* pFndElm = _findElm(pBase, &(pRstrctnChld.get()->GetXMLElm()));
+				if (pFndElm) {
+					if (_isElmRelated(pRstrctnChld.get(), pFndElm) == false )
+						return false;
+				} else
 					return false;
-		} else
-			return false;
+			}
+		} while (NULL != (pRstrctnChld = std::auto_ptr<Node>(pRstrctnChld->NextSibling())).get());
 	}
 	return true;
 }

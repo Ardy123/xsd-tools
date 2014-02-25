@@ -38,11 +38,18 @@
 #define XSD_ISELEMENT(TYPE_PTR,TYPE)	typeid(*TYPE_PTR) == typeid(TYPE)
 #define XSD_ELEMENT_TAG(NAME)			public: static const char* XSDTag() throw() { return NAME; }
 
-namespace XSD { namespace Elements { class Schema; } }
+namespace XSD { 
+  namespace Elements { 
+	class Schema; 
+	class Restriction;
+  }   
+}
+
 
 namespace XSD {
 	namespace Elements {
 		class Node {
+		  friend class Restriction;
 		private:
 			Node();
 			const TiXmlElement* ContentElement(const char* pElemName) const throw(XMLException);
