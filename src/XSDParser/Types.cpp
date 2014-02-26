@@ -47,8 +47,12 @@ SimpleType::isTypeRelated(const BaseType* pType) const {
 		if (*m_pValue == *pCmpSimpleType->m_pValue)
 				return true;
 	}
-	/* break down simpleType to base types */
-	return m_pValue->isTypeRelated(pType);
+	/* break down this simpleType to its parent type */
+	std::auto_ptr<BaseType> pBaseType(m_pValue->GetParentType());
+	if (NULL == pBaseType.get())
+		return false;
+	else
+		return pBaseType->isTypeRelated(pType);
 }
 
 /* virtual */ const char*
@@ -80,8 +84,12 @@ ComplexType::isTypeRelated(const BaseType* pType) const {
 		if (*m_pValue == *pCmpCmplxType->m_pValue)
 				return true;
 	}
-	/* break down complexType to base types */
-	return m_pValue->isTypeRelated(pType);
+	/* break down complexType to its parent type */
+	std::auto_ptr<BaseType> pBaseType(m_pValue->GetParentType());
+	if (NULL == pBaseType.get())
+		return false;
+	else
+		return pBaseType->isTypeRelated(pType);
 }
 
 /* virtual */ const char*

@@ -62,9 +62,10 @@ FractionDigits::ParseElement(BaseProcessor& rProcessor) const throw(XMLException
 	rProcessor.ProcessFractionDigits(this);
 }
 
-bool
-FractionDigits::isTypeRelated(const Types::BaseType* pType) const throw(XMLException) {
-	return true;
+Types::BaseType * 
+FractionDigits::GetParentType() const throw(XMLException) {
+	std::auto_ptr<Node> pParent(Node::Parent());
+	return pParent->GetParentType();
 }
 
 uint64_t

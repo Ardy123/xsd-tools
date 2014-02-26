@@ -62,9 +62,10 @@ Length::ParseElement(BaseProcessor& rProcessor) const throw(XMLException) {
 	rProcessor.ProcessLength(this);
 }
 
-bool
-Length::isTypeRelated(const Types::BaseType* pType) const throw(XMLException) {
-	return true;
+Types::BaseType * 
+Length::GetParentType() const throw(XMLException) {
+	std::auto_ptr<Node> pParent(Node::Parent());
+	return pParent->GetParentType();
 }
 
 int64_t

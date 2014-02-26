@@ -94,9 +94,20 @@ ComplexType::ParseElement(BaseProcessor& rProcessor) const throw(XMLException) {
 	rProcessor.ProcessComplexType(this);
 }
 
-bool
-ComplexType::isTypeRelated(const Types::BaseType* pType) const throw(XMLException) {
-	return false; /* TODO */
+Types::BaseType * 
+ComplexType::GetParentType(void) const throw(XMLException) {
+	std::auto_ptr<SimpleContent> pSimpleContent(Node::SearchXSDChildElm<SimpleContent>());
+	std::auto_ptr<ComplexContent> pComplexContent(Node::SearchXSDChildElm<ComplexContent>());
+	if ((NULL != pSimpleContent.get()) && (NULL == pComplexContent.get())) {
+		return pSimpleContent->GetParentType();
+	} else if ((NULL == pSimpleContent.get()) && (NULL != pComplexContent.get())) {
+		return pComplexContent->GetParentType();
+	} else if ((NULL != pSimpleContent.get()) && (NULL != pComplexContent.get())) {
+		/* complex type can't have both simple and complex content modifiers */
+		throw XMLException(Node::GetXMLElm(), XMLException::InvallidChildXMLElement);
+	} else {
+		return NULL;
+	}
 }
 
 bool

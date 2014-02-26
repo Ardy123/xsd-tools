@@ -1,21 +1,20 @@
 <?xml version="1.0"?>
 <schema>
-	<element  name="foo">
-		<simpleType>
-			<restriction base="string">
-				<maxLength value="20"/>
-			</restriction>
-		</simpleType>
-	</element>
+	<element  name="foo" type="fooType" />
 	<element name="myElem" substitutionGroup="foo">
 		<simpleType>
-			<restriction base="bop">
+			<restriction base="bopType">
 				<pattern value="[0-9]{,5}"/>
 			</restriction>
 		</simpleType>
 	</element>
-	<simpleType name = "bop">
+	<simpleType name="fooType">
 		<restriction base="string">
+			<maxLength value="20"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="bopType">
+		<restriction base="fooType">
 			<pattern value="[0-9]"/>
 		</restriction>
 	</simpleType>

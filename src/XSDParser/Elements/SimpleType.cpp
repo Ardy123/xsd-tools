@@ -64,22 +64,21 @@ SimpleType::ParseElement(BaseProcessor& rProcessor) const throw(XMLException) {
 	rProcessor.ProcessSimpleType(this);
 }
 
-bool
-SimpleType::isTypeRelated(const Types::BaseType* pType) const throw(XMLException) {
-	/* break down simpleType to base types */
-	std::auto_ptr<Node> pNode(Node::FirstChild());
-	if (NULL != pNode.get()) {
-		do {
-			if (XSD_ISELEMENT(pNode.get(), Restriction) ||
-				XSD_ISELEMENT(pNode.get(), List) ||
-				XSD_ISELEMENT(pNode.get(), Union)) {
-				if (pNode->isTypeRelated(pType))
-					return true;
-			} else
-				throw XMLException(pNode->GetXMLElm(), XMLException::InvallidChildXMLElement);
-		} while (NULL != (pNode = std::auto_ptr<Node>(pNode->NextSibling())).get());
+Types::BaseType * 
+SimpleType::GetParentType(void) const throw(XMLException) {
+	std::auto_ptr<Restriction> pRestriction(Node::SearchXSDChildElm<Restriction>());
+	std::auto_ptr<List> pList(Node::SearchXSDChildElm<List>());
+	std::auto_ptr<Union> pUnion(Node::SearchXSDChildElm<Union>());
+	if ((NULL != pRestriction.get()) && (NULL == pList.get()) && (NULL == pUnion.get())) {
+		return pRestriction->GetParentType();
+	} else if ((NULL == pRestriction.get()) && (NULL != pList.get()) && (NULL == pUnion.get())) {
+		return pList->GetParentType();
+	} else if ((NULL == pRestriction.get()) && (NULL != pList.get()) && (NULL == pUnion.get())) {
+		return pList->GetParentType();
+	} else {
+		/* simple type can't have multiple child modifiers */
+		throw XMLException(Node::GetXMLElm(), XMLException::InvallidChildXMLElement);
 	}
-	return false;
 }
 
 std::string

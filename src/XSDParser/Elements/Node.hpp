@@ -41,7 +41,6 @@
 namespace XSD { 
   namespace Elements { 
 	class Schema; 
-	class Restriction;
   }   
 }
 
@@ -49,7 +48,6 @@ namespace XSD {
 namespace XSD {
 	namespace Elements {
 		class Node {
-		  friend class Restriction;
 		private:
 			Node();
 			const TiXmlElement* ContentElement(const char* pElemName) const throw(XMLException);
@@ -69,8 +67,6 @@ namespace XSD {
 			Node(const TiXmlElement& elm, const Schema& rRoot, const Parser& rParser);
 			Node(const Node& rCpy);
 			Types::BaseType* LookupType(const char* pType) const throw(XMLException) { return _Type(pType); }
-			Node* FirstChild() const throw(XMLException);
-			Node* Parent() const throw(XMLException);
 			bool HasAttribute(const char* pAttrib) const throw();
 			bool HasContent(const char* pElemName) const throw();
 			bool HasContent() const throw();
@@ -91,11 +87,27 @@ namespace XSD {
 			template<typename T> T* FindXSDChildElm() const throw(XMLException) {
 				return static_cast<T*>(_FindChildXSDNode(T::XSDTag()));
 			}
+			template<typename T> T* SearchXSDChildElm() const throw() {
+				try {
+					return static_cast<T*>(_FindChildXSDNode(T::XSDTag()));
+				} catch (XMLException& e) {
+					return NULL;
+				}
+			}
 		public:
 			virtual ~Node() {}
 			virtual void ParseChildren(BaseProcessor& rProcessor) const throw(XMLException) = 0;
 			virtual void ParseElement(BaseProcessor& rProcessor) const throw(XMLException) = 0;
-			virtual bool isTypeRelated(const Types::BaseType* pType) const throw(XMLException) = 0;
+			/* for "element" : return their type 
+			 * for "simpleType/complexType" : return the base type of their child elements
+			 * for "simpleContent/complexContent" : return type of their child restriction/extension elements
+			 * for "restriction/extension": return base type
+			 * for "list" : return type
+			 * for "union" : return xs:string HACK
+			 * for all other elements: return the type they are enclosed in */
+			virtual Types::BaseType * GetParentType() const throw(XMLException) = 0;
+			Node* Parent() const throw(XMLException);
+			Node* FirstChild() const throw(XMLException);
 			Node* NextSibling() const throw(XMLException);
 			bool operator == (const Node& elm) const;
 			bool operator == (const Node& elm);

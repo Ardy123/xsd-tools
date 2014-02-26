@@ -172,24 +172,9 @@ Restriction::ParseElement(BaseProcessor& rProcessor) const throw(XMLException) {
 	rProcessor.ProcessRestriction(this);
 }
 
-bool
-Restriction::isTypeRelated(const Types::BaseType* pType) const throw(XMLException) {
-	std::auto_ptr<Types::BaseType> pRstrctnType(Base());
-	if (XSD_ISTYPE(pRstrctnType.get(), Types::SimpleType)) {
-		/* continue forward search for base type */
-		return pRstrctnType->isTypeRelated(pType);
-	} else if (XSD_ISTYPE(pRstrctnType.get(), Types::ComplexType)) {
-		/* TODO: Iterate across children & compare against type */
-	} else {
-		if (XSD_ISTYPE(pType, Types::SimpleType) ||
-			XSD_ISTYPE(pType, Types::ComplexType)) {
-			/* break down type to compare */
-			return pType->isTypeRelated(pRstrctnType.get());
-		} else
-			return pRstrctnType->isTypeRelated(pType);
-	}
-	return false;
-
+Types::BaseType * 
+Restriction::GetParentType() const throw(XMLException) {
+	return this->Base();
 }
 
 /*static */ bool

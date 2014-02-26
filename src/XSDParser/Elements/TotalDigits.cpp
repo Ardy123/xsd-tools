@@ -63,9 +63,10 @@ TotalDigits::ParseElement(BaseProcessor& rProcessor) const throw(XMLException) {
 	rProcessor.ProcessTotalDigits(this);
 }
 
-bool
-TotalDigits::isTypeRelated(const Types::BaseType* pType) const throw(XMLException) {
-	return true;
+Types::BaseType * 
+TotalDigits::GetParentType() const throw(XMLException) {
+	std::auto_ptr<Node> pParent(Node::Parent());
+	return pParent->GetParentType();
 }
 
 uint64_t

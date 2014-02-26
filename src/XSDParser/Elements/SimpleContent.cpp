@@ -64,8 +64,14 @@ SimpleContent::ParseElement(BaseProcessor& rProcessor) const throw(XMLException)
 	rProcessor.ProcessSimpleContent(this);
 }
 
-bool
-SimpleContent::isTypeRelated(const Types::BaseType* pType) const throw(XMLException) {
-	return false; /* TODO */
+Types::BaseType *
+SimpleContent::GetParentType() const throw(XMLException) {
+	std::auto_ptr<Restriction> pRestriction(Node::SearchXSDChildElm<Restriction>());
+	std::auto_ptr<Extension> pExtension(Node::SearchXSDChildElm<Extension>());
+	if ((NULL != pRestriction.get()) && (NULL == pExtension.get())) {
+		return pRestriction->GetParentType();
+	} else if ((NULL == pRestriction.get()) && (NULL != pExtension.get())) {
+		return pExtension->GetParentType();
+	} else /* simple content can't have multiple child modifiers */
+		throw XMLException(Node::GetXMLElm(), XMLException::InvallidChildXMLElement);
 }
-

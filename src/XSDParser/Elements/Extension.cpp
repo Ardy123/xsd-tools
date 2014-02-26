@@ -103,9 +103,9 @@ Extension::ParseElement(BaseProcessor& rProcessor) const throw(XMLException) {
 	rProcessor.ProcessExtension(this);
 }
 
-bool
-Extension::isTypeRelated(const Types::BaseType* pType) const throw(XMLException) {
-	return false; /* temporary */
+Types::BaseType * 
+Extension::GetParentType(void) const throw(XMLException) {
+	return this->Base();
 }
 
 Types::BaseType*

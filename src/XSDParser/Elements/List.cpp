@@ -69,24 +69,9 @@ List::ParseElement(BaseProcessor& rProcessor) const throw(XMLException) {
 	rProcessor.ProcessList(this);
 }
 
-bool
-List::isTypeRelated(const Types::BaseType* pType) const throw(XMLException) {
-	if (HasItemType()) {
-		std::auto_ptr<Types::BaseType> pElmType(ItemType());
-		return pElmType->isTypeRelated(pType);
-	} else if (Node::HasContent(SimpleType::XSDTag())) {
-		/* process children */
-		std::auto_ptr<Node> pNode(Node::FirstChild());
-		if (NULL != pNode.get()) {
-			do {
-				if (XSD_ISELEMENT(pNode.get(), SimpleType)) {
-					if (pNode->isTypeRelated(pType))
-						return true;
-				}
-			} while (NULL != (pNode = std::auto_ptr<Node>(pNode->NextSibling())).get());
-		}
-	}
-	return false;
+Types::BaseType * 
+List::GetParentType(void) const throw(XMLException) {
+	return this->ItemType();
 }
 
 bool

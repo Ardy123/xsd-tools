@@ -65,9 +65,10 @@ Choice::ParseElement(BaseProcessor& rProcessor) const throw(XMLException) {
 	rProcessor.ProcessChoice(this);
 }
 
-bool
-Choice::isTypeRelated(const Types::BaseType* pType) const throw(XMLException) {
-	return false; /* TODO */
+Types::BaseType * 
+Choice::GetParentType() const throw(XMLException) {
+	std::auto_ptr<Node> pParent(Node::Parent());
+	return pParent->GetParentType();
 }
 
 bool

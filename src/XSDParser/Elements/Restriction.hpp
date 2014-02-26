@@ -42,7 +42,7 @@ namespace XSD {
 			Restriction(const Restriction& rCpy);
 			void ParseChildren(BaseProcessor& rProcessor) const throw(XMLException);
 			void ParseElement(BaseProcessor& rProcessor) const throw(XMLException);
-			bool isTypeRelated(const Types::BaseType* pType) const throw(XMLException);
+			Types::BaseType * GetParentType() const throw(XMLException);
 			bool isParentComplexContent() const throw(XMLException);
 			bool isParentSimpleContent() const throw(XMLException);
 			Types::BaseType* Base() const throw(XMLException);

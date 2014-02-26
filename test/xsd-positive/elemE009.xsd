@@ -1,12 +1,6 @@
 <?xml version="1.0"?>
 <schema>
-	<element  name="foo">
-		<simpleType>
-			<restriction base="string">
-				<maxLength value="20"/>
-			</restriction>
-		</simpleType>
-	</element>
+	<element name="foo" type="string" />
 	<element name="myElem" substitutionGroup="foo">
 		<simpleType>
 			<restriction base="string">

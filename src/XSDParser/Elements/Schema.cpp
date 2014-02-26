@@ -93,9 +93,10 @@ Schema::Namespace() const throw(XMLException) {
 	return std::string("");
 }
 
-bool
-Schema::isTypeRelated(const Types::BaseType* pType) const throw(XMLException) {
-	return false; /* TODO */
+Types::BaseType * 
+Schema::GetParentType() const throw(XMLException) {
+	std::auto_ptr<Node> pParent(Node::Parent());
+	return (pParent.get()) ? pParent->GetParentType() : NULL;
 }
 
 bool

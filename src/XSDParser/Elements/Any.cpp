@@ -62,9 +62,10 @@ Any::ParseElement(BaseProcessor& rProcessor) const throw(XMLException) {
 	rProcessor.ProcessAny(this);
 }
 
-bool
-Any::isTypeRelated(const Types::BaseType* pType) const throw(XMLException) {
-	return true;
+Types::BaseType * 
+Any::GetParentType() const throw(XMLException) {
+	std::auto_ptr<Node> pParent(Node::Parent());
+	return pParent->GetParentType();
 }
 
 std::string

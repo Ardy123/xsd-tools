@@ -65,21 +65,9 @@ Union::ParseElement(BaseProcessor& rProcessor) const throw(XMLException) {
 	rProcessor.ProcessUnion(this);
 }
 
-bool
-Union::isTypeRelated(const Types::BaseType* pType) const throw(XMLException) {
-	/* tokenize each item in the list */
-	const std::string typeLst(this->GetAttribute<const char*>("memberTypes"));
-	SpaceCommaSeperator sep(", ");
-	SpaceCommaTokenizer tokens(typeLst, sep);
-	for (SpaceCommaTokenizer::iterator itr = tokens.begin();
-		 itr != tokens.end();
-		 ++itr) {
-		const std::string& token = *itr;
-		std::auto_ptr<Types::BaseType> pUnType(Node::LookupType(token.c_str()));
-		if (pUnType->isTypeRelated(pType))
-			return true;
-	}
-	return false;
+Types::BaseType * 
+Union::GetParentType() const throw(XMLException) {
+	return new Types::String();
 }
 
 Union::TypeLst*

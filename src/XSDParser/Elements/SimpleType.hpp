@@ -45,7 +45,7 @@ namespace XSD {
 			SimpleType(const SimpleType& rType);
 			void ParseChildren(BaseProcessor& rProcessor) const throw(XMLException);
 			void ParseElement(BaseProcessor& rProcessor) const throw(XMLException);
-			bool isTypeRelated(const Types::BaseType* pType) const throw(XMLException);
+			Types::BaseType * GetParentType(void) const throw(XMLException);
 			std::string Name() const throw(XMLException);
 			bool HasName() const;
 			bool HasUnion() const;

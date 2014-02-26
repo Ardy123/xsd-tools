@@ -66,8 +66,8 @@ Element::ParseElement(BaseProcessor& rProcessor) const throw(XMLException) {
 	/* don't process if node is abstract */
 	if (Abstract()) return;
 	/* if an element is a substitution group verify types */
-	if (HasSubstitutionGroup()) {
-		VerifySubstitutionGroup();
+	if (HasSubstitutionGroup() && !VerifySubstitutionGroup()) {
+		throw XMLException(Node::GetXMLElm(), XMLException::SubstitutionGroupTypeMismatch);
 	}
 	/* a name is only allowed when it's parent element is a schema */
 	if (HasName()) {
@@ -84,36 +84,16 @@ Element::ParseElement(BaseProcessor& rProcessor) const throw(XMLException) {
 		if (!pRefElm->IsRootNode())
 			throw XMLException(pRefElm->m_rXmlElm, XMLException::InvalidAttribute);
 		/* if an element is a substitution group verify types */
-		if (pRefElm->HasSubstitutionGroup()) {
-			VerifySubstitutionGroup();
+		if (pRefElm->HasSubstitutionGroup() && !VerifySubstitutionGroup()) {
+			throw XMLException(Node::GetXMLElm(), XMLException::SubstitutionGroupTypeMismatch);
 		}
 	}
 	return rProcessor.ProcessElement(this);
 }
 
-bool
-Element::isTypeRelated(const Types::BaseType* pType) const throw(XMLException) {
-	if (this->HasChildType()) {
-		/* process children - forward search to break down type*/
-		std::auto_ptr<Node> pNode(Node::FirstChild());
-		if (NULL != pNode.get()) {
-			do {
-				if (XSD_ISELEMENT(pNode.get(), SimpleType) ||
-					XSD_ISELEMENT(pNode.get(), ComplexType)) {
-					if (false == pNode->isTypeRelated(pType)) {
-						throw XMLException(this->m_rXmlElm, XMLException::SubstitutionGroupTypeMismatch);
-						return false;
-					} else
-						return true;
-				} else
-					throw XMLException(pNode->GetXMLElm(), XMLException::InvallidChildXMLElement);
-			} while (NULL != (pNode = std::auto_ptr<Node>(pNode->NextSibling())).get());
-		}
-	} else if (this->HasType()) {
-		std::auto_ptr<Types::BaseType> pType(this->Type());
-		return pType->isTypeRelated(pType.get());
-	}
-	return false;
+Types::BaseType * 
+Element::GetParentType(void) const throw(XMLException) {
+	return this->Type();
 }
 
 bool
@@ -137,28 +117,9 @@ Element::SubstitutionGroup() const throw(XMLException) {
 bool
 Element::VerifySubstitutionGroup() const throw(XMLException) {
 	std::auto_ptr<Element> pSubElm(this->SubstitutionGroup());
-	if (this->HasChildType()) {
-		/* process children */
-		std::auto_ptr<Node> pNode(Node::FirstChild());
-		if (NULL != pNode.get()) {
-			do {
-				if (XSD_ISELEMENT(pNode.get(), SimpleType)) {
-					const Elements::SimpleType* pSmplTypeElm = static_cast<const SimpleType*>(pNode.get());
-					std::auto_ptr<Types::SimpleType> pSmplType(new Types::SimpleType(new Elements::SimpleType(*pSmplTypeElm)));
-					return pSubElm->isTypeRelated(pSmplType.get());
-				} else if (XSD_ISELEMENT(pNode.get(), ComplexType)) {
-					const Elements::ComplexType* pCmplxTypeElm = static_cast<const ComplexType*>(pNode.get());
-					std::auto_ptr<Types::ComplexType> pCmplxType(new Types::ComplexType(new Elements::ComplexType(*pCmplxTypeElm)));
-					return pSubElm->isTypeRelated(pCmplxType.get());
-				} else
-					throw XMLException(pNode->GetXMLElm(), XMLException::InvallidChildXMLElement);
-			} while (NULL != (pNode = std::auto_ptr<Node>(pNode->NextSibling())).get());
-		}
-	} else if (this->HasType()) {
-		std::auto_ptr<Types::BaseType> pType(this->Type());
-		return pSubElm->isTypeRelated(pType.get());
-	}
-	return true;
+	std::auto_ptr<Types::BaseType> pType(this->Type());
+	std::auto_ptr<Types::BaseType> pSubElmType(pSubElm->Type());
+	return pType->isTypeRelated(pSubElmType.get());
 }
 
 Types::BaseType*

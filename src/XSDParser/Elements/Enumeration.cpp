@@ -62,9 +62,10 @@ Enumeration::ParseElement(BaseProcessor& rProcessor) const throw(XMLException) {
 	rProcessor.ProcessEnumeration(this);
 }
 
-bool
-Enumeration::isTypeRelated(const Types::BaseType* pType) const throw(XMLException) {
-	return true;
+Types::BaseType * 
+Enumeration::GetParentType() const throw(XMLException) {
+	std::auto_ptr<Node> pParent(Node::Parent());
+	return pParent->GetParentType();
 }
 
 std::string

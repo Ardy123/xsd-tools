@@ -40,7 +40,7 @@ namespace XSD {
 			List(const List& lst);
 			void ParseChildren(BaseProcessor& rProcessor) const throw(XMLException);
 			void ParseElement(BaseProcessor& rProcessor) const throw(XMLException);
-			bool isTypeRelated(const Types::BaseType* pType) const throw(XMLException);
+			Types::BaseType * GetParentType(void) const throw(XMLException);
 			bool HasItemType() const;
 			Types::BaseType* ItemType() const throw(XMLException);
 		};

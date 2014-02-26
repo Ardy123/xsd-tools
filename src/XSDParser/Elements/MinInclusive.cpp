@@ -62,9 +62,10 @@ MinInclusive::ParseElement(BaseProcessor& rProcessor) const throw(XMLException) 
 	rProcessor.ProcessMinInclusive(this);
 }
 
-bool
-MinInclusive::isTypeRelated(const Types::BaseType* pType) const throw(XMLException) {
-	return true;
+Types::BaseType * 
+MinInclusive::GetParentType() const throw(XMLException) {
+	std::auto_ptr<Node> pParent(Node::Parent());
+	return pParent->GetParentType();
 }
 
 long double

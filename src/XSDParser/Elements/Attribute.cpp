@@ -91,9 +91,10 @@ Attribute::ParseElement(BaseProcessor& rProcessor) const throw(XMLException) {
 	}
 }
 
-bool
-Attribute::isTypeRelated(const Types::BaseType* pType) const throw(XMLException) {
-	return false; /* TODO */
+Types::BaseType * 
+Attribute::GetParentType() const throw(XMLException) {
+	std::auto_ptr<Node> pParent(Node::Parent());
+	return pParent->GetParentType();
 }
 
 std::string

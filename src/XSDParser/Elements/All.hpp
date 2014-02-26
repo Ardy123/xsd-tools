@@ -37,7 +37,7 @@ namespace XSD {
 			All(const All& cpy);
 			void ParseChildren(BaseProcessor& rProcessor) const throw(XMLException);
 			void ParseElement(BaseProcessor& rProcessor) const throw(XMLException);
-			bool isTypeRelated(const Types::BaseType* pType) const throw(XMLException);
+			Types::BaseType * GetParentType() const throw(XMLException);
 		};
 	}	/* namespace Elements */
 }	/* namespace XSD */

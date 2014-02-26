@@ -62,9 +62,10 @@ MaxExclusive::ParseElement(BaseProcessor& rProcessor) const throw(XMLException) 
 	rProcessor.ProcessMaxExclusive(this);
 }
 
-bool
-MaxExclusive::isTypeRelated(const Types::BaseType* pType) const throw(XMLException) {
-	return true;
+Types::BaseType * 
+MaxExclusive::GetParentType() const throw(XMLException) {
+	std::auto_ptr<Node> pParent(Node::Parent());
+	return pParent->GetParentType();
 }
 
 long double

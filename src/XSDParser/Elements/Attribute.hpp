@@ -49,7 +49,7 @@ namespace XSD {
 			Attribute(const Attribute& rAttrib);
 			void ParseChildren(BaseProcessor& rProcessor) const throw(XMLException);
 			void ParseElement(BaseProcessor& rProcessor) const throw(XMLException);
-			bool isTypeRelated(const Types::BaseType* pType) const throw(XMLException);
+			Types::BaseType * GetParentType() const throw(XMLException);
 			std::string Name() const throw(XMLException);
 			Attribute* RefAttribute() const throw(XMLException);
 			Types::BaseType* Type() const throw(XMLException);

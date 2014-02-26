@@ -81,9 +81,10 @@ Group::ParseElement(BaseProcessor& rProcessor) const throw(XMLException) {
 	rProcessor.ProcessGroup(this);
 }
 
-bool
-Group::isTypeRelated(const Types::BaseType* pType) const throw(XMLException) {
-	return false; /* TODO */
+Types::BaseType * 
+Group::GetParentType() const throw(XMLException) {
+	std::auto_ptr<Node> pParent(Node::Parent());
+	return pParent->GetParentType();
 }
 
 std::string

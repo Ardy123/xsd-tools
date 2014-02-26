@@ -38,7 +38,7 @@ namespace XSD {
 			Union(const Union& rCpy);
 			void ParseChildren(BaseProcessor& rProcessor) const throw(XMLException);
 			void ParseElement(BaseProcessor& rProcessor) const throw(XMLException);
-			bool isTypeRelated(const Types::BaseType* pType) const throw(XMLException);
+			Types::BaseType * GetParentType() const throw(XMLException);
 			/* Add parser funciton to parse child elements */
 			TypeLst* MemberTypes() const throw(XMLException);
 			bool HasMemberTypes() const;

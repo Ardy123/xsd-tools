@@ -62,9 +62,10 @@ MaxLength::ParseElement(BaseProcessor& rProcessor) const throw(XMLException) {
 	rProcessor.ProcessMaxLength(this);
 }
 
-bool
-MaxLength::isTypeRelated(const Types::BaseType* pType) const throw(XMLException) {
-	return true;
+Types::BaseType * 
+MaxLength::GetParentType() const throw(XMLException) {
+	std::auto_ptr<Node> pParent(Node::Parent());
+	return pParent->GetParentType();
 }
 
 int64_t

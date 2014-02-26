@@ -216,7 +216,7 @@ Node::_FindChildXSDNode(const char* pXMLTag) const throw(XMLException) {
 	/* search all nodes in root document */
 	const TiXmlElement* pElm = m_rXmlElm.FirstChildElement(elementName.c_str());
 	if (NULL == pElm)
-		throw XMLException(*pElm, XMLException::MissingChildXMLElement);
+		throw XMLException(m_rXmlElm, XMLException::MissingChildXMLElement);
 	return _ConstructNode(pElm, m_rDocRoot, m_rParser);
 }
 

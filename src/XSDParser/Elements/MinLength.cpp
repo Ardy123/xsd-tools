@@ -62,9 +62,10 @@ MinLength::ParseElement(BaseProcessor& rProcessor) const throw(XMLException) {
 	rProcessor.ProcessMinLength(this);
 }
 
-bool
-MinLength::isTypeRelated(const Types::BaseType* pType) const throw(XMLException) {
-	return true;
+Types::BaseType * 
+MinLength::GetParentType() const throw(XMLException) {
+	std::auto_ptr<Node> pParent(Node::Parent());
+	return pParent->GetParentType();
 }
 
 int64_t

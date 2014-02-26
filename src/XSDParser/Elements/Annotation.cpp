@@ -61,7 +61,8 @@ Annotation::ParseElement(BaseProcessor& rProcessor) const throw(XMLException) {
 	rProcessor.ProcessAnnotation(this);
 }
 
-bool
-Annotation::isTypeRelated(const Types::BaseType* pType) const throw(XMLException) {
-	return false;
+Types::BaseType * 
+Annotation::GetParentType() const throw(XMLException) {
+	std::auto_ptr<Node> pParent(Node::Parent());
+	return pParent->GetParentType();
 }

@@ -62,9 +62,10 @@ WhiteSpace::ParseElement(BaseProcessor& rProcessor) const throw(XMLException) {
 	rProcessor.ProcessWhiteSpace(this);
 }
 
-bool
-WhiteSpace::isTypeRelated(const Types::BaseType* pType) const throw(XMLException) {
-	return true;
+Types::BaseType * 
+WhiteSpace::GetParentType() const throw(XMLException) {
+	std::auto_ptr<Node> pParent(Node::Parent());
+	return pParent->GetParentType();
 }
 
 WhiteSpace::eOperation

@@ -60,9 +60,10 @@ Sequence::ParseElement(BaseProcessor& rProcessor) const throw(XMLException) {
 	rProcessor.ProcessSequence(this);
 }
 
-bool
-Sequence::isTypeRelated(const Types::BaseType* pType) const throw(XMLException) {
-	return false; /* TODO */
+Types::BaseType * 
+Sequence::GetParentType() const throw(XMLException) {
+	std::auto_ptr<Node> pParent(Node::Parent());
+	return pParent->GetParentType();
 }
 
 bool

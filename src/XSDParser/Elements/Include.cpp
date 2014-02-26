@@ -56,9 +56,10 @@ Include::ParseElement(BaseProcessor& rProcessor) const throw(XMLException) {
 	rProcessor.ProcessInclude(this);
 }
 
-bool
-Include::isTypeRelated(const Types::BaseType* pType) const throw(XMLException) {
-	return false; /* TODO */
+Types::BaseType * 
+Include::GetParentType() const throw(XMLException) {
+	std::auto_ptr<Node> pParent(Node::Parent());
+	return pParent->GetParentType();
 }
 
 const Schema*
