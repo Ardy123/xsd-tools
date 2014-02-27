@@ -56,6 +56,7 @@
 #include "./src/XSDParser/Elements/Annotation.hpp"
 #include "./src/XSDParser/Elements/Documentation.hpp"
 #include "./src/XSDParser/Elements/All.hpp"
+#include "./src/XSDParser/Elements/AppInfo.hpp"
 
 using namespace XSD;
 using namespace XSD::Elements;
@@ -175,6 +176,8 @@ Node::_ConstructNode(const TiXmlElement* pElm, const Schema& rRoot, const Parser
 		return new Documentation(*pElm, rRoot, rParser);
 	} else if (boost::iequals(std::string(All::XSDTag()), elementName)) {
 		return new All(*pElm, rRoot, rParser);
+	} else if (boost::iequals(std::string(AppInfo::XSDTag()), elementName)) {
+		return new AppInfo(*pElm, rRoot, rParser);
 	} else
 		throw XMLException(*pElm, XMLException::InvallidChildXMLElement);
 	return NULL;

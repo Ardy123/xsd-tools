@@ -30,6 +30,7 @@
 #include "./src/XSDParser/Elements/Element.hpp"
 #include "./src/XSDParser/Elements/Sequence.hpp"
 #include "./src/XSDParser/Elements/Annotation.hpp"
+#include "./src/XSDParser/Elements/Any.hpp"
 #include "./src/XSDParser/ProcessorBase.hpp"
 
 using namespace XSD;
@@ -52,7 +53,8 @@ Choice::ParseChildren(BaseProcessor& rProcessor) const throw(XMLException) {
 			if (XSD_ISELEMENT(pNode.get(), Element) ||
 				XSD_ISELEMENT(pNode.get(), Choice) ||
 				XSD_ISELEMENT(pNode.get(), Annotation) ||
-				XSD_ISELEMENT(pNode.get(), Sequence)) {
+				XSD_ISELEMENT(pNode.get(), Sequence) ||
+				XSD_ISELEMENT(pNode.get(), Any)) {
 				pNode->ParseElement(rProcessor);
 			} else
 				throw XMLException(pNode->GetXMLElm(), XMLException::InvallidChildXMLElement);

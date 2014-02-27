@@ -47,6 +47,7 @@ xsdb = {
 				'src/XSDParser/Elements/Annotation.cpp',
 				'src/XSDParser/Elements/Documentation.cpp',
 				'src/XSDParser/Elements/All.cpp',
+				'src/XSDParser/Elements/AppInfo.cpp',
 				'src/Processors/ArrayType.cpp',
 				'src/Processors/LuaProcessorBase.cpp',
 				'src/Processors/LuaAdapter.cpp',

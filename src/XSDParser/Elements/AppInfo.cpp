@@ -1,7 +1,7 @@
 /*
- * Annotation.cpp
+ * AppInfo.cpp
  *
- *  Created on: Aug 27, 2011
+ *  Created on: Feb 27, 2014
  *      Author: Ardavon Falls
  *   Copyright: (c)2011 Ardavon Falls
  *
@@ -28,43 +28,31 @@
 #include <string.h>
 #include <string>
 #include <tinyxml.h>
-#include "./src/XSDParser/Elements/Annotation.hpp"
-#include "./src/XSDParser/Elements/Documentation.hpp"
 #include "./src/XSDParser/Elements/AppInfo.hpp"
 
 using namespace XSD;
 using namespace XSD::Elements;
 
-Annotation::Annotation(const TiXmlElement& elm, const Schema& rRoot, const Parser& rParser)
+AppInfo::AppInfo(const TiXmlElement& elm, const Schema& rRoot, const Parser& rParser)
 	: Node(elm, rRoot, rParser)
 { }
 
-Annotation::Annotation(const Annotation& cpy)
+AppInfo::AppInfo(const AppInfo& cpy)
 	: Node(cpy)
 { }
 
 void
-Annotation::ParseChildren(BaseProcessor& rProcessor) const throw(XMLException) {
-	std::auto_ptr<Node> pNode(Node::FirstChild());
-	if (NULL != pNode.get()) {
-		do {
-			if (XSD_ISELEMENT(pNode.get(), Documentation) ||
-				XSD_ISELEMENT(pNode.get(), AppInfo)) {
-				pNode->ParseElement(rProcessor);
-			} else
-				throw XMLException(pNode->GetXMLElm(), XMLException::InvallidChildXMLElement);
-			break;
-		} while (NULL != (pNode = std::auto_ptr<Node>(pNode->NextSibling())).get());
-	}
+AppInfo::ParseChildren(BaseProcessor& rProcessor) const throw(XMLException) {
+	/* does nothing */
 }
 
 void
-Annotation::ParseElement(BaseProcessor& rProcessor) const throw(XMLException) {
-	rProcessor.ProcessAnnotation(this);
+AppInfo::ParseElement(BaseProcessor& rProcessor) const throw(XMLException) {
+	rProcessor.ProcessAppInfo(this);
 }
 
 Types::BaseType * 
-Annotation::GetParentType() const throw(XMLException) {
+AppInfo::GetParentType() const throw(XMLException) {
 	std::auto_ptr<Node> pParent(Node::Parent());
 	return pParent->GetParentType();
 }

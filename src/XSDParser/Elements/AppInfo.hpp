@@ -1,7 +1,7 @@
 /*
- * Annotation.hpp
+ * AppInfo.hpp
  *
- *  Created on: Aug 27, 2011
+ *  Created on: Feb 27, 2014
  *      Author: Ardavon Falls
  *   Copyright: (c)2011 Ardavon Falls
  *
@@ -21,8 +21,8 @@
  *  along with Xsd-Tools.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ANNOTATION_HPP_
-#define ANNOTATION_HPP_
+#ifndef APPINFO_HPP_
+#define APPINFO_HPP_
 #ifndef TIXML_USE_STL
 #	define TIXML_USE_STL
 #endif /* TIXML_USE_STL */
@@ -30,13 +30,13 @@
 #include "./src/XSDParser/Elements/Node.hpp"
 namespace XSD {
 	namespace Elements {
-		class Annotation : public Node {
-			XSD_ELEMENT_TAG("annotation")
+		class AppInfo : public Node {
+			XSD_ELEMENT_TAG("appinfo")
 		private:
-			Annotation();
+			AppInfo();
 		public:
-			Annotation(const TiXmlElement& elm, const Schema& rRoot, const Parser& rParser);
-			Annotation(const Annotation& cpy);
+			AppInfo(const TiXmlElement& elm, const Schema& rRoot, const Parser& rParser);
+			AppInfo(const AppInfo& cpy);
 			void ParseChildren(BaseProcessor& rProcessor) const throw(XMLException);
 			void ParseElement(BaseProcessor& rProcessor) const throw(XMLException);
 			Types::BaseType * GetParentType() const throw(XMLException);
@@ -44,4 +44,4 @@ namespace XSD {
 	}	/* namespace Elements */
 }	/* namespace XSD */
 
-#endif /* ANNOTATION_HPP_ */
+#endif /* APPINFO_HPP_ */

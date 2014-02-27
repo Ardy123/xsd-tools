@@ -57,6 +57,7 @@
 #include "./src/XSDParser/Elements/Documentation.hpp"
 #include "./src/XSDParser/Elements/Enumeration.hpp"
 #include "./src/XSDParser/Elements/All.hpp"
+#include "./src/XSDParser/Elements/AppInfo.hpp"
 
 using namespace std;
 using namespace Processors;
@@ -231,6 +232,11 @@ LuaProcessorBase::ProcessDocumentation(const XSD::Elements::Documentation* pNode
 
 /* virtual */ void
 LuaProcessorBase::ProcessAll(const XSD::Elements::All* pNode) {
+	pNode->ParseChildren(*this);
+}
+
+/* virtual */ void
+LuaProcessorBase::ProcessAppInfo(const XSD::Elements::AppInfo* pNode) {
 	pNode->ParseChildren(*this);
 }
 

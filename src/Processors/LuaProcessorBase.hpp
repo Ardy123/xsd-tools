@@ -68,6 +68,7 @@ namespace Processors {
 		virtual void ProcessAnnotation(const XSD::Elements::Annotation* pNode);
 		virtual void ProcessDocumentation(const XSD::Elements::Documentation* pNode);
 		virtual void ProcessAll(const XSD::Elements::All* pNode);
+		virtual void ProcessAppInfo(const XSD::Elements::AppInfo* pNode);
 	protected:
 		LuaAdapter *  	_luaAdapter() const;
 	private:

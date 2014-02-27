@@ -58,6 +58,7 @@ namespace XSD {
 		class Annotation;
 		class Documentation;
 		class All;
+		class AppInfo;
 	}
 	class BaseProcessor {
 	public:
@@ -94,6 +95,7 @@ namespace XSD {
 		virtual void ProcessAnnotation(const Elements::Annotation* pNode) = 0;
 		virtual void ProcessDocumentation(const Elements::Documentation* pNode) = 0;
 		virtual void ProcessAll(const Elements::All* pNode) = 0;
+		virtual void ProcessAppInfo(const Elements::AppInfo* pNode) = 0;
 	};
 } /* namespace XSD */
 #endif /* PROCESSORBASE_HPP_ */

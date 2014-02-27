@@ -47,7 +47,8 @@ Sequence::ParseChildren(BaseProcessor& rProcessor) const throw(XMLException) {
 			if (XSD_ISELEMENT(pNode.get(), Element) ||
 				XSD_ISELEMENT(pNode.get(), Choice) ||
 				XSD_ISELEMENT(pNode.get(), Annotation) ||
-				XSD_ISELEMENT(pNode.get(), Sequence)) {
+				XSD_ISELEMENT(pNode.get(), Sequence) ||
+				XSD_ISELEMENT(pNode.get(), Any)) {
 				pNode->ParseElement(rProcessor);
 			} else
 				throw XMLException(pNode->GetXMLElm(), XMLException::InvallidChildXMLElement);
