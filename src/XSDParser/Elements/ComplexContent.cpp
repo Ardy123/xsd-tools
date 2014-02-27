@@ -81,9 +81,9 @@ ComplexContent::GetParentType() const throw(XMLException) {
 
 bool
 ComplexContent::Mixed() const {
-	if (Node::HasAttribute("mixed"))
+	if (Node::HasAttribute("mixed")) {
 		return Node::GetAttribute<bool>("mixed");
-	else
-		return false;
+	}
+	return false;
 }
 

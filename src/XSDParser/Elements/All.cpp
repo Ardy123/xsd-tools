@@ -79,24 +79,21 @@ All::GetParentType() const throw(XMLException) {
 	std::auto_ptr<Node> pParent(Node::Parent());
 	return pParent->GetParentType();
 }
-/*
-bool
-All::isEqual(const Node& rElm) const {
-	* verify that they are the same element type *
-	if (!XSD_ISELEMENT(&rElm, All))
-		return false;
-	* verify that they either both have or both don't have the "maxOccurs" attribute *
-	if (Node::HasAttribute("maxOccurs")
-}
-*/
+
 int
 All::MaxOccurs() const {
-	return Node::GetAttribute<int>("maxOccurs");
+	if (HasMaxOccurs())
+		return Node::GetAttribute<int>("maxOccurs");
+	else
+		return 1;
 }
 
 int
 All::MinOccurs() const {
-	return Node::GetAttribute<int>("minOccurs");
+	if (HasMinOccurs())
+		return Node::GetAttribute<int>("minOccurs");
+	else
+		return 1;
 }
 
 bool

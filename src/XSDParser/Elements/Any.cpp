@@ -44,7 +44,6 @@ Any::Any(const Any& cpy)
 
 void
 Any::ParseChildren(BaseProcessor& rProcessor) const throw(XMLException) {
-	/* no children allowed */
 	std::auto_ptr<Node> pNode(Node::FirstChild());
 	if (NULL != pNode.get()) {
 		do {
@@ -59,6 +58,13 @@ Any::ParseChildren(BaseProcessor& rProcessor) const throw(XMLException) {
 
 void
 Any::ParseElement(BaseProcessor& rProcessor) const throw(XMLException) {
+	/* verify that 'maxOccurs' is not negative unless its -1 (unbounded) */
+	if (-1 > MaxOccurs())
+		throw XMLException(Node::GetXMLElm(), XMLException::InvalidAttributeValue);
+	/* verify that 'minOccurs' is non-negative */
+	if (0 > MinOccurs())
+		throw XMLException(Node::GetXMLElm(), XMLException::InvalidAttributeValue);
+	/* process element */
 	rProcessor.ProcessAny(this);
 }
 
@@ -68,12 +74,65 @@ Any::GetParentType() const throw(XMLException) {
 	return pParent->GetParentType();
 }
 
+int
+Any::MaxOccurs() const {
+	if (HasMaxOccurs()) {
+		if (strcmp(Node::GetAttribute<const char*>("maxOccurs"), "unbounded"))
+			return Node::GetAttribute<int>("maxOccurs");
+		else
+			return -1;
+	}
+	return 1;
+}
+
+int
+Any::MinOccurs() const {
+	if (HasMinOccurs()) {
+		return Node::GetAttribute<int>("minOccurs");
+	}
+	return 1;
+}
+
 std::string
-Any::Namespace() const throw(XMLException) {
-	return std::string(Node::GetAttribute<const char*>("namespace"));
+Any::Namespace() const {
+	if (HasNamespace()) {
+		return std::string(Node::GetAttribute<const char*>("namespace"));
+	}
+	return std::string("##any");
+}
+
+Any::ContentValidation
+Any::ProcessContents() const {
+	if (HasProcessContents()) {
+		std::string processContents(Node::GetAttribute<const char*>("processContents"));
+		if (!processContents.compare("lax")) {
+			return Any::LAX;
+		} else if (!processContents.compare("skip")) {
+			return Any::SKIP;
+		} else if (!processContents.compare("strict")) {
+			return Any::STRICT;
+		} else
+			throw XMLException(Node::GetXMLElm(), XMLException::InvalidAttributeValue);
+	}
+	return Any::STRICT;
+}
+
+bool
+Any::HasMaxOccurs() const {
+	return Node::HasAttribute("maxOccurs");
+}
+
+bool
+Any::HasMinOccurs() const {
+	return Node::HasAttribute("minOccurs");
 }
 
 bool
 Any::HasNamespace() const {
 	return Node::HasAttribute("namespace");
+}
+
+bool
+Any::HasProcessContents() const {
+	return Node::HasAttribute("processContents");
 }

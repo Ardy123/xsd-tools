@@ -72,17 +72,23 @@ Element::ParseElement(BaseProcessor& rProcessor) const throw(XMLException) {
 	/* a name is only allowed when it's parent element is a schema */
 	if (HasName()) {
 		if (HasRef())
-			throw XMLException(m_rXmlElm, XMLException::InvalidAttribute);
+			throw XMLException(Node::GetXMLElm(), XMLException::InvalidAttribute);
 	} else if (Node::IsRootNode()) {
-		throw XMLException(m_rXmlElm, XMLException::InvalidAttribute);
+		throw XMLException(Node::GetXMLElm(), XMLException::InvalidAttribute);
 	}
+	/* the "maxOccurs" attribute is prohibited if the parent element is a schema */
+	if (HasMaxOccurs() && Node::IsRootNode())
+		throw XMLException(Node::GetXMLElm(), XMLException::InvalidAttribute);
 	/* if the node is a reference, check its reference */
 	if (HasRef()) {
 		std::auto_ptr<XSD::Elements::Element> pRefElm(RefElement());
 		if (pRefElm->Abstract()) return;
 		/* a name is only allowed when it's parent element is a schema */
 		if (!pRefElm->IsRootNode())
-			throw XMLException(pRefElm->m_rXmlElm, XMLException::InvalidAttribute);
+			throw XMLException(pRefElm->GetXMLElm(), XMLException::InvalidAttribute);
+		/* the "maxOccurs" attribute is prohibited if the parent element is a schema */
+		if (pRefElm->HasMaxOccurs() && pRefElm->IsRootNode())
+			throw XMLException(pRefElm->GetXMLElm(), XMLException::InvalidAttribute);
 		/* if an element is a substitution group verify types */
 		if (pRefElm->HasSubstitutionGroup() && !VerifySubstitutionGroup()) {
 			throw XMLException(Node::GetXMLElm(), XMLException::SubstitutionGroupTypeMismatch);

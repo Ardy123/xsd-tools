@@ -112,18 +112,18 @@ ComplexType::GetParentType(void) const throw(XMLException) {
 
 bool
 ComplexType::Abstract() const {
-	if (Node::HasAttribute("abstract"))
+	if (Node::HasAttribute("abstract")) {
 		return Node::GetAttribute<bool>("abstract");
-	else
-		return false;
+	}
+	return false;
 }
 
 bool
 ComplexType::Mixed() const {
-	if (Node::HasAttribute("mixed"))
+	if (Node::HasAttribute("mixed")) {
 		return Node::GetAttribute<bool>("mixed");
-	else
-		return false;
+	}
+	return false;
 }
 
 std::string

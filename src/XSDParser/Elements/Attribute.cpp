@@ -129,15 +129,17 @@ Attribute::Fixed() const throw(XMLException) {
 
 Attribute::AttributeUse 
 Attribute::Use() const throw(XMLException) {
-	std::string use(Node::GetAttribute<const char*>("use"));
-	if (!use.compare("optional")) {
-		return Attribute::OPTIONAL;
-	} else if (!use.compare("prohibited")) {
-		return Attribute::PROHIBITIED;
-	} else if (!use.compare("required")) {
-		return Attribute::REQUIRED;
+	if (HasUse()) {
+		std::string use(Node::GetAttribute<const char*>("use"));
+		if (!use.compare("optional")) {
+			return Attribute::OPTIONAL;
+		} else if (!use.compare("prohibited")) {
+			return Attribute::PROHIBITIED;
+		} else if (!use.compare("required")) {
+			return Attribute::REQUIRED;
+		} else
+			throw XMLException(Node::GetXMLElm(), XMLException::InvalidAttributeValue);
 	}
-	throw XMLException(Node::GetXMLElm(), XMLException::InvalidAttributeValue);
 	return Attribute::OPTIONAL;
 }
 

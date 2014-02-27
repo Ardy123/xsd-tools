@@ -78,6 +78,13 @@ Group::ParseElement(BaseProcessor& rProcessor) const throw(XMLException) {
 		if (pRefGroup->m_rXmlElm.Parent()->Type() != TiXmlNode::TINYXML_DOCUMENT)
 			throw XMLException(pRefGroup->m_rXmlElm, XMLException::InvalidAttribute);
 	}
+	/* verify that 'maxOccurs' is not negative unless its -1 (unbounded) */
+	if (-1 > MaxOccurs())
+		throw XMLException(Node::GetXMLElm(), XMLException::InvalidAttributeValue);
+	/* verify that 'minOccurs' is non-negative */
+	if (0 > MinOccurs())
+		throw XMLException(Node::GetXMLElm(), XMLException::InvalidAttributeValue);
+	/* process element */
 	rProcessor.ProcessGroup(this);
 }
 
@@ -85,6 +92,25 @@ Types::BaseType *
 Group::GetParentType() const throw(XMLException) {
 	std::auto_ptr<Node> pParent(Node::Parent());
 	return pParent->GetParentType();
+}
+
+int
+Group::MaxOccurs() const {
+	if (HasMaxOccurs()) {
+		if (strcmp(Node::GetAttribute<const char*>("maxOccurs"), "unbounded"))
+			return Node::GetAttribute<int>("maxOccurs");
+		else
+			return -1;
+	}
+	return 1;
+}
+
+int
+Group::MinOccurs() const {
+	if (HasMinOccurs()) {
+		return Node::GetAttribute<int>("minOccurs");
+	}
+	return 1;
 }
 
 std::string
@@ -95,6 +121,16 @@ Group::Name() const throw(XMLException) {
 Group*
 Group::RefGroup() const throw(XMLException) {
 	return Node::FindXSDRef<Group>("ref");
+}
+
+bool
+Group::HasMaxOccurs() const {
+	return Node::HasAttribute("maxOccurs");
+}
+
+bool
+Group::HasMinOccurs() const {
+	return Node::HasAttribute("minOccurs");
 }
 
 bool

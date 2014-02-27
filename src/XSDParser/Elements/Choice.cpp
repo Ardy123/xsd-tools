@@ -62,6 +62,13 @@ Choice::ParseChildren(BaseProcessor& rProcessor) const throw(XMLException) {
 
 void
 Choice::ParseElement(BaseProcessor& rProcessor) const throw(XMLException) {
+	/* verify that 'maxOccurs' is not negative unless its -1 (unbounded) */
+	if (-1 > MaxOccurs())
+		throw XMLException(Node::GetXMLElm(), XMLException::InvalidAttributeValue);
+	/* verify that 'minOccurs' is non-negative */
+	if (0 > MinOccurs())
+		throw XMLException(Node::GetXMLElm(), XMLException::InvalidAttributeValue);
+	/* process element */
 	rProcessor.ProcessChoice(this);
 }
 
@@ -69,6 +76,25 @@ Types::BaseType *
 Choice::GetParentType() const throw(XMLException) {
 	std::auto_ptr<Node> pParent(Node::Parent());
 	return pParent->GetParentType();
+}
+
+int
+Choice::MaxOccurs() const {
+	if (HasMaxOccurs()) {
+		if (strcmp(Node::GetAttribute<const char*>("maxOccurs"), "unbounded"))
+			return Node::GetAttribute<int>("maxOccurs");
+		else
+			return -1;
+	}
+	return 1;
+}
+
+int
+Choice::MinOccurs() const {
+	if (HasMinOccurs()) {
+		return Node::GetAttribute<int>("minOccurs");
+	}
+	return 1;
 }
 
 bool
@@ -80,3 +106,14 @@ bool
 Choice::HasSequence() const throw(XMLException) {
 	return Node::HasContent(Sequence::XSDTag());
 }
+
+bool
+Choice::HasMaxOccurs() const {
+	return Node::HasAttribute("maxOccurs");
+}
+
+bool
+Choice::HasMinOccurs() const {
+	return Node::HasAttribute("minOccurs");
+}
+

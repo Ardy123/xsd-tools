@@ -35,13 +35,24 @@ namespace XSD {
 		private:
 			Any();
 		public:
+			typedef enum {
+				STRICT,
+				LAX,
+				SKIP
+			} ContentValidation;
 			Any(const TiXmlElement& elm, const Schema& rRoot, const Parser& rParser);
 			Any(const Any& cpy);
 			void ParseChildren(BaseProcessor& rProcessor) const throw(XMLException);
 			void ParseElement(BaseProcessor& rProcessor) const throw(XMLException);
 			Types::BaseType * GetParentType() const throw(XMLException);
-			std::string Namespace() const throw(XMLException);
+			int MaxOccurs() const;
+			int MinOccurs() const;
+			std::string Namespace() const;
+			ContentValidation ProcessContents() const;
+			bool HasMaxOccurs() const;
+			bool HasMinOccurs() const;
 			bool HasNamespace() const;
+			bool HasProcessContents() const;
 		};
 	}	/* namespace Elements */
 }	/* namespace XSD */
