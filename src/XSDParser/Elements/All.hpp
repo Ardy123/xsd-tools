@@ -38,6 +38,11 @@ namespace XSD {
 			void ParseChildren(BaseProcessor& rProcessor) const throw(XMLException);
 			void ParseElement(BaseProcessor& rProcessor) const throw(XMLException);
 			Types::BaseType * GetParentType() const throw(XMLException);
+			//bool isEqual(const Node& rElm) const;
+			int MaxOccurs() const;
+			int MinOccurs() const;
+			bool HasMaxOccurs() const;
+			bool HasMinOccurs() const;
 		};
 	}	/* namespace Elements */
 }	/* namespace XSD */

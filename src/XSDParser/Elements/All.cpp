@@ -61,15 +61,14 @@ All::ParseChildren(BaseProcessor& rProcessor) const throw(XMLException) {
 void
 All::ParseElement(BaseProcessor& rProcessor) const throw(XMLException) {
 	/* verify that optional maxOccurs attribute is 1 */
-	if (Node::HasAttribute("maxOccurs")) {
-		if (1 != Node::GetAttribute<int>("maxOccurs"))
-			throw XMLException(pNode->GetXMLElm(), XMLException::InvalidAttributeValue);
+	if (HasMaxOccurs()) {
+		if (1 != MaxOccurs())
+			throw XMLException(Node::GetXMLElm(), XMLException::InvalidAttributeValue);
 	}
 	/* verify that optional minOccurs attribute is 0 or 1 */
-	if (Node::HasAttribute("minOccurs")) {
-		int minOccurs = Node::GetAttribute<int>("maxOccurs");
-		if (0 > minOccurs || 1 < minOccurs)
-			throw XMLException(pNode->GetXMLElm(), XMLException::InvalidAttributeValue);
+	if (HasMinOccurs()) {
+		if (0 > MinOccurs() || 1 < MinOccurs())
+			throw XMLException(Node::GetXMLElm(), XMLException::InvalidAttributeValue);
 	}
 	/* process element */
 	rProcessor.ProcessAll(this);
@@ -79,4 +78,33 @@ Types::BaseType *
 All::GetParentType() const throw(XMLException) {
 	std::auto_ptr<Node> pParent(Node::Parent());
 	return pParent->GetParentType();
+}
+/*
+bool
+All::isEqual(const Node& rElm) const {
+	* verify that they are the same element type *
+	if (!XSD_ISELEMENT(&rElm, All))
+		return false;
+	* verify that they either both have or both don't have the "maxOccurs" attribute *
+	if (Node::HasAttribute("maxOccurs")
+}
+*/
+int
+All::MaxOccurs() const {
+	return Node::GetAttribute<int>("maxOccurs");
+}
+
+int
+All::MinOccurs() const {
+	return Node::GetAttribute<int>("minOccurs");
+}
+
+bool
+All::HasMaxOccurs() const {
+	return Node::HasAttribute("maxOccurs");
+}
+
+bool
+All::HasMinOccurs() const {
+	return Node::HasAttribute("minOccurs");
 }
