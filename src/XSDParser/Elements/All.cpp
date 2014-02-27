@@ -45,7 +45,6 @@ All::All(const All& cpy)
 
 void
 All::ParseChildren(BaseProcessor& rProcessor) const throw(XMLException) {
-	/* no children allowed */
 	std::auto_ptr<Node> pNode(Node::FirstChild());
 	if (NULL != pNode.get()) {
 		do {
@@ -61,6 +60,18 @@ All::ParseChildren(BaseProcessor& rProcessor) const throw(XMLException) {
 
 void
 All::ParseElement(BaseProcessor& rProcessor) const throw(XMLException) {
+	/* verify that optional maxOccurs attribute is 1 */
+	if (Node::HasAttribute("maxOccurs")) {
+		if (1 != Node::GetAttribute<int>("maxOccurs"))
+			throw XMLException(pNode->GetXMLElm(), XMLException::InvalidAttributeValue);
+	}
+	/* verify that optional minOccurs attribute is 0 or 1 */
+	if (Node::HasAttribute("minOccurs")) {
+		int minOccurs = Node::GetAttribute<int>("maxOccurs");
+		if (0 > minOccurs || 1 < minOccurs)
+			throw XMLException(pNode->GetXMLElm(), XMLException::InvalidAttributeValue);
+	}
+	/* process element */
 	rProcessor.ProcessAll(this);
 }
 
