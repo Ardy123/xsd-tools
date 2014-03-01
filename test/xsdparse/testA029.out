@@ -1,0 +1,41 @@
+worldAddress = {
+	attributes = {}
+	content = {
+		street = {
+			attributes = {}
+			content = {
+				string = {
+					attributes = {}
+					content = {}
+				}
+			}
+		}
+		zipcode = {
+			attributes = {}
+			content = {
+				integer = {
+					attributes = {}
+					content = {}
+				}
+			}
+		}
+		city = {
+			attributes = {}
+			content = {
+				string = {
+					attributes = {}
+					content = {}
+				}
+			}
+		}
+		country = {
+			attributes = {}
+			content = {
+				string = {
+					attributes = {}
+					content = {}
+				}
+			}
+		}
+	}
+}

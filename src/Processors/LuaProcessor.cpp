@@ -236,8 +236,17 @@ LuaProcessor::ProcessGroup(const XSD::Elements::Group* pNode) {
 /* virtual */ void
 LuaProcessor::ProcessAny(const XSD::Elements::Any* pNode) {
 	/* an any type can be any element in the schema as a child */
-	/* TODO */
 	pNode->ParseChildren(*this);
+	/* if any is strict, then only the elements allowed in the schema doc tree are valid */
+	if (XSD::Elements::Any::STRICT == pNode->ProcessContents()) {
+		ElementExtracter::ElementLst elmLst = pNode->GetAllowedElements();
+		for (	ElementExtracter::ElementLst::iterator itr = elmLst.begin();
+				itr != elmLst.end();
+				++itr) {
+			ProcessElement(*itr);
+			delete *itr;
+		}
+	}
 }
 
 /* virtual */ void

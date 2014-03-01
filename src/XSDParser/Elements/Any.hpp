@@ -28,12 +28,15 @@
 #endif /* TIXML_USE_STL */
 #include <tinyxml.h>
 #include "./src/XSDParser/Elements/Node.hpp"
+#include "./src/Processors/ElementExtracter.hpp"
+
 namespace XSD {
 	namespace Elements {
 		class Any : public Node {
 			XSD_ELEMENT_TAG("any")
 		private:
 			Any();
+			static Element * _findParentElement(const Node * pNode);
 		public:
 			typedef enum {
 				STRICT,
@@ -45,6 +48,7 @@ namespace XSD {
 			void ParseChildren(BaseProcessor& rProcessor) const throw(XMLException);
 			void ParseElement(BaseProcessor& rProcessor) const throw(XMLException);
 			Types::BaseType * GetParentType() const throw(XMLException);
+			Processors::ElementExtracter::ElementLst GetAllowedElements() const;
 			int MaxOccurs() const;
 			int MinOccurs() const;
 			std::string Namespace() const;

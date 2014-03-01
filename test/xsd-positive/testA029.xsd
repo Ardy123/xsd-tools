@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema>
+  <annotation>
+	<documentation>This schema tests the any schema element with strict processing.</documentation>
+  </annotation>
+  <complexType name="address">
+	<sequence>
+	  <element name="street" type="string" />
+	  <element name="city" type="string" />
+	  <element name="zipcode" type="integer" />
+	  <element name="country" type="string" />
+	</sequence>
+  </complexType>
+  <element name="worldAddress">
+	<complexType>
+	  <sequence>
+		<element name="country" type="string"/>
+		<any/>
+	  </sequence>
+	</complexType>
+  </element>
+</schema>

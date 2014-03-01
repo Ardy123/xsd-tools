@@ -1,7 +1,7 @@
 /*
- * ArrayType.hpp
+ * ElementExtracter.hpp
  *
- *  Created on: 01/23/12
+ *  Created on: 02/28/14
  *      Author: Ardavon Falls
  *   Copyright: (c)2012 Ardavon Falls
  *
@@ -21,26 +21,26 @@
  *  along with Xsd-Tools.  If not, see <http://www.gnu.org/licenses/>.
  */
  
-#ifndef ARRAYTYPE_HPP_
-#define ARRAYTYPE_HPP_
+#ifndef ELEMENTEXTRACTER_HPP_
+#define ELEMENTEXTRACTER_HPP_
 
-#include <string>
+#include <vector>
 #include "./src/XSDParser/Types.hpp"
+#include "./src/Processors/LuaProcessorBase.hpp"
 
 namespace Processors {
-	namespace Types {
-		class ArrayType : public XSD::Types::BaseType {
-		public:
-			ArrayType(const XSD::Types::BaseType& rType);
-			virtual ~ArrayType();
-			virtual XSD::Types::BaseType* clone() const;
-			virtual bool isTypeRelated(const BaseType* pType) const;
-			virtual const char* Name() const;
-			const XSD::Types::BaseType& Type() const;
-		private:
-			XSD::Types::BaseType* m_pBaseType;
-			std::string m_name;
-		};
-	}
+	class ElementExtracter : public LuaProcessorBase {
+	public:
+		typedef std::vector<XSD::Elements::Element*> ElementLst;
+		ElementExtracter();
+		ElementExtracter(const ElementExtracter& rProccessor);
+		virtual ~ElementExtracter();
+		const ElementLst& Extract(const XSD::Elements::Schema& rDocRoot);
+		virtual void ProcessSchema(const XSD::Elements::Schema* pNode);
+		virtual void ProcessElement(const XSD::Elements::Element* pNode);
+		virtual void ProcessInclude(const XSD::Elements::Include* pNode);
+	private:
+		ElementLst m_elementLst;
+	};
 }
-#endif /* ARRAYTYPE_HPP_ */
+#endif /* ELEMENTEXTRACTER_HPP_ */

@@ -53,6 +53,7 @@ xsdb = {
 				'src/Processors/LuaAdapter.cpp',
 				'src/Processors/LuaProcessor.cpp',
 				'src/Processors/SimpleTypeExtracter.cpp',
+				'src/Processors/ElementExtracter.cpp',
 				'src/TemplateEngine/table.lua',
 				'src/TemplateEngine/string.lua',
 				'src/TemplateEngine/parser.lua',

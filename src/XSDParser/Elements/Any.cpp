@@ -29,7 +29,9 @@
 #include <string>
 #include <tinyxml.h>
 #include "./src/XSDParser/Elements/Any.hpp"
+#include "./src/XSDParser/Elements/Element.hpp"
 #include "./src/XSDParser/Elements/Annotation.hpp"
+#include "./src/Processors/ElementExtracter.hpp"
 
 using namespace XSD;
 using namespace XSD::Elements;
@@ -44,6 +46,7 @@ Any::Any(const Any& cpy)
 
 void
 Any::ParseChildren(BaseProcessor& rProcessor) const throw(XMLException) {
+	/* parse document children */
 	std::auto_ptr<Node> pNode(Node::FirstChild());
 	if (NULL != pNode.get()) {
 		do {
@@ -72,6 +75,28 @@ Types::BaseType *
 Any::GetParentType() const throw(XMLException) {
 	std::auto_ptr<Node> pParent(Node::Parent());
 	return pParent->GetParentType();
+}
+
+Processors::ElementExtracter::ElementLst
+Any::GetAllowedElements() const {
+  Processors::ElementExtracter::ElementLst retLst;
+	if (STRICT == ProcessContents()) {
+		Processors::ElementExtracter elmExtrctr;
+		retLst = elmExtrctr.Extract(this->m_rDocRoot);
+		/* find parent element and remove it from list to prevent recursive loops */
+		std::auto_ptr<Element> pElement(_findParentElement(this));
+		if (NULL != pElement.get()) {
+			for (	Processors::ElementExtracter::ElementLst::iterator itr = retLst.begin();
+				  itr != retLst.end();
+				  ++itr) {
+				if ( *(*itr) == *(pElement.get())) {
+					retLst.erase(itr);
+					break;
+				}
+			}
+		}
+	}
+	return retLst;
 }
 
 int
@@ -135,4 +160,14 @@ Any::HasNamespace() const {
 bool
 Any::HasProcessContents() const {
 	return Node::HasAttribute("processContents");
+}
+
+/* static */ Element * 
+Any::_findParentElement(const Node * pNode) {
+	if (NULL == pNode)
+		return NULL;
+	if (XSD_ISELEMENT(pNode, Element)) 
+		return new Element(*(static_cast<const Element *>(pNode)));
+	std::auto_ptr<Node> pParent(pNode->Parent());
+	return _findParentElement(pParent.get());
 }
