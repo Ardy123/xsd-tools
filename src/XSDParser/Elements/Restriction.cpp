@@ -48,6 +48,7 @@
 #include "./src/XSDParser/Elements/WhiteSpace.hpp"
 #include "./src/XSDParser/Elements/Annotation.hpp"
 #include "./src/XSDParser/Elements/All.hpp"
+#include "./src/Processors/RestrictionVerify.hpp"
 
 using namespace XSD;
 using namespace XSD::Elements;
@@ -165,8 +166,13 @@ Restriction::ParseElement(BaseProcessor& rProcessor) const throw(XMLException) {
 	std::auto_ptr<Types::BaseType> pBase(Base());
 	if (XSD_ISTYPE(pBase.get(), Types::ComplexType)) {
 		Types::ComplexType* pCmplxType = static_cast<Types::ComplexType*>(pBase.get());
+		Processors::RestrictionVerify verifyRestriciton;
+		if (!verifyRestriciton.Verify(this, pCmplxType->m_pValue))
+			throw XMLException(GetXMLElm(), XMLException::RestrictionTypeMismatch);
+		/*
 		if (!_isElmRelated(this, &pCmplxType->m_pValue->GetXMLElm()))
 			throw XMLException(GetXMLElm(), XMLException::RestrictionTypeMismatch);
+		*/
 	}
 	/* process element */
 	rProcessor.ProcessRestriction(this);
@@ -177,14 +183,14 @@ Restriction::GetParentType() const throw(XMLException) {
 	return this->Base();
 }
 
-/*static */ bool
+/*static * bool
 Restriction::_isElmRelated(const Node* pRstrctn, const TiXmlElement* pBase) const throw(XMLException) {
 	std::auto_ptr<Node> pRstrctnChld(pRstrctn->FirstChild());
-	/* iterate through children comparing against parent type */
+	* iterate through children comparing against parent type *
 	if (NULL != pRstrctnChld.get()) {
 	  do {
 			if (!(XSD_ISELEMENT(pRstrctnChld.get(), Annotation))) {
-				/* find node in parent XSD type */
+				* find node in parent XSD type *
 				const TiXmlElement* pFndElm = _findElm(pBase, &(pRstrctnChld.get()->GetXMLElm()));
 				if (pFndElm) {
 					if (_isElmRelated(pRstrctnChld.get(), pFndElm) == false )
@@ -197,7 +203,7 @@ Restriction::_isElmRelated(const Node* pRstrctn, const TiXmlElement* pBase) cons
 	return true;
 }
 
-/* static */ const TiXmlElement*
+* static * const TiXmlElement*
 Restriction::_findElm(const TiXmlElement* pTreeBase, const TiXmlElement* pNode) throw(XMLException) {
 	const TiXmlElement* pBaseChld = pTreeBase->FirstChildElement(pNode->Value());
 	bool cmpHasName = (pNode->Attribute("name") != NULL);
@@ -223,11 +229,11 @@ Restriction::_findElm(const TiXmlElement* pTreeBase, const TiXmlElement* pNode) 
 				continue;
 			}
 		}
-		return pBaseChld; /* !cmpHasName && !cmpHasType */
+		return pBaseChld; * !cmpHasName && !cmpHasType *
 	}
 	return NULL;
 }
-
+*/
 bool
 Restriction::isParentComplexContent() const throw(XMLException) {
 	std::auto_ptr<Node> pParent(Node::Parent());

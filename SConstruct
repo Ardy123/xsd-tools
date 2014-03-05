@@ -54,6 +54,7 @@ xsdb = {
 				'src/Processors/LuaProcessor.cpp',
 				'src/Processors/SimpleTypeExtracter.cpp',
 				'src/Processors/ElementExtracter.cpp',
+				'src/Processors/RestrictionVerify.cpp',
 				'src/TemplateEngine/table.lua',
 				'src/TemplateEngine/string.lua',
 				'src/TemplateEngine/parser.lua',
