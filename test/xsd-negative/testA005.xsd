@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<schema>
+	<include schemaLocation="include/Person.xsd"/>
+	<complexType name="GlobalPersonType">
+		<complexContent>
+			<restriction base="PersonType">
+				<sequence>
+					<element name="Name" type="string"/>
+					<element name="Country" type="string"/>
+				</sequence>
+			</restriction>
+		</complexContent>
+	</complexType>
+	<element name="Company">
+		<complexType>
+			<sequence>
+				<element name="Person" type="GlobalPersonType" maxOccurs="unbounded"/>
+			</sequence>
+		</complexType>
+	</element>
+</schema>
