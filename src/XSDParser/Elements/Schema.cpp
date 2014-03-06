@@ -83,8 +83,9 @@ const std::string
 Schema::Namespace() const throw(XMLException) {
 	/* search for xmlns attribute (sans the namespace prefix) */
 	const TiXmlAttribute * pAttrib = m_rXmlElm.FirstAttribute();
-	for ( ; pAttrib && (std::string::npos == std::string(pAttrib->Name()).find("xmlns:"));
-			pAttrib = pAttrib->Next()) { }
+	for ( ; pAttrib && (std::string::npos == std::string(pAttrib->Value()).find("http://www.w3.org/2001/XMLSchema"));
+			pAttrib = pAttrib->Next()) { 
+	}
 	/* extract the namespace prefix if attribute found */
 	if (pAttrib) {
 		std::string attribName(pAttrib->Name());

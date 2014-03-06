@@ -1,0 +1,19 @@
+Company = {
+	attributes = {}
+	content = {
+		Person = {
+			attributes = {}
+			content = {
+				Name = {
+					attributes = {}
+					content = {
+						string = {
+							attributes = {}
+							content = {}
+						}
+					}
+				}
+			}
+		}
+	}
+}
