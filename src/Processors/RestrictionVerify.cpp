@@ -44,7 +44,7 @@ RestrictionVerify::RestrictionVerify(const RestrictionVerify& rProcessor)
  	: LuaProcessorBase(rProcessor), m_pSubTree(rProcessor.m_pSubTree)
  { }
  
- RestrictionVerify::RestrictionVerify(Node* pSubTree)
+ RestrictionVerify::RestrictionVerify(const Node* pSubTree)
 	: LuaProcessorBase(NULL), m_pSubTree(pSubTree)
 { }
  
@@ -54,7 +54,7 @@ RestrictionVerify::~RestrictionVerify() {
 
 bool
 RestrictionVerify::Verify(const Restriction* pRestriciton, const ComplexType* pParentType) throw(XSD::XMLException) {
-	RestrictionVerify processor(new ComplexType(*pParentType));
+	RestrictionVerify processor(pParentType);
 	try {
 		processor.ProcessRestriction(pRestriciton);
 	} catch (XSD::XMLException& e) {
@@ -70,11 +70,11 @@ RestrictionVerify::Verify(const Restriction* pRestriciton, const ComplexType* pP
 /* virtual */ void 
 RestrictionVerify::ProcessElement(const Element* pNode) {
 	/* find the element in the parent sub-tree */
-	std::auto_ptr<Node> pParentNode(m_pSubTree->FirstChild());
-	if (NULL != pParentNode.get()) {
+	std::auto_ptr<Node> pSearchNode(m_pSubTree->FirstChild());
+	if (NULL != pSearchNode.get()) {
 		do {
-			if (XSD_ISELEMENT(pParentNode.get(), Element)) {
-				const Element * pElement = static_cast<const Element *>(pParentNode.get());
+			if (XSD_ISELEMENT(pSearchNode.get(), Element)) {
+				const Element * pElement = static_cast<const Element *>(pSearchNode.get());
 				if (pNode->HasRef() && pElement->HasRef()) {
 					std::auto_ptr<Element> pRefElm(pNode->RefElement());
 					std::auto_ptr<Element> pSubTreeRefElm(pElement->RefElement());
@@ -84,67 +84,75 @@ RestrictionVerify::ProcessElement(const Element* pNode) {
 					}
 				} else if (	pNode->HasName() && pElement->HasName() &&
 							(0 == pNode->Name().compare(pElement->Name()))) {
-					/* verify the elements have the same type */
+					/* verify the elements have the same or related types */
 					std::auto_ptr<XSD::Types::BaseType> pElmType(pNode->Type());
 					std::auto_ptr<XSD::Types::BaseType> pSubTreeElmType(pElement->Type());
-					if (XSD_ISTYPE(pElmType.get(), XSD::Types::SimpleType) && 
-						XSD_ISTYPE(pSubTreeElmType.get(), XSD::Types::SimpleType)) {
-						if ((static_cast<XSD::Types::SimpleType*>(pElmType.get()))->m_pValue == 
-							(static_cast<XSD::Types::SimpleType*>(pSubTreeElmType.get()))->m_pValue) {
-							return;
-						}
-					} else if (	XSD_ISTYPE(pElmType.get(), XSD::Types::ComplexType) &&
-								XSD_ISTYPE(pSubTreeElmType.get(), XSD::Types::ComplexType)) {
-						if ((static_cast<XSD::Types::ComplexType*>(pElmType.get()))->m_pValue == 
-							(static_cast<XSD::Types::ComplexType*>(pSubTreeElmType.get()))->m_pValue) {
-							return;
+					if (XSD_ISTYPE(pElmType.get(), XSD::Types::SimpleType) || 
+						XSD_ISTYPE(pElmType.get(), XSD::Types::ComplexType)) {
+						if (pElmType->isTypeRelated(pSubTreeElmType.get())) {
+						  return;
 						}
 					} else if (typeid(*(pElmType.get())) == typeid(*(pSubTreeElmType.get()))) {
 						return;
 					}
 				}
+			} else if (XSD_ISELEMENT(pSearchNode.get(), Group)) {
+				const Group * pGroup = static_cast<const Group *>(pSearchNode.get());
+				/* if group is a ref, then enter that group, dive to its child and compare agaist this nodes 
+				 * parent (sequence/choice/all). */
+				std::auto_ptr<Node> pParent(pNode->Parent());
+				if (pGroup->HasRef()) {
+					/* update sub-tree to point to the referenced group sub-tree */
+					std::auto_ptr<Group> pRefGroup(pGroup->RefGroup());
+					RestrictionVerify processor(pRefGroup.get());
+					pParent->ParseElement(processor);
+					return;
+				} else {
+					RestrictionVerify processor(pGroup->FirstChild());
+					pParent->ParseElement(processor);
+					return;
+				}
 			}
-		} while (NULL != (pParentNode = std::auto_ptr<Node>(pParentNode->NextSibling())).get());
+		} while (NULL != (pSearchNode = std::auto_ptr<Node>(pSearchNode->NextSibling())).get());
 	}
 	throw XSD::XMLException(pNode->GetXMLElm(), XSD::XMLException::RestrictionTypeMismatch);
 }
 
 /* virtual */ void 
 RestrictionVerify::ProcessRestriction(const XSD::Elements::Restriction* pNode) {
-	RestrictionVerify processor(m_pSubTree->FirstChild());
+	RestrictionVerify processor(m_pSubTree);
 	pNode->ParseChildren(processor);
 }
 
 /* virtual */ void 
 RestrictionVerify::ProcessSequence(const XSD::Elements::Sequence* pNode) {
-	/* search for either a xs:sequence and verify that it is in the sub-tree */
-	std::auto_ptr<Node> pParentNode(m_pSubTree);
-	if (NULL != pParentNode.get()) {
+	/* valid restrictions are xs:sequence to xs:sequence or xs:choice to xs:sequence */
+	std::auto_ptr<Node> pSearchNode(m_pSubTree->FirstChild());
+	if (NULL != pSearchNode.get()) {
 		do {
-			if (XSD_ISELEMENT(pParentNode.get(), Sequence)) {
-				const Sequence * pSequence = static_cast<const Sequence *>(pParentNode.get());
-				RestrictionVerify processor(new Sequence(*pSequence));
+			if (XSD_ISELEMENT(pSearchNode.get(), Sequence) ||
+				XSD_ISELEMENT(pSearchNode.get(), Choice)) {
+				RestrictionVerify processor(pSearchNode.get());
 				pNode->ParseChildren(processor);
 				return;
 			}
-		} while (NULL != (pParentNode = std::auto_ptr<Node>(pParentNode->NextSibling())).get());
+		} while (NULL != (pSearchNode = std::auto_ptr<Node>(pSearchNode->NextSibling())).get());
 	}
-	throw XSD::XMLException(pParentNode->GetXMLElm(), XSD::XMLException::RestrictionTypeMismatch);
+	throw XSD::XMLException(pNode->GetXMLElm(), XSD::XMLException::RestrictionTypeMismatch);
 }
 
 /* virtual */ void 
 RestrictionVerify::ProcessChoice(const XSD::Elements::Choice* pNode) {
 	/* search for either a xs:choice and verify that it is in the sub-tree */
-	std::auto_ptr<Node> pParentNode(m_pSubTree);
-	if (NULL != pParentNode.get()) {
+	std::auto_ptr<Node> pSearchNode(m_pSubTree->FirstChild());
+	if (NULL != pSearchNode.get()) {
 		do {
-			if (XSD_ISELEMENT(pParentNode.get(), Choice)) {
-				const Choice * pChoice = static_cast<const Choice *>(pParentNode.get());
-				RestrictionVerify processor(new Choice(*pChoice));
+			if (XSD_ISELEMENT(pSearchNode.get(), Choice)) {
+				RestrictionVerify processor(pSearchNode.get());
 				pNode->ParseChildren(processor);
 				return;
 			}
-		} while (NULL != (pParentNode = std::auto_ptr<Node>(pParentNode->NextSibling())).get());
+		} while (NULL != (pSearchNode = std::auto_ptr<Node>(pSearchNode->NextSibling())).get());
 	}
 	throw XSD::XMLException(pNode->GetXMLElm(), XSD::XMLException::RestrictionTypeMismatch);
 }
@@ -152,11 +160,11 @@ RestrictionVerify::ProcessChoice(const XSD::Elements::Choice* pNode) {
 /* virtual */ void 
 RestrictionVerify::ProcessGroup(const XSD::Elements::Group* pNode) {
 	/* search for either a xs:group and verify that it is in the sub-tree */
-	std::auto_ptr<Node> pParentNode(m_pSubTree);
-	if (NULL != pParentNode.get()) {
+	std::auto_ptr<Node> pSearchNode(m_pSubTree->FirstChild());
+	if (NULL != pSearchNode.get()) {
 		do {
-			if (XSD_ISELEMENT(pParentNode.get(), Group)) {
-				const Group * pGroup = static_cast<const Group *>(pParentNode.get());
+			if (XSD_ISELEMENT(pSearchNode.get(), Group)) {
+				const Group * pGroup = static_cast<const Group *>(pSearchNode.get());
 				if (pNode->HasRef() && pGroup->HasName()) {
 					std:auto_ptr<Group> pRefGroup(pNode->RefGroup());
 					if (*(pRefGroup.get()) == *pGroup) {
@@ -164,24 +172,24 @@ RestrictionVerify::ProcessGroup(const XSD::Elements::Group* pNode) {
 					}
 				}
 			}
-		} while (NULL != (pParentNode = std::auto_ptr<Node>(pParentNode->NextSibling())).get());
+		} while (NULL != (pSearchNode = std::auto_ptr<Node>(pSearchNode->NextSibling())).get());
 	}
 	throw XSD::XMLException(pNode->GetXMLElm(), XSD::XMLException::RestrictionTypeMismatch);
 }
 
 /* virtual */ void 
 RestrictionVerify::ProcessAll(const XSD::Elements::All* pNode) {
-	/* search for either a xs:all and verify that it is in the sub-tree */
-	std::auto_ptr<Node> pParentNode(m_pSubTree);
-	if (NULL != pParentNode.get()) {
+	/* valid restrictions are xs:all to xs:all or xs:all to xs:sequence  */
+	std::auto_ptr<Node> pSearchNode(m_pSubTree->FirstChild());
+	if (NULL != pSearchNode.get()) {
 		do {
-			if (XSD_ISELEMENT(pParentNode.get(), All)) {
-				const All * pAll = static_cast<const All *>(pParentNode.get());
-				RestrictionVerify processor(new All(*pAll));
+			if (XSD_ISELEMENT(pSearchNode.get(), All) ||
+				XSD_ISELEMENT(pSearchNode.get(), Sequence)) {
+				RestrictionVerify processor(pSearchNode.get());
 				pNode->ParseChildren(processor);
 				return;
 			}
-		} while (NULL != (pParentNode = std::auto_ptr<Node>(pParentNode->NextSibling())).get());
+		} while (NULL != (pSearchNode = std::auto_ptr<Node>(pSearchNode->NextSibling())).get());
 	}
 	throw XSD::XMLException(pNode->GetXMLElm(), XSD::XMLException::RestrictionTypeMismatch);
 }

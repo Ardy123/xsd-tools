@@ -1,0 +1,50 @@
+AddressElm = {
+	attributes = {}
+	content = {
+		state = {
+			attributes = {}
+			content = {
+				string = {
+					attributes = {}
+					content = {}
+				}
+			}
+		}
+		city = {
+			attributes = {}
+			content = {
+				string = {
+					attributes = {}
+					content = {}
+				}
+			}
+		}
+		postalCode = {
+			attributes = {}
+			content = {
+				integer = {
+					attributes = {}
+					content = {}
+				}
+			}
+		}
+		country = {
+			attributes = {}
+			content = {
+				string = {
+					attributes = {}
+					content = {}
+				}
+			}
+		}
+		street = {
+			attributes = {}
+			content = {
+				string = {
+					attributes = {}
+					content = {}
+				}
+			}
+		}
+	}
+}

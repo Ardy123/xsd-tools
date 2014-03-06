@@ -95,7 +95,7 @@ namespace XSD {
 				}
 			}
 		public:
-			virtual ~Node() {}
+			virtual ~Node();
 			virtual void ParseChildren(BaseProcessor& rProcessor) const throw(XMLException) = 0;
 			virtual void ParseElement(BaseProcessor& rProcessor) const throw(XMLException) = 0;
 			/* for "element" : return their type 

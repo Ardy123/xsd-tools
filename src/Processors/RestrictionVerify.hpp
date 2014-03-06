@@ -44,9 +44,9 @@ namespace Processors {
 		virtual void ProcessGroup(const XSD::Elements::Group* pNode);
 		virtual void ProcessAll(const XSD::Elements::All* pNode);
 	protected:
-		RestrictionVerify(XSD::Elements::Node* pSubTree);
+		RestrictionVerify(const XSD::Elements::Node* pSubTree);
 	private:
-		XSD::Elements::Node * m_pSubTree;
+		const XSD::Elements::Node * m_pSubTree;
 	};
 }
 #endif /* RESTRICTIONVERIFY_HPP_ */

@@ -18,7 +18,7 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+ *  along with Xsd-Tools.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 #include <memory>
@@ -58,6 +58,8 @@
 #include "./src/XSDParser/Elements/All.hpp"
 #include "./src/XSDParser/Elements/AppInfo.hpp"
 
+#define DEBUG_CONSTRUCTION (0)
+
 using namespace XSD;
 using namespace XSD::Elements;
 
@@ -91,13 +93,37 @@ namespace XSD{
 }
 
 /* Non-specialized methods */
-Node::Node(const TiXmlElement& elm, const Schema& rRoot, const Parser& rParser)
-	: m_rXmlElm(elm), m_rDocRoot(rRoot), m_rParser(rParser)
-{ }
+Node::Node(const TiXmlElement& rElm, const Schema& rRoot, const Parser& rParser)
+	: m_rXmlElm(rElm), m_rDocRoot(rRoot), m_rParser(rParser)
+{ 
+#if (DEBUG_CONSTRUCTION)
+	std::cout << "Created: " << m_rXmlElm.ValueStr() << "[ ";
+	for (const TiXmlAttribute * pAttr = m_rXmlElm.FirstAttribute(); pAttr; pAttr = pAttr->Next())
+		std::cout << pAttr->Name() << ":" << pAttr->Value() << " ";
+	std::cout << "]" << std::endl;
+#endif /* DEBUG_CONSTRUCTION */
+}
 
 Node::Node(const Node& rCpy)
 	: m_rXmlElm(rCpy.m_rXmlElm), m_rDocRoot(rCpy.m_rDocRoot), m_rParser(rCpy.m_rParser)
-{}
+{
+#if (DEBUG_CONSTRUCTION)
+	std::cout << "Created: " << m_rXmlElm.ValueStr() << "[ ";
+	for (const TiXmlAttribute * pAttr = m_rXmlElm.FirstAttribute(); pAttr; pAttr = pAttr->Next())
+		std::cout << pAttr->Name() << ":" << pAttr->Value() << " ";
+	std::cout << "]" << std::endl;  
+#endif /* DEBUG_CONSTRUCTION */
+}
+
+/* virtual */
+Node::~Node() {
+#if (DEBUG_CONSTRUCTION)
+	std::cout << "Deleted: " << m_rXmlElm.ValueStr() << "[ ";
+	for (const TiXmlAttribute * pAttr = m_rXmlElm.FirstAttribute(); pAttr; pAttr = pAttr->Next())
+		std::cout << pAttr->Name() << ":" << pAttr->Value() << " ";
+	std::cout << "]" << std::endl;
+#endif /* DEBUG_CONSTRUCTION */
+}
 
 const TiXmlElement*
 Node::_FindChildXMLElement(const char* pXMLElmTag, const char* pAttrib, const char* pName) const throw(XMLException) {
