@@ -35,9 +35,14 @@
 using namespace std;
 
 int main(int argc, const char* argv[]) {
-	if (argc != 3) {
+	if (argc < 3) {
 		cout << "xsdb (c) 2012 Ardavon Falls" << endl;
-		cout << "Syntax xsdb <template> <input xsd file>" << endl;
+		cout << "Syntax xsdb <template> <input xsd file> <unique template paramters>" << endl;
+		cout << "To retrieve list of template paramters invoke with option \"-h info\"" << endl;
+		cout << "For example:" << endl;
+		cout << "\t #./xsdb template/test test/xsd-positive/testA001.xsd -h all" << endl;
+		cout << "Please note that not all templates have optional paramters in which" << endl;
+		cout << "case they will not return anything as optional paramters." << endl;
 	} else {
 		XSD::Parser 				parser;
 		XSD::Elements::Schema* 		pDocRoot = NULL;
@@ -51,6 +56,8 @@ int main(int argc, const char* argv[]) {
 		try {
 			/* init lua */
 			luaScriptAdapter.Open();
+			/* process additional 'optional' template command line arguments */
+			luaScriptAdapter.ParseCommandLineArgs(argv, argc);
 			/* parse xsd document */
 			pDocRoot = parser.Parse(xsdName);
 			pDocRoot->ParseElement(luaPrcssr);

@@ -43,6 +43,8 @@ namespace Core {
 		LuaScriptAdapter(lua_State* pLuaState);
 		virtual ~LuaScriptAdapter();
 		void Open() throw();
+		/* returns true on error */
+		bool ParseCommandLineArgs(const char* pArgv[], int nArgs);
 		void Load(const uint8_t* pBuf, size_t bufSz) throw(LuaException);
 		void Execute(const std::string& templateName) throw(LuaException);
 		void Close() throw();

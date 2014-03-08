@@ -16,7 +16,11 @@ function printTable(t, depth)
 	end
 end
 function main(template)
-	printTable(schema, 0)
+	if __CMD_ARGS__["-h"] then
+		out:append("There are no unique template arguments to the test template\n")
+	else
+		printTable(schema, 0)
+	end
 end
 main("")
 return(out:str())

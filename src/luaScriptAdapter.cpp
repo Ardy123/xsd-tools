@@ -69,6 +69,24 @@ LuaScriptAdapter::Open() throw() {
 	lua_setglobal(m_pLuaState, "sdbm_hash");
 }
 
+bool
+LuaScriptAdapter::ParseCommandLineArgs(const char* pArgv[], int nArgs) {
+	/* verify that there are an odd number of command line args
+	 * 3 for exe-name/tempalate/schema & 2 for every additional option (flag/value) */
+	if (0 == (nArgs & 0x1)) {
+		return true;
+	}
+	/* create a lua table & parse additional template command line args */
+	lua_newtable(m_pLuaState);
+	for (int ndx = 3; ndx < nArgs; ndx+=2) {
+		lua_pushstring(m_pLuaState, pArgv[ndx + 1]);
+		lua_setfield(m_pLuaState, -2, pArgv[ndx]);
+	}
+	/* add argument table to globals */
+	lua_setglobal(m_pLuaState, "__CMD_ARGS__");
+	return false;
+}
+
 void
 LuaScriptAdapter::Load(const uint8_t* pBuf, size_t bufSz) throw(LuaException) {
 	int err = luaL_loadbuffer(m_pLuaState, (const char*)pBuf, bufSz, "TemplateEngine");

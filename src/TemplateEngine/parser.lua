@@ -34,6 +34,7 @@ function parser:new(obj)
 		difftime = _G.os.difftime,
 		setlocale = _G.os.setlocale,
 		time = _G.os.time,
+		exit = _G.os.exit,
 	}
 	obj = obj or { prvtEnv = safeEnv:new({
 		_VERSION=_G._VERSION,
@@ -58,6 +59,7 @@ function parser:new(obj)
 		dbgPrint=_G.print,
 		sdbm_hash=_G.sdbm_hash,
 		__SCHEMA_NAME__=_G.__SCHEMA_NAME__,
+		__CMD_ARGS__=_G.__CMD_ARGS__,
 		include= (function(file) return obj:include(file) end)
 	})}
 	setmetatable(obj, self)
