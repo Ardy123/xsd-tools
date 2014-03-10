@@ -52,6 +52,9 @@ def _createCScannerPaths(buildSettings, config):
 def _createLuaFlags(buildSettings, config):
     return buildSettings["luaflags"][config]
 
+def _createLdFlags(buildSettings, config):
+    return buildSettings["linkFlags"][config]
+
 def _extractTarget(buildSettings):
     return buildSettings['target']
 
@@ -87,6 +90,7 @@ def SetupEnv(buildSettings, env, config):
     env['LIBPATH'] = _sconsWrap(buildSettings['libpath'] if 'libpath' in buildSettings else "")
     env['CPPPATH'] = _sconsWrap(_createCScannerPaths(buildSettings, config))
     env['LUACFLAGS']= _sconsWrap(_createLuaFlags(buildSettings, config))
+    env['LINKFLAGS']= _sconsWrap(_createLdFlags(buildSettings, config))
     return env
 
 def Program(buildSettings, env, config):
