@@ -166,7 +166,7 @@ RestrictionVerify::ProcessGroup(const XSD::Elements::Group* pNode) {
 			if (XSD_ISELEMENT(pSearchNode.get(), Group)) {
 				const Group * pGroup = static_cast<const Group *>(pSearchNode.get());
 				if (pNode->HasRef() && pGroup->HasName()) {
-					std:auto_ptr<Group> pRefGroup(pNode->RefGroup());
+					std::auto_ptr<Group> pRefGroup(pNode->RefGroup());
 					if (*(pRefGroup.get()) == *pGroup) {
 						return;
 					}

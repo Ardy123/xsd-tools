@@ -105,7 +105,7 @@ Include::_extractURIPath(const std::string& uri) {
 	/* strip off query section */
 	std::string noQuery		= uri.substr(0, uri.find("?"));
 	/* strip off protocol section */
-	const int	protoNdx	= noQuery.find("://");
+	const size_t	 protoNdx	= noQuery.find("://");
 	std::string noProto		= noQuery.substr((std::string::npos == protoNdx) ? 0 : protoNdx + 3);
 	return noProto;
 }
@@ -121,7 +121,7 @@ Include::_isFileURI(const std::string& uri) {
 
 /* static */ std::string
 Include::_extractQuery(const std::string& uri) {
-	const int queryNdx = uri.find("?");
+	const size_t queryNdx = uri.find("?");
 	if (std::string::npos == queryNdx)
 		return std::string("");
 	else

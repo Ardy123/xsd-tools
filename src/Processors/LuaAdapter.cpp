@@ -191,8 +191,8 @@ static void _luaStackDump(lua_State * pLuaState) {
 #endif
 }
 
-static void _luaStackDumpRec(lua_State * pLuaState, int stackIndex) {
 #if (DEBUG_LUASTACK)
+static void _luaStackDumpRec(lua_State * pLuaState, int stackIndex) {
 	const int stkTop = lua_gettop(pLuaState);
 	/* base case */
 	if (stackIndex == stkTop) 
@@ -237,5 +237,5 @@ static void _luaStackDumpRec(lua_State * pLuaState, int stackIndex) {
 	}
 	cout << " ";
 	_luaStackDumpRec(pLuaState, stackIndex + 1);
-#endif
 }
+#endif

@@ -65,8 +65,8 @@ xsdb = {
                    'libboost_system', 
                    'boost_filesystem', 
                    _getLuaLib()],
-	'cflags': { 'debug'  : '-Werror -I. -g -g3 -ggdb -gdwarf-4 -Winit-self -Wformat-nonliteral',
-				'release': '-Werror -I. -O3 -fomit-frame-pointer -Winit-self -Wformat-nonliteral' },
+	'cflags': { 'debug'  : '-Wall -Werror -I. -g -g3 -ggdb -gdwarf-4 -Winit-self -Wformat -Wformat-nonliteral',
+				'release': '-Wall -Werror -I. -O3 -fomit-frame-pointer -Winit-self -Wformat -Wformat-nonliteral' },
 	'luaflags': { 'debug': '', 'release': '-s' },
 	'linkFlags': {'debug':'', 'release': '-Wl,-O1 -Wl,--discard-all -Wl,--no-undefined' },
 	'target': 'xsdb'

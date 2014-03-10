@@ -40,8 +40,8 @@ Util::SDBMHash(const string& string) {
 
 std::string
 Util::ExtractResourceName(const std::string& uri) {
-	const int queryNdx	= uri.find("?");
-	const int resNdx		= uri.rfind("/", queryNdx);
+	const size_t queryNdx	= uri.find("?");
+	const size_t resNdx		= uri.rfind("/", queryNdx);
 	return uri.substr(resNdx + 1, (std::string::npos != queryNdx) ? (queryNdx - resNdx) - 1 : queryNdx);
 }
 
