@@ -19,7 +19,8 @@
 import SCons.Builder
 import SCons.Tool
 import SCons.Defaults
-import subprocess
+import sys
+import subprocess 
 
 LuacObjectBuilder = SCons.Builder.Builder(action = '$LUACMD', suffix = '.luac', src_suffix = '.lua')
 LuacProgramBuilder = SCons.Builder.Builder(action = '$LLCCMD', suffix = '.luac', src_suffix = '.luac', src_builder = ['LuaC'])
@@ -43,9 +44,11 @@ def generate(env):
 	env['LUACMD'] = '$LUAC -o $TARGET $LUACFLAGS $SOURCE'
   	env['BUILDERS']['Lua'] = LuacProgramBuilder
 	env['LLCCMD'] = '$LUAC -o $TARGET $LUACFLAGS $SOURCES'
-	env['OBJCPY'] = 'objcopy'
+
 	try:
-		env['LUAOBJCMD'] = '$OBJCPY --input binary --output ' + output_target[architecture] + ' --binary-architecture i386 $SOURCE $TARGET'
+		if sys.platform.startswith("linux"):
+			env['OBJCPY'] = 'objcopy'
+			env['LUAOBJCMD'] = '$OBJCPY --input binary --output ' + output_target[architecture] + ' --binary-architecture i386 $SOURCE $TARGET'
 	except KeyError, e:
 		raise Exception( "Architecture {0} not supported".format(architecture) )
 

@@ -37,9 +37,9 @@ LuaException::LuaException(const std::string& rMsg) {
 	m_errorMsg = msgStrm.str();
 }
 
-LuaException::LuaException(const std::string& rMsg, int errno) { 
+LuaException::LuaException(const std::string& rMsg, int err_number) { 
 	stringstream msgStrm(ios_base::out|ios_base::in);
-	msgStrm << rMsg << "(" << errno << ")" << endl;
+	msgStrm << rMsg << "(" << err_number << ")" << endl;
 	m_errorMsg = msgStrm.str();
 }
 

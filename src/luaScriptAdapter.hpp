@@ -32,7 +32,7 @@ namespace Core {
 	class LuaException : public std::exception {
 	public:
 		LuaException(const std::string& rMsg);
-		LuaException(const std::string& rMsg, int errno);
+		LuaException(const std::string& rMsg, int err_number);
 		virtual ~LuaException() throw ();
 		virtual const char* what() const throw();
 	private:

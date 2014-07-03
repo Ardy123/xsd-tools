@@ -24,15 +24,29 @@
 #include <sys/types.h>
 #include <pwd.h>
 #include <string>
-#include "./src/resource.hpp"
+#ifdef __APPLE__
+	#include <mach-o/dyld.h>
+	#include <mach-o/getsect.h>
+#endif /* __APPLE__ */
+#include "src/resource.hpp"
 
 using namespace std;
 using namespace Core;
 
-extern "C" {
-	extern char _binary_luascript_luac_start;
-	extern char _binary_luascript_luac_end;
-}
+#ifdef __APPLE__
+	static size_t _binary_luascript_luac_size;
+	static char * _binary_luascript_luac = 
+		getsectdata("__DATA", "__luascript_luac", &_binary_luascript_luac_size)  
+		+ _dyld_get_image_vmaddr_slide(0); 
+#else /* __APPLE__ */
+	extern "C" {
+    	extern char _binary_luascript_luac_start;
+    	extern char _binary_luascript_luac_end;
+	}
+	static char * _binary_luascript_luac = &_binary_luascript_luac_start;
+	static size_t _binary_luascript_luac_size = &_binary_luascript_luac_end - 
+												&_binary_luascript_luac_start;
+#endif /* __APPLE__ */
 
 static const string gscHOMEPATH("~/.xsdtools/templates/");
 static const string gscGLOBALPATH("/usr/share/xsdtools/templates/");
@@ -57,10 +71,10 @@ Resource::Resource()
 Resource::~Resource() throw()
 { }
 
-const uint8_t*
+const uint8_t *
 Resource::GetEngineScript(size_t* pRetSz) throw() {
-	*pRetSz = &_binary_luascript_luac_end - &_binary_luascript_luac_start;
-	return reinterpret_cast<uint8_t*>(&_binary_luascript_luac_start);
+	*pRetSz = _binary_luascript_luac_size;
+	return reinterpret_cast<uint8_t*> (_binary_luascript_luac);
 }
 
 string
