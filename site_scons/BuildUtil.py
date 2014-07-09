@@ -90,7 +90,7 @@ def SetupEnv(buildSettings, env, config):
     env['LUACFLAGS']= _sconsWrap(_createLuaFlags(buildSettings, config))
     if sys.platform.startswith("linux"):
         env['LINKFLAGS']= _sconsWrap(_createLdFlags(buildSettings, config))
-    elif sys.platform == "darwin":
+    elif sys.platform.startswith("darwin"):
         linkData = ' -sectcreate __DATA __luascript_luac luascript.luac '
         buildSettings['linkFlags']={'debug':'-g'+linkData,'release':'-Wl,-S'+linkData} 
         buildSettings['cflags']['release']+='-Wl,-S'
@@ -98,7 +98,14 @@ def SetupEnv(buildSettings, env, config):
     return env
 
 def Program(buildSettings, env, config):
-    luaDeps = _sconsWrap("")
+    lua = env.Lua('luascript', _extractLuaFiles(buildSettings))
+
+    xsdb = None
+    targets = _extractTarget(buildSettings)
+    cppFiles = _extractCPPFiles(buildSettings) 
     if sys.platform.startswith("linux"):
-        luaDeps = env.Lua('luascript', _extractLuaFiles(buildSettings))
-    return env.Program(_extractTarget(buildSettings), _extractCPPFiles(buildSettings) + luaDeps)
+        xsdb = env.Program(targets, cppFiles + lua)
+    elif sys.platform.startswith("darwin"):
+        xsdb = env.Program(targets, cppFiles)
+
+    return lua, xsdb

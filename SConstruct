@@ -82,7 +82,7 @@ install_target_data = os.path.join(install_prefix, 'share/xsdtools/templates/')
 env = BuildUtil.SetupEnv(xsdb, Environment(), release_target)
 
 # Build xsdb
-xsdb = BuildUtil.Program(xsdb, env, release_target)
+lua, xsdb = BuildUtil.Program(xsdb, env, release_target)
 
 # Install xsdb
 installxsdb = env.Install(install_target_bin, xsdb)
@@ -97,4 +97,4 @@ env.Command('uninstall',
             [Delete(installxsdb),Delete(installData)])
 
 # Default build
-Default(xsdb)
+Default(lua, xsdb)
