@@ -8,9 +8,17 @@
    --          of one, in which case they are not in brackets
 
    -- helper functions
-   local function isSimpleType(typedef) 
+   function isSimpleType(typedef) 
 	  return (next(typedef.fields) == nil)
    end
+
+    function isRootElement(schema, type)                                   
+       for _, v in pairs(schema) do                                              
+          local elemName, elemType = next(v)                                     
+          if elemType == type then return true end                               
+       end                                                                       
+       return false;                                                             
+    end  
 
    local function isListType(typename)
 	  return (typename:match("^(list)%(.+%)") ~= nil)
@@ -36,7 +44,7 @@
 	  if '$' == fieldName then
 		 return 'value'
 	  else
-		 return fieldName:gsub('[%$,/,-,%%,#,@,!,%^,&,*,%(,%),  ,]', '_')
+		 return fieldName:gsub('[%$,/,%-,%%,#,@,!,%^,&,*,%(,%),  ,]', '_')
 	  end
    end
 
@@ -78,11 +86,13 @@
 	  str:append(('package %s;\n'):format(javaPKGName))
 	  str:append('import java.util.Vector;\n')
 	  str:append('import org.json.JSONObject;\n')
+	  str:append('import org.apache.commons.codec.DecoderException;\n')
 	  str:append('import org.json.JSONArray;\n')
 	  str:append('import org.json.JSONException;\n')
 	  str:append(('import %s.Marshallable;\n'):format(javaPKGName))
 	  str:append(('import %s.JSONObjectAdapter;\n'):format(javaPKGName))
 	  str:append(('import %s.JSONArrayAdapter;\n\n'):format(javaPKGName))
+	  str:append(('import org.apache.commons.codec.DecoderException;\n\n'))
 	  -- generate class definition	  
 	  str:append(
 		 ('public class %s implements Marshallable {\n'):format(typename)
@@ -108,12 +118,12 @@
 	  -- generate default constructor
 	  str:append(('\n\tpublic %s() {\n\t}\n\n'):format(typename))
 	  -- generate default unmarshall constructor
-	  local fmt = '\tpublic %s(JSONObject jObj) throws JSONException {\n'
+	  local fmt = '\tpublic %s(JSONObject jObj) throws JSONException, DecoderException {\n'
 	  str:append(fmt:format(typename))
 	  str:append('\t\tthis(new JSONObjectAdapter(jObj));\n')
 	  str:append('\t}\n\n')
 	  -- generate unmarshall constructor
-	  local fmt = '\tpublic %s(JSONObjectAdapter jObj) throws JSONException {\n'
+	  local fmt = '\tpublic %s(JSONObjectAdapter jObj) throws JSONException, DecoderException {\n'
 	  str:append(fmt:format(typename))
 	  for fieldName, fieldType, fieldTypedef in fieldIterator(typedef.fields) do
 		 local memberName  = makeJavaSafeName(fieldName)
@@ -183,13 +193,42 @@
 	  for fieldName, fieldType, fieldTypedef in fieldIterator(typedef.fields) do
 		 local memberName  = makeJavaSafeName(fieldName)
 		 if not isFieldRequired(fieldTypedef) then
-			str:append(
-			   ('\t\tif (null != _%s && 0 < _%s.size())\n'):format(
-				  memberName, memberName
-			   )
-			)
+            if types[fieldType].typename == "String" then
+			    str:append(
+			       ('\t\tif (null != _%s && 0 < _%s.length())\n'):format(
+			    	  memberName, memberName
+			       )
+			    )
+            elseif types[fieldType].typename == "byte []" then
+			    str:append(
+			       ('\t\tif (null != _%s && 0 < _%s.length)\n'):format(
+			    	  memberName, memberName
+			       )
+			    )
+
+            elseif types[fieldType].typename == "Integer" then
+			    str:append(
+			       ('\t\tif (null != _%s )\n'):format(
+			    	  memberName, memberName
+			       )
+			    )
+
+            elseif types[fieldType].typename == "Long" then
+			    str:append(
+			       ('\t\tif (null != _%s )\n'):format(
+			    	  memberName, memberName
+			       )
+			    )
+            else
+			    str:append(
+			       ('\t\tif (null != _%s && 0 < _%s.size())\n'):format(
+			    	  memberName, memberName
+			       )
+			    )
+            end
 			if not isListType(fieldType) then str:append('\t') end
 		 end
+
 		 if isListType(fieldType) then
 			local lstType = getListType(fieldType)
 			str:append(
@@ -200,9 +239,10 @@
 		 else
 			str:append(
 			   ItemStrategy.marshall(
-				  types[lstType], memberName, fieldName
+				  types[fieldType], memberName, fieldName
 			   )
 			)
+
 		 end
 	  end
 	  str:append('\t\treturn retObj.getJSONObject();\n')
@@ -229,15 +269,160 @@
 	  end
    end
 
+   function RandomString(length)
+       length = length or 1
+       if length < 1 then return nil end
+       local array = {}
+       for i = 1, length do
+           -- ascii range for capital and lower case alphabet
+           local randomNum = math.random(65, 122)
+           if randomNum >= 91 and randomNum <= 96 then
+                randomNum = randomNum + 10
+           end
+           array[i] = string.char(randomNum)
+       end
+       return table.concat(array)
+   end        
+
+   local function hexBinary(length)
+       length = length or 1
+       if length < 1 then return nil end
+       local array = {}
+       for i = 1, length do
+           -- ascii range for capital and lower case alphabet
+           local randomNum = math.random(1, 16)
+           hex = { "a","b","c","d","e","f", "0", "1", "2", "3", "4", "5", "6", 
+                   "7", "8", "9"}
+           array[i] = hex[randomNum]
+       end
+       return table.concat(array)
+    end
+
+   local function generateInteger()
+        local positiveOrNegative = 1
+        if math.random() > 0.5 then posNegRandInt = -1 end
+        return tostring(positiveOrNegative*math.random(1000000))
+   end
+
+   local function generatePositiveInteger()
+        return tostring(math.random(1000000))
+   end
+
+   local function generateString()
+        return RandomString(8)
+   end
+
+   local function generateDate()
+        return tostring(math.random(12)).."\/"..tostring(math.random(30)).."\/"..tostring(math.random(1800,2100))
+   end
+
+   local function generateAddress()
+        return tostring(math.random(1000))..generateString()
+    end
+
+    local function generateTime()
+        return tostring(math.random(0,2400))
+    end
+
+   local function elementOutput(typename, typedef, visitType)
+      local generateData = {}
+      generateData["integer"] = generateInteger()
+      generateData["int"] = generateInteger()
+      generateData["positiveInteger"] = generatePositiveInteger()
+      generateData["string"] = "'"..generateString().."'"
+      generateData["date"] = "'"..generateDate().."'"
+      generateData["dateTime"] = "'"..generateDate()..generateTime().."'"
+      generateData["address"] = "'"..generateAddress().."'"
+      generateData["time"] = generateTime()
+      generateData["base64Binary"] = generateString()
+      generateData["hexBinary"] = hexBinary(8)
+
+	  local str = stringBuffer:new()
+      -- length of typedef.fields
+      local tableLength = 0
+      local count = 1
+      for _ in pairs(typedef.fields) do tableLength = tableLength + 1 end
+
+       for tableName, tableDef in pairs(typedef.fields) do
+			local nextTableName, nextTable = next(tableDef)
+            str:append("'"..tableName.."':")
+
+            if (isListType(nextTableName)) then
+                if generateData[getListType(nextTableName)] == nil then
+                    str:append("[{"..elementOutput(nextTableName, nextTable, visitType).."}]")
+                    visitType[nextTableName] = true
+                else
+                    str:append( "["..generateData[getListType(nextTableName)].."]" )
+                end
+            else
+                if generateData[nextTableName] == nil then
+                    str:append(elementOutput(nextTableName, nextTable, visitType))
+                    visitType[nextTableName] = true
+                else
+                    str:append( generateData[nextTableName] )
+                end
+            end
+            if count < tableLength then str:append(",") end
+            count = count + 1
+        end
+        return str:str()
+   end
+
+   function outputKeys(JSONSchema)
+        local outputStr = stringBuffer:new()
+        for k in pairs(JSONSchema) do
+            outputStr:append(k)
+        end
+        return(outputStr:str())
+   end
+
+    function marshallUnmarshallTest(JSONSchema)
+        local visitType = {}
+        local outputStr = stringBuffer:new()
+
+        local function _traverse(JSONType)
+
+            for tagname, typetable in pairs(JSONType.fields) do
+                local typename, typedef = next(typetable)
+                -- if type is not simple and not already referenced
+                if not (visitType[typename] or isSimpleType(typedef)) then 
+                    visitType[typename] = true
+                    local variableName = RandomString(5)
+                    local variableName2 = RandomString(5)
+                    if isRootElement( JSONType.fields, typedef) then
+                        outputStr:append("JSONObject "..variableName.." = new ")
+                        outputStr:append("JSONObject(".."\"")
+                        outputStr:append("{")
+                    end
+
+                    outputStr:append(elementOutput(typename, typedef, visitType))
+                    _traverse(typedef)
+
+                    if isRootElement( JSONType.fields, typedef) then
+                        outputStr:append("}\");\n        ")
+                        outputStr:append(typename.." "..variableName2.." = new "
+                            ..typename.."( "..variableName.." );".."\n        ")
+                        outputStr:append("System.out.println("..variableName..
+                            ".toString().equals("..variableName2..".marshall().toString() ));")
+                    end
+                end
+            end
+        end
+        _traverse({fields = JSONSchema})
+
+        return outputStr:str()
+    end
 
    -- json iteration function
    function outputJSON(JSONSchema)
 	  local visitType = {}
 	  local outputStr = stringBuffer:new()
 	  local function _traverse(JSONType)
-		 dbgPrint('_traverse: '..tostring(JSONType))
 		 for tagname, typetable in pairs(JSONType.fields) do
 			local typename, typedef = next(typetable)
+            -- try to caputure anything inside of parenthesis                
+            fList = typename:match("%((.-)%)")
+            if fList ~= nil then typename = fList end 
 			-- if type is not simple and not already referenced
 			if not (visitType[typename] or isSimpleType(typedef)) then 
 			   visitType[typename] = true
