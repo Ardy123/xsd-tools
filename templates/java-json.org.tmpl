@@ -169,9 +169,7 @@ public class JSONArrayAdapter {
    -- transform to a more JSON friendly table
    include 'java-json.org/json-transform.lua'
    include 'java-json.org/parse.lua'
-   --include 'java-json.org/parse.lua'
    schema = JSONTransform(schema)
    -- make marshalling/unmarshalling code
-   printTbl({fields = schema})
    return outputJSON(schema)
 ]
