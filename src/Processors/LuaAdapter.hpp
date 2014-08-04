@@ -55,7 +55,7 @@ namespace Processors {
 		friend class LuaType;
 	public:
 		virtual ~LuaContent();
-		LuaType * Type(const std::string& rTypeName);
+		LuaType * Type(const std::string& rTypeName, const int maxOccurs);
 	protected:
 		LuaContent();
 		LuaContent(lua_State* pLuaState);
@@ -83,7 +83,7 @@ namespace Processors {
 									const std::string * pUse);
 		LuaContent * Content();
 	protected:
-		LuaType(lua_State * pLuaState, const std::string& rTypeName);
+		LuaType(lua_State * pLuaState, const std::string& rTypeName, const int maxOccurs);
 	};
 	/* lua attribute class */
 	class LuaAttribute : public LuaAdapter {
