@@ -108,8 +108,8 @@ LuaProcessor::ProcessElement(const XSD::Elements::Element* pNode) {
 			LuaProcessor processor(pLuaType->Content());
 			processor.ProcessElement(pNode);
 		} else {
-			/* Default maxOccurs is -1 */
-			int maxOccurs = pNode->HasMaxOccurs() ?	pNode->MaxOccurs() : -1;
+			/* Default maxOccurs is 1 */
+			int maxOccurs = pNode->HasMaxOccurs() ?	pNode->MaxOccurs() : 1;
 			LuaProcessor luaPrcssr(pLuaContent->Type(pNode->Name(), maxOccurs));
 			luaPrcssr._parseType(*pElmType);
 		}
@@ -218,7 +218,7 @@ LuaProcessor::ProcessComplexType(const XSD::Elements::ComplexType* pNode) {
 			processor.ProcessComplexType(pNode);
 		} else {
 			auto_ptr<XSD::Types::String> pType(new XSD::Types::String());
-			delete (pLuaContent->Type(pType->Name(), -1));
+			delete (pLuaContent->Type(pType->Name(), 1));
 			pNode->ParseChildren(*this);
 		}
 	} else {
@@ -292,6 +292,6 @@ LuaProcessor::_parseType(const XSD::Types::BaseType& rXSDType) {
 		/* inserts basic type. Handles array types the same as basic types */
 		LuaType * pLuaType = dynamic_cast<LuaType*>(_luaAdapter());
 		auto_ptr<LuaContent> pLuaContent(pLuaType->Content());
-		delete (pLuaContent->Type(rXSDType.Name(), -1));
+		delete (pLuaContent->Type(rXSDType.Name(), 1));
 	}
 }

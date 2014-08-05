@@ -158,7 +158,7 @@ LuaAttribute::LuaAttribute(	lua_State * pLuaState,
 	lua_getfield(pLuaState, -1, ATTRIBUTE_TAG);
 	/* create emtpty table for attribute name/type pair */
 	lua_newtable(pLuaState);
-	LuaType * pType = new LuaType(pLuaState, rType.Name(), -1);
+	LuaType * pType = new LuaType(pLuaState, rType.Name(), 1);
 	/* append default value to type definition */
 	if (pDefault) {
 		lua_pushstring(pLuaState, pDefault->c_str());
