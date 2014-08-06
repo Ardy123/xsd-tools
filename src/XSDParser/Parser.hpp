@@ -24,6 +24,7 @@
 #define PARSER_HPP_
 
 #include <string>
+#include <vector>
 #include "./src/XSDParser/TypesDB.hpp"
 #include "./src/XSDParser/Exception.hpp"
 
@@ -33,7 +34,9 @@ namespace XSD {
 	}
 	class Parser {
 	private:
-		Types::TypesDB 	m_typesDb;
+		typedef std::vector<TiXmlDocument *> XmlDocList;
+		Types::TypesDB 		m_typesDb;
+	    mutable XmlDocList	m_docLst;
 	public:
 		Parser();
 		virtual ~Parser();

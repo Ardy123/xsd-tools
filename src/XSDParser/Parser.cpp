@@ -29,17 +29,20 @@
 using namespace XSD;
 
 Parser::Parser()
-	: m_typesDb()
+  : m_typesDb(), m_docLst()
 { }
 
 /* virtual */
 Parser::~Parser() {
-
+  for (XmlDocList::iterator i = m_docLst.begin(); i != m_docLst.end(); ++i) {
+	delete *i;
+  }
 }
 
 Elements::Schema*
 Parser::Parse(const char* pUri) const throw(XMLException) {
-	TiXmlDocument* pDoc =  new TiXmlDocument();
+	m_docLst.push_back(new TiXmlDocument());
+	TiXmlDocument * pDoc = m_docLst.back();
 	pDoc->SetTabSize(4);
 	/* parse protocol portion */
 	if (pUri == strstr(pUri, PROTO_FILE)) {
