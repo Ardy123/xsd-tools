@@ -1,18 +1,22 @@
 myElem = {
-	attributes = {}
+	maxOccurs = 1
 	content = {
 		string = {
-			attributes = {}
+			maxOccurs = 1
 			content = {}
+			attributes = {}
 		}
 	}
+	attributes = {}
 }
 foo = {
-	attributes = {}
+	maxOccurs = 1
 	content = {
 		string = {
-			attributes = {}
+			maxOccurs = 1
 			content = {}
+			attributes = {}
 		}
 	}
+	attributes = {}
 }
