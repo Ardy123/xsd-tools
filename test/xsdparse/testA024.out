@@ -1,36 +1,44 @@
 letter = {
-	attributes = {}
+	maxOccurs = 1
 	content = {
 		orderid = {
-			attributes = {}
+			maxOccurs = 1
 			content = {
 				positiveInteger = {
-					attributes = {}
+					maxOccurs = 1
 					content = {}
+					attributes = {}
 				}
 			}
+			attributes = {}
 		}
 		string = {
-			attributes = {}
+			maxOccurs = 1
 			content = {}
+			attributes = {}
 		}
 		name = {
-			attributes = {}
+			maxOccurs = 1
 			content = {
 				string = {
-					attributes = {}
+					maxOccurs = 1
 					content = {}
+					attributes = {}
 				}
 			}
+			attributes = {}
 		}
 		shipdate = {
-			attributes = {}
+			maxOccurs = 1
 			content = {
 				date = {
-					attributes = {}
+					maxOccurs = 1
 					content = {}
+					attributes = {}
 				}
 			}
+			attributes = {}
 		}
 	}
+	attributes = {}
 }

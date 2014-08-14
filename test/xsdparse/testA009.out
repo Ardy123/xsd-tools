@@ -1,9 +1,11 @@
 fooTest = {
-	attributes = {}
+	maxOccurs = 1
 	content = {
 		list(string) = {
-			attributes = {}
+			maxOccurs = 1
 			content = {}
+			attributes = {}
 		}
 	}
+	attributes = {}
 }
