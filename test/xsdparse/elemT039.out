@@ -1,96 +1,117 @@
 test3 = {
-	attributes = {}
+	maxOccurs = 1
 	content = {
 		y = {
-			attributes = {}
+			maxOccurs = 1
 			content = {
 				string = {
-					attributes = {}
+					maxOccurs = 1
 					content = {}
+					attributes = {}
 				}
 			}
+			attributes = {}
 		}
 		x = {
-			attributes = {}
+			maxOccurs = 2
 			content = {
 				string = {
-					attributes = {}
+					maxOccurs = 1
 					content = {}
+					attributes = {}
 				}
 			}
+			attributes = {}
 		}
 	}
+	attributes = {}
 }
 test2 = {
-	attributes = {}
+	maxOccurs = 1
 	content = {
 		string = {
-			attributes = {}
+			maxOccurs = 1
 			content = {}
+			attributes = {}
 		}
 	}
+	attributes = {}
 }
 root = {
-	attributes = {}
+	maxOccurs = 1
 	content = {
 		test = {
-			attributes = {}
+			maxOccurs = 1
 			content = {
 				int = {
-					attributes = {}
+					maxOccurs = 1
 					content = {}
+					attributes = {}
 				}
 			}
+			attributes = {}
 		}
 		test3 = {
-			attributes = {}
+			maxOccurs = 1
 			content = {
 				y = {
-					attributes = {}
+					maxOccurs = 1
 					content = {
 						string = {
-							attributes = {}
+							maxOccurs = 1
 							content = {}
+							attributes = {}
 						}
 					}
+					attributes = {}
 				}
 				x = {
-					attributes = {}
+					maxOccurs = 2
 					content = {
 						string = {
-							attributes = {}
+							maxOccurs = 1
 							content = {}
+							attributes = {}
 						}
 					}
+					attributes = {}
 				}
 			}
+			attributes = {}
 		}
 		test2 = {
-			attributes = {}
+			maxOccurs = 1
 			content = {
 				string = {
-					attributes = {}
+					maxOccurs = 1
 					content = {}
+					attributes = {}
 				}
 			}
+			attributes = {}
 		}
 	}
+	attributes = {}
 }
 s-a = {
-	attributes = {}
+	maxOccurs = 1
 	content = {
 		int = {
-			attributes = {}
+			maxOccurs = 1
 			content = {}
+			attributes = {}
 		}
 	}
+	attributes = {}
 }
 test = {
-	attributes = {}
+	maxOccurs = 1
 	content = {
 		int = {
-			attributes = {}
+			maxOccurs = 1
 			content = {}
+			attributes = {}
 		}
 	}
+	attributes = {}
 }

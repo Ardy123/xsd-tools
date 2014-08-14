@@ -1,26 +1,31 @@
 message = {
+	maxOccurs = 1
+	content = {
+		string = {
+			maxOccurs = 1
+			content = {}
+			attributes = {}
+		}
+	}
 	attributes = {
 		date = {
 			dateTime = {
 				attributes = {}
+				maxOccurs = 1
 				content = {}
 				use = optional
 			}
 		}
 	}
-	content = {
-		string = {
-			attributes = {}
-			content = {}
-		}
-	}
 }
 changeMessage = {
-	attributes = {}
+	maxOccurs = 1
 	content = {
 		string = {
-			attributes = {}
+			maxOccurs = 1
 			content = {}
+			attributes = {}
 		}
 	}
+	attributes = {}
 }
