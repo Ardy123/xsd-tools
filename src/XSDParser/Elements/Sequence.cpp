@@ -30,8 +30,8 @@
 using namespace XSD;
 using namespace XSD::Elements;
 
-Sequence::Sequence(const TiXmlElement& elm, const Schema& rRoot, const Parser& rParser)
-	: Node(elm, rRoot, rParser)
+Sequence::Sequence(const TiXmlElement& elm, const Parser& rParser)
+	: Node(elm, rParser)
 { }
 
 Sequence::Sequence(const Sequence& rCpy)

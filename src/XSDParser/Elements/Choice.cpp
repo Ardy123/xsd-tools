@@ -36,8 +36,8 @@
 using namespace XSD;
 using namespace XSD::Elements;
 
-Choice::Choice(const TiXmlElement& elm, const Schema& docRoot, const Parser& rParser)
-	: Node(elm, docRoot, rParser)
+Choice::Choice(const TiXmlElement& elm, const Parser& rParser)
+	: Node(elm, rParser)
 { }
 
 Choice::Choice(const Choice& rCpy)

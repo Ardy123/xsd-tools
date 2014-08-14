@@ -36,7 +36,7 @@ namespace XSD {
 			List();
 			Types::BaseType* _type() const throw(XMLException);
 		public:
-			List(const TiXmlElement& elm, const Schema& rRoot, const Parser& rParser);
+			List(const TiXmlElement& elm, const Parser& rParser);
 			List(const List& lst);
 			void ParseChildren(BaseProcessor& rProcessor) const throw(XMLException);
 			void ParseElement(BaseProcessor& rProcessor) const throw(XMLException);

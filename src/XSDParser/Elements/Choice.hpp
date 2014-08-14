@@ -38,7 +38,7 @@ namespace XSD {
 		private:
 			Choice();
 		public:
-			Choice(const TiXmlElement& elm, const Schema& docRoot, const Parser& rParser);
+			Choice(const TiXmlElement& elm, const Parser& rParser);
 			Choice(const Choice& rCpy);
 			void ParseChildren(BaseProcessor& rProcessor) const throw(XMLException);
 			void ParseElement(BaseProcessor& rProcessor) const throw(XMLException);

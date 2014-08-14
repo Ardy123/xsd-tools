@@ -35,8 +35,8 @@
 using namespace XSD;
 using namespace XSD::Elements;
 
-SimpleContent::SimpleContent(const TiXmlElement& elm, const Schema& rRoot, const Parser& rParser)
-	: Node(elm, rRoot, rParser)
+SimpleContent::SimpleContent(const TiXmlElement& elm, const Parser& rParser)
+	: Node(elm, rParser)
 { }
 
 SimpleContent::SimpleContent(const SimpleContent& rType)

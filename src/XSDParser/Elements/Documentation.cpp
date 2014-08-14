@@ -33,8 +33,8 @@
 using namespace XSD;
 using namespace XSD::Elements;
 
-Documentation::Documentation(const TiXmlElement& elm, const Schema& rRoot, const Parser& rParser)
-	: Node(elm, rRoot, rParser)
+Documentation::Documentation(const TiXmlElement& elm, const Parser& rParser)
+	: Node(elm, rParser)
 { }
 
 Documentation::Documentation(const Documentation& cpy)
@@ -68,7 +68,7 @@ std::string
 Documentation::DocumentationStr() const throw(XMLException) {
 	if (Node::HasContent()) {
 		std::string retTxt;
-		const TiXmlNode* pXmlNode = m_rXmlElm.FirstChild();
+		const TiXmlNode* pXmlNode = Node::GetXMLElm().FirstChild();
 		for ( ; NULL != pXmlNode; pXmlNode = pXmlNode->NextSibling()) {
 			if (TiXmlNode::TINYXML_TEXT == pXmlNode->Type())
 				retTxt += pXmlNode->Value();

@@ -36,8 +36,8 @@
 using namespace XSD;
 using namespace XSD::Elements;
 
-Any::Any(const TiXmlElement& elm, const Schema& rRoot, const Parser& rParser)
-	: Node(elm, rRoot, rParser)
+Any::Any(const TiXmlElement& elm, const Parser& rParser)
+	: Node(elm, rParser)
 { }
 
 Any::Any(const Any& cpy)
@@ -82,7 +82,8 @@ Any::GetAllowedElements() const {
   Processors::ElementExtracter::ElementLst retLst;
 	if (STRICT == ProcessContents()) {
 		Processors::ElementExtracter elmExtrctr;
-		retLst = elmExtrctr.Extract(this->m_rDocRoot);
+		std::auto_ptr<Schema> pDocRoot(Node::GetSchema());
+		retLst = elmExtrctr.Extract(*pDocRoot);
 		/* find parent element and remove it from list to prevent recursive loops */
 		std::auto_ptr<Element> pElement(_findParentElement(this));
 		if (NULL != pElement.get()) {

@@ -41,7 +41,7 @@ namespace XSD {
 				REPLACE,
 				COLLAPSE
 			};
-			WhiteSpace(const TiXmlElement& elm, const Schema& rRoot, const Parser& rParser);
+			WhiteSpace(const TiXmlElement& elm, const Parser& rParser);
 			WhiteSpace(const WhiteSpace& cpy);
 			void ParseChildren(BaseProcessor& rProcessor) const throw(XMLException);
 			void ParseElement(BaseProcessor& rProcessor) const throw(XMLException);

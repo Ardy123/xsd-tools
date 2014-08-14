@@ -43,7 +43,7 @@ namespace XSD {
 				LAX,
 				SKIP
 			} ContentValidation;
-			Any(const TiXmlElement& elm, const Schema& rRoot, const Parser& rParser);
+			Any(const TiXmlElement& elm, const Parser& rParser);
 			Any(const Any& cpy);
 			void ParseChildren(BaseProcessor& rProcessor) const throw(XMLException);
 			void ParseElement(BaseProcessor& rProcessor) const throw(XMLException);

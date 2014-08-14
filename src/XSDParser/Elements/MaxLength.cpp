@@ -34,8 +34,8 @@
 using namespace XSD;
 using namespace XSD::Elements;
 
-MaxLength::MaxLength(const TiXmlElement& elm, const Schema& rRoot, const Parser& rParser)
-	: Node(elm, rRoot, rParser)
+MaxLength::MaxLength(const TiXmlElement& elm, const Parser& rParser)
+	: Node(elm, rParser)
 { }
 
 MaxLength::MaxLength(const MaxLength& cpy)

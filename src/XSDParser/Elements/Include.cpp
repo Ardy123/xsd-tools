@@ -33,8 +33,8 @@
 using namespace XSD;
 using namespace XSD::Elements;
 
-Include::Include(const TiXmlElement& elm, const Schema& rRoot, const Parser& rParser)
-	: Node(elm, rRoot, rParser), m_pSchema(NULL)
+Include::Include(const TiXmlElement& elm, const Parser& rParser)
+	: Node(elm, rParser), m_pSchema(NULL)
 { }
 
 Include::Include(const Include& rCpy)
@@ -65,7 +65,7 @@ Include::GetParentType() const throw(XMLException) {
 const Schema*
 Include::QuerySchema() const throw(XMLException) {
 	if (NULL == m_pSchema) {
-		m_pSchema = m_rParser.Parse(_schemaURI());
+		m_pSchema = Node::GetParser().Parse(_schemaURI());
 	}
 	return m_pSchema;
 }
@@ -86,10 +86,11 @@ Include::_schemaURI() const throw(XMLException) {
 			retStr += (path.string() + _extractQuery(uri));
 			return retStr;
 		} else {
+			std::auto_ptr<Schema> pDocRoot(Node::GetSchema());
 #if defined(BOOST_FILESYSTEM_VERSION) && (BOOST_FILESYSTEM_VERSION > 2)
-			boost::filesystem::path schemaPath = (boost::filesystem::absolute(_extractURIPath(m_rDocRoot.URI()))).branch_path();
+			boost::filesystem::path schemaPath = (boost::filesystem::absolute(_extractURIPath(pDocRoot->URI()))).branch_path();
 #else
-			boost::filesystem::path schemaPath = (boost::filesystem::complete(_extractURIPath(m_rDocRoot.URI()))).branch_path();
+			boost::filesystem::path schemaPath = (boost::filesystem::complete(_extractURIPath(pDocRoot->URI()))).branch_path();
 #endif
 			(schemaPath /= _extractURIPath(uri)).normalize();
 			retStr += schemaPath.string();

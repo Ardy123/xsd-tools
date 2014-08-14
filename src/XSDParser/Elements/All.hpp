@@ -33,7 +33,7 @@ namespace XSD {
 		private:
 			All();
 		public:
-			All(const TiXmlElement& elm, const Schema& rRoot, const Parser& rParser);
+			All(const TiXmlElement& elm, const Parser& rParser);
 			All(const All& cpy);
 			void ParseChildren(BaseProcessor& rProcessor) const throw(XMLException);
 			void ParseElement(BaseProcessor& rProcessor) const throw(XMLException);

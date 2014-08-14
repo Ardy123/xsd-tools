@@ -34,8 +34,8 @@
 using namespace XSD;
 using namespace XSD::Elements;
 
-WhiteSpace::WhiteSpace(const TiXmlElement& elm, const Schema& rRoot, const Parser& rParser)
-	: Node(elm, rRoot, rParser)
+WhiteSpace::WhiteSpace(const TiXmlElement& elm, const Parser& rParser)
+	: Node(elm, rParser)
 { }
 
 WhiteSpace::WhiteSpace(const WhiteSpace& cpy)
@@ -78,7 +78,7 @@ WhiteSpace::Value() const throw(XMLException) {
 	else if (!strcmp(pOpCStr, "collapse"))
 		return COLLAPSE;
 	else  {
-		throw XMLException(m_rXmlElm, XMLException::InvalidAttribute);
+		throw XMLException(Node::GetXMLElm(), XMLException::InvalidAttribute);
 		return PRESERVE;
 	}
 }

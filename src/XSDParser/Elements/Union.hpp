@@ -34,7 +34,7 @@ namespace XSD {
 			Union();
 		public:
 			typedef std::vector<Types::BaseType*> TypeLst;
-			Union(const TiXmlElement& elm, const Schema& rRoot, const Parser& rParser);
+			Union(const TiXmlElement& elm, const Parser& rParser);
 			Union(const Union& rCpy);
 			void ParseChildren(BaseProcessor& rProcessor) const throw(XMLException);
 			void ParseElement(BaseProcessor& rProcessor) const throw(XMLException);

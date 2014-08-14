@@ -35,8 +35,8 @@
 using namespace XSD;
 using namespace XSD::Elements;
 
-TotalDigits::TotalDigits(const TiXmlElement& elm, const Schema& rRoot, const Parser& rParser)
-	: Node(elm, rRoot, rParser)
+TotalDigits::TotalDigits(const TiXmlElement& elm, const Parser& rParser)
+	: Node(elm, rParser)
 { }
 
 TotalDigits::TotalDigits(const TotalDigits& cpy)

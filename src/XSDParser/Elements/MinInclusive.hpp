@@ -36,7 +36,7 @@ namespace XSD {
 		private:
 			MinInclusive();
 		public:
-			MinInclusive(const TiXmlElement& elm, const Schema& rRoot, const Parser& rParser);
+			MinInclusive(const TiXmlElement& elm, const Parser& rParser);
 			MinInclusive(const MinInclusive& cpy);
 			void ParseChildren(BaseProcessor& rProcessor) const throw(XMLException);
 			void ParseElement(BaseProcessor& rProcessor) const throw(XMLException);

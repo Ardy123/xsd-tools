@@ -38,7 +38,7 @@ namespace XSD {
 		private:
 			Sequence();
 		public:
-			Sequence(const TiXmlElement& elm, const Schema& rRoot, const Parser& rParser);
+			Sequence(const TiXmlElement& elm, const Parser& rParser);
 			Sequence(const Sequence& rCpy);
 			void ParseChildren(BaseProcessor& rProcessor) const throw(XMLException);
 			void ParseElement(BaseProcessor& rProcessor) const throw(XMLException);

@@ -36,7 +36,7 @@ namespace XSD {
 		private:
 			MaxInclusive();
 		public:
-			MaxInclusive(const TiXmlElement& elm, const Schema& rRoot, const Parser& rParser);
+			MaxInclusive(const TiXmlElement& elm, const Parser& rParser);
 			MaxInclusive(const MaxInclusive& cpy);
 			void ParseChildren(BaseProcessor& rProcessor) const throw(XMLException);
 			void ParseElement(BaseProcessor& rProcessor) const throw(XMLException);

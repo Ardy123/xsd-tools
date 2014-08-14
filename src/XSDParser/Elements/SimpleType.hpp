@@ -41,7 +41,7 @@ namespace XSD {
 		private:
 			SimpleType();
 		public:
-			SimpleType(const TiXmlElement& elm, const Schema& rRoot, const Parser& rParser);
+			SimpleType(const TiXmlElement& elm, const Parser& rParser);
 			SimpleType(const SimpleType& rType);
 			void ParseChildren(BaseProcessor& rProcessor) const throw(XMLException);
 			void ParseElement(BaseProcessor& rProcessor) const throw(XMLException);
