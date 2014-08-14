@@ -15,6 +15,10 @@
       return (typeName:match("^(list)%(.+%)") ~= nil)
    end
 
+   local function isSingular(typeName)
+      return (typename == 1)
+   end
+
    local function isRootElement(schema, type)
       for _, v in pairs(schema) do
          local elemName, elemType = next(v)
@@ -96,10 +100,13 @@
       return _traverse({ attributes = {}, content = XSDTree }, {}).content
    end
 
+  
    -- assign occurrence values
    local function assignTypeOccurence(XSDTree)
+
       local function _addOccurrenceModifier(className, typedef)
-         if not isSimpleType(typedef) and not isRootElement(XSDTree, typedef) then
+         if not isSimpleType(typedef) and not isRootElement(XSDTree, typedef) 
+		and not isSingular(typedef["maxOccurs"])  then
             return 'list('..className..')'
          else
             return className
