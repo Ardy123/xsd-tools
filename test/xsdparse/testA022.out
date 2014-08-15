@@ -1,9 +1,11 @@
 gooTest = {
-	attributes = {}
+	maxOccurs = 1
 	content = {
 		list(hexBinary) = {
-			attributes = {}
+			maxOccurs = 1
 			content = {}
+			attributes = {}
 		}
 	}
+	attributes = {}
 }

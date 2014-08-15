@@ -35,7 +35,7 @@ namespace XSD {
 		private:
 			Enumeration();
 		public:
-			Enumeration(const TiXmlElement& elm, const Schema& rRoot, const Parser& rParser);
+			Enumeration(const TiXmlElement& elm, const Parser& rParser);
 			Enumeration(const Enumeration& cpy);
 			void ParseChildren(BaseProcessor& rProcessor) const throw(XMLException);
 			void ParseElement(BaseProcessor& rProcessor) const throw(XMLException);

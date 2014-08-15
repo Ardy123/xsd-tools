@@ -36,8 +36,8 @@
 using namespace XSD;
 using namespace XSD::Elements;
 
-Attribute::Attribute(const TiXmlElement& elm, const Schema& docRoot, const Parser& rParser)
-	: Node(elm, docRoot, rParser)
+Attribute::Attribute(const TiXmlElement& elm, const Parser& rParser)
+	: Node(elm, rParser)
 { }
 
 Attribute::Attribute(const Attribute& rAttrib)
@@ -65,22 +65,22 @@ Attribute::ParseElement(BaseProcessor& rProcessor) const throw(XMLException) {
 		/* if the attribute is a child of the schema root, it must have a name */
 		std::auto_ptr<Node> pParent(Node::Parent());
 		if (XSD_ISELEMENT(pParent.get(), SimpleType))
-			throw XMLException(m_rXmlElm, XMLException::InvalidAttribute);
+			throw XMLException(Node::GetXMLElm(), XMLException::InvalidAttribute);
 	} else if (HasRef()) {
 		/* an attribute cannot have a name and ref */
-		throw XMLException(m_rXmlElm, XMLException::InvalidAttribute);
+		throw XMLException(Node::GetXMLElm(), XMLException::InvalidAttribute);
 	}
 	if (HasType()) {
 		/* an attribute cannot have a type field and a type defined as child */
 		if (Node::HasContent(SimpleType::XSDTag()))
-			throw XMLException(m_rXmlElm, XMLException::InvalidAttribute);
+			throw XMLException(Node::GetXMLElm(), XMLException::InvalidAttribute);
 	} else if (!Node::HasContent(SimpleType::XSDTag())) {
 		/* an attribute must have a type defined as a child if a type is not defined */
-		throw XMLException(m_rXmlElm, XMLException::MissingChildXMLElement);
+		throw XMLException(Node::GetXMLElm(), XMLException::MissingChildXMLElement);
 	}
 	if (HasDefault() && HasFixed()) {
 		/* attributes cannot have fixed values and default values at the same time */
-		throw XMLException(m_rXmlElm, XMLException::InvalidAttribute);
+		throw XMLException(Node::GetXMLElm(), XMLException::InvalidAttribute);
 	}
 	/* if the node is a reference, check its reference */
 	if (HasRef()) {
@@ -181,7 +181,7 @@ Attribute::_type() const throw(XMLException) {
 		return new Types::String();
 	} else if (XSD_ISTYPE(pType, Types::ComplexType) ||
 			   XSD_ISTYPE(pType, Types::Unsupported))
-		throw  XMLException(m_rXmlElm, XMLException::UndefiniedXSDType);
+		throw  XMLException(Node::GetXMLElm(), XMLException::UndefiniedXSDType);
 	return pType;
 }
 

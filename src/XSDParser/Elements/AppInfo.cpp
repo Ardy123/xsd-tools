@@ -33,8 +33,8 @@
 using namespace XSD;
 using namespace XSD::Elements;
 
-AppInfo::AppInfo(const TiXmlElement& elm, const Schema& rRoot, const Parser& rParser)
-	: Node(elm, rRoot, rParser)
+AppInfo::AppInfo(const TiXmlElement& elm, const Parser& rParser)
+	: Node(elm, rParser)
 { }
 
 AppInfo::AppInfo(const AppInfo& cpy)

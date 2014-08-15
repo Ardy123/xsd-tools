@@ -1,8 +1,23 @@
 foo = {
+	maxOccurs = 1
+	content = {
+		name = {
+			maxOccurs = 1
+			content = {
+				string = {
+					maxOccurs = 1
+					content = {}
+					attributes = {}
+				}
+			}
+			attributes = {}
+		}
+	}
 	attributes = {
 		attrib2Optional = {
 			integer = {
 				attributes = {}
+				maxOccurs = 1
 				default = 5
 				content = {}
 				use = optional
@@ -11,6 +26,7 @@ foo = {
 		attrib2Required = {
 			integer = {
 				attributes = {}
+				maxOccurs = 1
 				content = {}
 				use = required
 			}
@@ -18,6 +34,7 @@ foo = {
 		attrib1Optional = {
 			string = {
 				attributes = {}
+				maxOccurs = 1
 				default = test default value
 				content = {}
 				use = optional
@@ -26,19 +43,9 @@ foo = {
 		attrib1Required = {
 			string = {
 				attributes = {}
+				maxOccurs = 1
 				content = {}
 				use = required
-			}
-		}
-	}
-	content = {
-		name = {
-			attributes = {}
-			content = {
-				string = {
-					attributes = {}
-					content = {}
-				}
 			}
 		}
 	}

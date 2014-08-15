@@ -32,8 +32,8 @@
 using namespace XSD;
 using namespace XSD::Elements;
 
-SimpleType::SimpleType(const TiXmlElement& elm, const Schema& rRoot, const Parser& rParser)
-	: Node(elm, rRoot, rParser)
+SimpleType::SimpleType(const TiXmlElement& elm, const Parser& rParser)
+	: Node(elm, rParser)
 { }
 
 SimpleType::SimpleType(const SimpleType& rType)
@@ -60,7 +60,7 @@ SimpleType::ParseChildren(BaseProcessor& rProcessor) const throw(XMLException) {
 void
 SimpleType::ParseElement(BaseProcessor& rProcessor) const throw(XMLException) {
 	if (HasName() && !Node::IsRootNode())
-		throw XMLException(m_rXmlElm, XMLException::InvalidAttribute);
+		throw XMLException(Node::GetXMLElm(), XMLException::InvalidAttribute);
 	rProcessor.ProcessSimpleType(this);
 }
 

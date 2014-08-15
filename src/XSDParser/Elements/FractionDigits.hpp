@@ -36,7 +36,7 @@ namespace XSD {
 		private:
 			FractionDigits();
 		public:
-			FractionDigits(const TiXmlElement& elm, const Schema& rRoot, const Parser& rParser);
+			FractionDigits(const TiXmlElement& elm, const Parser& rParser);
 			FractionDigits(const FractionDigits& cpy);
 			void ParseChildren(BaseProcessor& rProcessor) const throw(XMLException);
 			void ParseElement(BaseProcessor& rProcessor) const throw(XMLException);

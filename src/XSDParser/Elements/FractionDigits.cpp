@@ -34,8 +34,8 @@
 using namespace XSD;
 using namespace XSD::Elements;
 
-FractionDigits::FractionDigits(const TiXmlElement& elm, const Schema& rRoot, const Parser& rParser)
-	: Node(elm, rRoot, rParser)
+FractionDigits::FractionDigits(const TiXmlElement& elm, const Parser& rParser)
+	: Node(elm, rParser)
 { }
 
 FractionDigits::FractionDigits(const FractionDigits& cpy)

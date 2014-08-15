@@ -35,8 +35,8 @@
 using namespace XSD;
 using namespace XSD::Elements;
 
-All::All(const TiXmlElement& elm, const Schema& rRoot, const Parser& rParser)
-	: Node(elm, rRoot, rParser)
+All::All(const TiXmlElement& elm, const Parser& rParser)
+	: Node(elm, rParser)
 { }
 
 All::All(const All& cpy)

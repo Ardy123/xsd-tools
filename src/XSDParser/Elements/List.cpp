@@ -33,8 +33,8 @@
 using namespace XSD;
 using namespace XSD::Elements;
 
-List::List(const TiXmlElement& elm, const Schema& rRoot, const Parser& rParser)
-	: Node(elm, rRoot, rParser)
+List::List(const TiXmlElement& elm, const Parser& rParser)
+	: Node(elm, rParser)
 {}
 
 List::List(const List& lst)
@@ -61,10 +61,10 @@ List::ParseElement(BaseProcessor& rProcessor) const throw(XMLException) {
 	/* verify that is has an item type defined or it has a sub type defined */
 	if (HasItemType()) {
 		if (Node::HasContent(SimpleType::XSDTag()))
-			throw XMLException(m_rXmlElm, XMLException::InvallidChildXMLElement);
+			throw XMLException(Node::GetXMLElm(), XMLException::InvallidChildXMLElement);
 	} else {
 		if (!Node::HasContent(SimpleType::XSDTag()))
-			throw XMLException(m_rXmlElm, XMLException::MissingChildXMLElement);
+			throw XMLException(Node::GetXMLElm(), XMLException::MissingChildXMLElement);
 	}
 	rProcessor.ProcessList(this);
 }
@@ -95,6 +95,6 @@ List::_type() const throw(XMLException) {
 		return new Types::String();
 	} else if (XSD_ISTYPE(pType, Types::ComplexType) ||
 			   XSD_ISTYPE(pType, Types::Unsupported))
-		throw  XMLException(m_rXmlElm, XMLException::UndefiniedXSDType);
+		throw  XMLException(Node::GetXMLElm(), XMLException::UndefiniedXSDType);
 	return pType;
 }

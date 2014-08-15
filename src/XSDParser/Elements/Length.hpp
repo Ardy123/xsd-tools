@@ -37,7 +37,7 @@ namespace XSD {
 		private:
 			Length();
 		public:
-			Length(const TiXmlElement& elm, const Schema& rRoot, const Parser& rParser);
+			Length(const TiXmlElement& elm, const Parser& rParser);
 			Length(const Length& cpy);
 			void ParseChildren(BaseProcessor& rProcessor) const throw(XMLException);
 			void ParseElement(BaseProcessor& rProcessor) const throw(XMLException);

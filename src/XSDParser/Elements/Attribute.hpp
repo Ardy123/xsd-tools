@@ -45,7 +45,7 @@ namespace XSD {
 				PROHIBITIED,
 				REQUIRED
 			} AttributeUse;
-			Attribute(const TiXmlElement& elm, const Schema& docRoot, const Parser& rParser);
+			Attribute(const TiXmlElement& elm, const Parser& rParser);
 			Attribute(const Attribute& rAttrib);
 			void ParseChildren(BaseProcessor& rProcessor) const throw(XMLException);
 			void ParseElement(BaseProcessor& rProcessor) const throw(XMLException);

@@ -1,21 +1,25 @@
 foo = {
+	maxOccurs = 1
+	content = {
+		name = {
+			maxOccurs = 1
+			content = {
+				string = {
+					maxOccurs = 1
+					content = {}
+					attributes = {}
+				}
+			}
+			attributes = {}
+		}
+	}
 	attributes = {
 		myAttr = {
 			string = {
 				attributes = {}
+				maxOccurs = 1
 				content = {}
 				use = optional
-			}
-		}
-	}
-	content = {
-		name = {
-			attributes = {}
-			content = {
-				string = {
-					attributes = {}
-					content = {}
-				}
 			}
 		}
 	}

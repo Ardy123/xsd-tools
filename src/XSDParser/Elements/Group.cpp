@@ -37,8 +37,8 @@
 using namespace XSD;
 using namespace XSD::Elements;
 
-Group::Group(const TiXmlElement& elm, const Schema& rRoot, const Parser& rParser)
-	: Node(elm, rRoot, rParser)
+Group::Group(const TiXmlElement& elm, const Parser& rParser)
+	: Node(elm, rParser)
 { }
 
 Group::Group(const Group& cpy)
@@ -66,17 +66,17 @@ void
 Group::ParseElement(BaseProcessor& rProcessor) const throw(XMLException) {
 	/* a ref and a name are not allowed */
 	if (HasName() && HasRef())
-		throw XMLException(m_rXmlElm, XMLException::InvalidAttribute);
+		throw XMLException(Node::GetXMLElm(), XMLException::InvalidAttribute);
 	/* a name is only allowed when it's parent element is a schema */
 	if (HasName()) {
-		if (m_rXmlElm.Parent()->Type() != TiXmlNode::TINYXML_DOCUMENT)
-			throw XMLException(m_rXmlElm, XMLException::InvalidAttribute);
+		if (Node::GetXMLElm().Parent()->Type() != TiXmlNode::TINYXML_DOCUMENT)
+			throw XMLException(Node::GetXMLElm(), XMLException::InvalidAttribute);
 	}
 	if (HasRef()) {
 		std::auto_ptr<Group> pRefGroup(RefGroup());
 		/* a name is only allowed when it's parent element is a schema */
-		if (pRefGroup->m_rXmlElm.Parent()->Type() != TiXmlNode::TINYXML_DOCUMENT)
-			throw XMLException(pRefGroup->m_rXmlElm, XMLException::InvalidAttribute);
+		if (pRefGroup->GetXMLElm().Parent()->Type() != TiXmlNode::TINYXML_DOCUMENT)
+			throw XMLException(pRefGroup->GetXMLElm(), XMLException::InvalidAttribute);
 	}
 	/* verify that 'maxOccurs' is not negative unless its -1 (unbounded) */
 	if (-1 > MaxOccurs())

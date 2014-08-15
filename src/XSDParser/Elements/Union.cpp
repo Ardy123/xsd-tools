@@ -37,8 +37,8 @@ using namespace XSD::Elements;
 typedef boost::char_separator<std::string::value_type> SpaceCommaSeperator;
 typedef boost::tokenizer<SpaceCommaSeperator> SpaceCommaTokenizer;
 
-Union::Union(const TiXmlElement& elm, const Schema& rRoot, const Parser& rParser)
-	: Node(elm, rRoot, rParser)
+Union::Union(const TiXmlElement& elm, const Parser& rParser)
+	: Node(elm, rParser)
 { }
 
 Union::Union(const Union& rCpy)

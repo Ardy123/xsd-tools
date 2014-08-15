@@ -45,7 +45,7 @@ namespace XSD {
 			static bool _isFileURI(const std::string& uri);
 			static std::string _extractQuery(const std::string& uri);
 		public:
-			Include(const TiXmlElement& elm, const Schema& rRoot, const Parser& rParser);
+			Include(const TiXmlElement& elm, const Parser& rParser);
 			Include(const Include& elm);
 			virtual ~Include();
 			void ParseChildren(BaseProcessor& rProcessor) const throw(XMLException);

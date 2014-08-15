@@ -32,22 +32,17 @@
 using namespace XSD;
 using namespace XSD::Elements;
 
-Schema::Schema(const TiXmlElement& elm, const Schema& rRoot, const Parser& rParser, const std::string& name)
-	: Node(elm, rRoot, rParser), m_rDocument(*const_cast<TiXmlDocument*>(elm.ToDocument())), m_documentURI(name)
-{ }
-
 Schema::Schema(const TiXmlElement& elm, const Parser& rParser, const std::string& name )
-	: Node(elm, *this, rParser), m_rDocument(*const_cast<TiXmlDocument*>(elm.ToDocument())), m_documentURI(name)
+	: Node(elm, rParser), m_documentURI(name)
 { }
 
 Schema::Schema(const Schema& rDoc)
-	: Node(rDoc.m_rXmlElm, rDoc.m_rDocRoot, rDoc.m_rParser), m_rDocument(rDoc.m_rDocument), m_documentURI(rDoc.m_documentURI)
+	: Node(rDoc), m_documentURI(rDoc.m_documentURI)
 { }
 
 /* virtual */
-Schema::~Schema() {
-	delete &m_rDocument;
-}
+Schema::~Schema() 
+{ }
 
 void
 Schema::ParseChildren(BaseProcessor& rProcessor) const throw(XMLException) {
@@ -82,7 +77,7 @@ Schema::URI() const throw(XMLException) {
 const std::string
 Schema::Namespace() const throw(XMLException) {
 	/* search for xmlns attribute (sans the namespace prefix) */
-	const TiXmlAttribute * pAttrib = m_rXmlElm.FirstAttribute();
+	const TiXmlAttribute * pAttrib = Node::GetXMLElm().FirstAttribute();
 	for ( ; pAttrib && (std::string::npos == std::string(pAttrib->Value()).find("http://www.w3.org/2001/XMLSchema"));
 			pAttrib = pAttrib->Next()) { 
 	}
@@ -102,7 +97,10 @@ Schema::GetParentType() const throw(XMLException) {
 
 bool
 Schema::isRootSchema() const {
-	return (m_rDocRoot == *this);
+	const Parser& rParser = Node::GetParser();
+	if (rParser.HasDocument(Node::GetXmlDocument()))
+		return rParser.isRootDocument(Node::GetXmlDocument());
+	return false;
 }
 
 /* static */ std::string

@@ -1,14 +1,17 @@
 myElem = {
-	attributes = {}
+	maxOccurs = 1
 	content = {
 		ele1 = {
-			attributes = {}
+			maxOccurs = 1
 			content = {
 				string = {
-					attributes = {}
+					maxOccurs = 1
 					content = {}
+					attributes = {}
 				}
 			}
+			attributes = {}
 		}
 	}
+	attributes = {}
 }

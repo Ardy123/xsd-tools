@@ -1,42 +1,51 @@
 Company = {
-	attributes = {}
+	maxOccurs = 1
 	content = {
 		Product = {
-			attributes = {}
+			maxOccurs = -1
 			content = {
 				Type = {
-					attributes = {}
+					maxOccurs = 1
 					content = {
 						string = {
-							attributes = {}
+							maxOccurs = 1
 							content = {}
+							attributes = {}
 						}
 					}
+					attributes = {}
 				}
 			}
+			attributes = {}
 		}
 		Person = {
-			attributes = {}
+			maxOccurs = -1
 			content = {
 				Name = {
-					attributes = {}
+					maxOccurs = 1
 					content = {
 						string = {
-							attributes = {}
+							maxOccurs = 1
 							content = {}
+							attributes = {}
 						}
 					}
+					attributes = {}
 				}
 				SSN = {
-					attributes = {}
+					maxOccurs = 1
 					content = {
 						string = {
-							attributes = {}
+							maxOccurs = 1
 							content = {}
+							attributes = {}
 						}
 					}
+					attributes = {}
 				}
 			}
+			attributes = {}
 		}
 	}
+	attributes = {}
 }

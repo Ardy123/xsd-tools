@@ -32,7 +32,7 @@ namespace XSD {
 		private:
 			MaxExclusive();
 		public:
-			MaxExclusive(const TiXmlElement& elm, const Schema& rRoot, const Parser& rParser);
+			MaxExclusive(const TiXmlElement& elm, const Parser& rParser);
 			MaxExclusive(const MaxExclusive& cpy);
 			void ParseChildren(BaseProcessor& rProcessor) const throw(XMLException);
 			void ParseElement(BaseProcessor& rProcessor) const throw(XMLException);

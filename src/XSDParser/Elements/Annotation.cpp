@@ -35,8 +35,8 @@
 using namespace XSD;
 using namespace XSD::Elements;
 
-Annotation::Annotation(const TiXmlElement& elm, const Schema& rRoot, const Parser& rParser)
-	: Node(elm, rRoot, rParser)
+Annotation::Annotation(const TiXmlElement& elm, const Parser& rParser)
+	: Node(elm, rParser)
 { }
 
 Annotation::Annotation(const Annotation& cpy)

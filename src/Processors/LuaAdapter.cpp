@@ -29,6 +29,7 @@
 #define DEFAULT_TAG    "default"
 #define FIXED_TAG      "fixed"
 #define USE_TAG        "use"
+#define MAXOCCURS_TAG  "maxOccurs"
 #define DEBUG_LUASTACK (0)
 
 using namespace std;
@@ -81,8 +82,8 @@ LuaContent::~LuaContent() {
 }
 
 LuaType *
-LuaContent::Type(const std::string& rTypeName) {
-	return new LuaType(_getLuaState(), rTypeName);
+LuaContent::Type(const std::string& rTypeName, const int maxOccurs) {
+	return new LuaType(_getLuaState(), rTypeName, maxOccurs);
 }
 
 /* Class LuaSchema */
@@ -106,7 +107,7 @@ LuaSchema::~LuaSchema()
 { }
 
 /* Class LuaType */
-LuaType::LuaType(lua_State* pLuaState, const std::string& rTypeName)
+LuaType::LuaType(lua_State* pLuaState, const std::string& rTypeName, const int maxOccurs)
 	: LuaAdapter(pLuaState) { 
 	/* create new table for type and append it as a child element to the current
 	   element on stack */
@@ -119,6 +120,9 @@ LuaType::LuaType(lua_State* pLuaState, const std::string& rTypeName)
 	/* create new table for type contents */
 	lua_newtable(pLuaState);
 	lua_setfield(pLuaState, -2, CONTENT_TAG);
+
+ 	lua_pushnumber(pLuaState, maxOccurs);
+	lua_setfield(pLuaState, -2, MAXOCCURS_TAG);
 	/* debug */
 	_luaStackDump(pLuaState);
 }
@@ -154,7 +158,7 @@ LuaAttribute::LuaAttribute(	lua_State * pLuaState,
 	lua_getfield(pLuaState, -1, ATTRIBUTE_TAG);
 	/* create emtpty table for attribute name/type pair */
 	lua_newtable(pLuaState);
-	LuaType * pType = new LuaType(pLuaState, rType.Name());
+	LuaType * pType = new LuaType(pLuaState, rType.Name(), 1);
 	/* append default value to type definition */
 	if (pDefault) {
 		lua_pushstring(pLuaState, pDefault->c_str());

@@ -34,8 +34,8 @@
 using namespace XSD;
 using namespace XSD::Elements;
 
-MinExclusive::MinExclusive(const TiXmlElement& elm, const Schema& rRoot, const Parser& rParser)
-	: Node(elm, rRoot, rParser)
+MinExclusive::MinExclusive(const TiXmlElement& elm, const Parser& rParser)
+	: Node(elm, rParser)
 { }
 
 MinExclusive::MinExclusive(const MinExclusive& cpy)

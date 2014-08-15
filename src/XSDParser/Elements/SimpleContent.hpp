@@ -38,7 +38,7 @@ namespace XSD {
 		private:
 			SimpleContent();
 		public:
-			SimpleContent(const TiXmlElement& elm, const Schema& rRoot, const Parser& rParser);
+			SimpleContent(const TiXmlElement& elm, const Parser& rParser);
 			SimpleContent(const SimpleContent& rType);
 			void ParseChildren(BaseProcessor& rProcessor) const throw(XMLException);
 			void ParseElement(BaseProcessor& rProcessor) const throw(XMLException);

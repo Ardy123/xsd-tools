@@ -35,7 +35,7 @@ namespace XSD {
 		private:
 			AppInfo();
 		public:
-			AppInfo(const TiXmlElement& elm, const Schema& rRoot, const Parser& rParser);
+			AppInfo(const TiXmlElement& elm, const Parser& rParser);
 			AppInfo(const AppInfo& cpy);
 			void ParseChildren(BaseProcessor& rProcessor) const throw(XMLException);
 			void ParseElement(BaseProcessor& rProcessor) const throw(XMLException);

@@ -40,7 +40,7 @@ namespace XSD {
 			Types::BaseType* _Type() const throw(XMLException);
 			static Types::BaseType* _ParseType(const Element& rElm) throw(XMLException);
 		public:
-			Element(const TiXmlElement& elm, const Schema& rRoot, const Parser& rParser);
+			Element(const TiXmlElement& elm, const Parser& rParser);
 			Element( const Element& elm);
 			void ParseChildren(BaseProcessor& rProcessor) const throw(XMLException);
 			void ParseElement(BaseProcessor& rProcessor) const throw(XMLException);

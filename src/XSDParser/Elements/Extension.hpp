@@ -39,7 +39,7 @@ namespace XSD {
 			static bool _checkForDuplicateNamedParticles(const TiXmlElement* pTreeBase, const TiXmlElement* pBase);
 			static bool _find(const char* pName, const TiXmlElement* pBase);
 		public:
-			Extension(const TiXmlElement& elm, const Schema& rRoot, const Parser& rParser);
+			Extension(const TiXmlElement& elm, const Parser& rParser);
 			Extension(const Extension& rType);
 			void ParseChildren(BaseProcessor& rProcessor) const throw(XMLException);
 			void ParseElement(BaseProcessor& rProcessor) const throw(XMLException);

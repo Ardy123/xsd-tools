@@ -34,8 +34,8 @@
 using namespace XSD;
 using namespace XSD::Elements;
 
-MinInclusive::MinInclusive(const TiXmlElement& elm, const Schema& rRoot, const Parser& rParser)
-	: Node(elm, rRoot, rParser)
+MinInclusive::MinInclusive(const TiXmlElement& elm, const Parser& rParser)
+	: Node(elm, rParser)
 { }
 
 MinInclusive::MinInclusive(const MinInclusive& cpy)

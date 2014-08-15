@@ -35,7 +35,7 @@ namespace XSD {
 		private:
 			Group();
 		public:
-			Group(const TiXmlElement& elm, const Schema& rRoot, const Parser& rParser);
+			Group(const TiXmlElement& elm, const Parser& rParser);
 			Group(const Group& cpy);
 			void ParseChildren(BaseProcessor& rProcessor) const throw(XMLException);
 			void ParseElement(BaseProcessor& rProcessor) const throw(XMLException);

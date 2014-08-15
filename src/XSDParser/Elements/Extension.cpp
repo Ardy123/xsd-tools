@@ -41,8 +41,8 @@
 using namespace XSD;
 using namespace XSD::Elements;
 
-Extension::Extension(const TiXmlElement& elm, const Schema& rRoot, const Parser& rParser)
-	: Node(elm, rRoot, rParser)
+Extension::Extension(const TiXmlElement& elm, const Parser& rParser)
+	: Node(elm, rParser)
 { }
 
 Extension::Extension(const Extension& rCpy)
@@ -91,12 +91,12 @@ Extension::ParseElement(BaseProcessor& rProcessor) const throw(XMLException) {
 	std::auto_ptr<Types::BaseType> pBase(Base());
 	if (XSD_ISTYPE(pBase.get(),Types::SimpleType)) {
 		const Types::SimpleType* pSmplType = static_cast<const Types::SimpleType*>(pBase.get());
-		if (_checkForDuplicateNamedParticles(&m_rXmlElm, &pSmplType->m_pValue->GetXMLElm())) {
+		if (_checkForDuplicateNamedParticles(&Node::GetXMLElm(), &pSmplType->m_pValue->GetXMLElm())) {
 			throw XMLException(GetXMLElm(), XMLException::InvallidChildXMLElement);
 		}
 	} else if (XSD_ISTYPE(pBase.get(),Types::ComplexType)) {
 		const Types::ComplexType* pCmplxType = static_cast<const Types::ComplexType*>(pBase.get());
-		if (_checkForDuplicateNamedParticles(&m_rXmlElm, &pCmplxType->m_pValue->GetXMLElm())) {
+		if (_checkForDuplicateNamedParticles(&Node::GetXMLElm(), &pCmplxType->m_pValue->GetXMLElm())) {
 			throw XMLException(GetXMLElm(), XMLException::InvallidChildXMLElement);
 		}
 	}

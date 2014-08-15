@@ -36,7 +36,7 @@ namespace XSD {
 		private:
 			TotalDigits();
 		public:
-			TotalDigits(const TiXmlElement& elm, const Schema& rRoot, const Parser& rParser);
+			TotalDigits(const TiXmlElement& elm, const Parser& rParser);
 			TotalDigits(const TotalDigits& cpy);
 			void ParseChildren(BaseProcessor& rProcessor) const throw(XMLException);
 			void ParseElement(BaseProcessor& rProcessor) const throw(XMLException);

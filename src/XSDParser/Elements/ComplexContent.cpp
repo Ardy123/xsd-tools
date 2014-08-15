@@ -38,8 +38,8 @@
 using namespace XSD;
 using namespace XSD::Elements;
 
-ComplexContent::ComplexContent(const TiXmlElement& elm, const Schema& rRoot, const Parser& rParser)
-	: Node(elm, rRoot, rParser)
+ComplexContent::ComplexContent(const TiXmlElement& elm, const Parser& rParser)
+	: Node(elm, rParser)
 { }
 
 ComplexContent::ComplexContent(const ComplexContent& rType)

@@ -35,7 +35,7 @@ namespace XSD {
 		private:
 			Annotation();
 		public:
-			Annotation(const TiXmlElement& elm, const Schema& rRoot, const Parser& rParser);
+			Annotation(const TiXmlElement& elm, const Parser& rParser);
 			Annotation(const Annotation& cpy);
 			void ParseChildren(BaseProcessor& rProcessor) const throw(XMLException);
 			void ParseElement(BaseProcessor& rProcessor) const throw(XMLException);

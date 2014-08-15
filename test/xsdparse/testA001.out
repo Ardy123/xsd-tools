@@ -1,41 +1,50 @@
 AddressElm = {
-	attributes = {}
+	maxOccurs = 1
 	content = {
 		country = {
-			attributes = {}
+			maxOccurs = 1
 			content = {
 				string = {
-					attributes = {}
+					maxOccurs = 1
 					content = {}
+					attributes = {}
 				}
 			}
+			attributes = {}
 		}
 		zipcode = {
-			attributes = {}
+			maxOccurs = 1
 			content = {
 				integer = {
-					attributes = {}
+					maxOccurs = 1
 					content = {}
+					attributes = {}
 				}
 			}
+			attributes = {}
 		}
 		city = {
-			attributes = {}
+			maxOccurs = 1
 			content = {
 				string = {
-					attributes = {}
+					maxOccurs = 1
 					content = {}
+					attributes = {}
 				}
 			}
+			attributes = {}
 		}
 		street = {
-			attributes = {}
+			maxOccurs = 1
 			content = {
 				string = {
-					attributes = {}
+					maxOccurs = 1
 					content = {}
+					attributes = {}
 				}
 			}
+			attributes = {}
 		}
 	}
+	attributes = {}
 }

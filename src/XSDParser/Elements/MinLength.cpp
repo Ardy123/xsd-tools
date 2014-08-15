@@ -34,8 +34,8 @@
 using namespace XSD;
 using namespace XSD::Elements;
 
-MinLength::MinLength(const TiXmlElement& elm, const Schema& rRoot, const Parser& rParser)
-	: Node(elm, rRoot, rParser)
+MinLength::MinLength(const TiXmlElement& elm, const Parser& rParser)
+	: Node(elm, rParser)
 { }
 
 MinLength::MinLength(const MinLength& cpy)

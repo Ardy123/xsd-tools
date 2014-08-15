@@ -34,8 +34,8 @@
 using namespace XSD;
 using namespace XSD::Elements;
 
-MaxExclusive::MaxExclusive(const TiXmlElement& elm, const Schema& rRoot, const Parser& rParser)
-	: Node(elm, rRoot, rParser)
+MaxExclusive::MaxExclusive(const TiXmlElement& elm, const Parser& rParser)
+	: Node(elm, rParser)
 { }
 
 MaxExclusive::MaxExclusive(const MaxExclusive& cpy)

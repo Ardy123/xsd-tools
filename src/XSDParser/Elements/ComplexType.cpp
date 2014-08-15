@@ -44,8 +44,8 @@
 using namespace XSD;
 using namespace XSD::Elements;
 
-ComplexType::ComplexType(const TiXmlElement& elm, const Schema& rRoot, const Parser& rParser)
-	: Node(elm, rRoot, rParser)
+ComplexType::ComplexType(const TiXmlElement& elm, const Parser& rParser)
+	: Node(elm, rParser)
 { }
 
 ComplexType::ComplexType(const ComplexType& rType)
@@ -89,7 +89,7 @@ ComplexType::ParseChildren(BaseProcessor& rProcessor) const throw(XMLException) 
 void
 ComplexType::ParseElement(BaseProcessor& rProcessor) const throw(XMLException) {
 	if (HasName() && !Node::IsRootNode()) {
-		throw XMLException(m_rXmlElm, XMLException::InvalidAttribute);
+		throw XMLException(Node::GetXMLElm(), XMLException::InvalidAttribute);
 	}
 	rProcessor.ProcessComplexType(this);
 }

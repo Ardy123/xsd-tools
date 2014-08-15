@@ -24,6 +24,7 @@
 #define PARSER_HPP_
 
 #include <string>
+#include <vector>
 #include "./src/XSDParser/TypesDB.hpp"
 #include "./src/XSDParser/Exception.hpp"
 
@@ -33,13 +34,30 @@ namespace XSD {
 	}
 	class Parser {
 	private:
-		Types::TypesDB 	m_typesDb;
+		struct DocumentRecord {
+			TiXmlDocument *	m_pDocument;
+			std::string 	m_uri;
+			DocumentRecord(TiXmlDocument *	pDocument, const std::string& uri) 
+				: m_pDocument(pDocument), m_uri(uri) 
+			{ }
+			virtual ~DocumentRecord() {
+				delete m_pDocument;
+			}
+		};
+		typedef std::vector<DocumentRecord *> XmlDocList;
+		Types::TypesDB 		m_typesDb;
+	    mutable XmlDocList	m_docLst;
 	public:
 		Parser();
 		virtual ~Parser();
-		Elements::Schema* Parse(const char* uri) const throw(XMLException);
+		Elements::Schema* Parse(const char * uri) const throw(XMLException);
 		Elements::Schema* Parse(const std::string& rURI) const throw(XMLException);
 		const Types::TypesDB& QueryTypesDb() const throw();
+		bool HasDocument(const TiXmlDocument& document) const;
+		bool HasDocument(const std::string& uri) const;
+		std::string GetUri(const TiXmlDocument& document) const;
+		const TiXmlDocument * GetDocument(const std::string& rUri) const;
+		bool isRootDocument(const TiXmlDocument& document) const;
 	};
 }	/* namespace XSD */
 
