@@ -16,7 +16,7 @@
    end
 
    local function isSingular(typeName)
-      return (typename == 1)
+      return (typeName == 1)
    end
 
    local function isRootElement(schema, type)
