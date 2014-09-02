@@ -4,6 +4,6 @@ type_integer = {
    marshall   = 'put',
    unmarshall = 'getLong',
    declrFmt = '%s',
-   metaInfo = { primative = false }
+   metaInfo = { primative = true }
 }
 ]

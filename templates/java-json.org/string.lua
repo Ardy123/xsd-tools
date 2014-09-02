@@ -4,6 +4,6 @@ type_string = {
    marshall = 'put',
    unmarshall = 'getString',
    declrFmt = '"%s"',
-   metaInfo = { primative = false }
+   metaInfo = { primative = true }
 }
 ]

@@ -4,6 +4,6 @@ type_int32 = {
   marshall   = 'put',
   unmarshall = 'getInt',
   declrFmt = '%s',
-  metaInfo = { primative = false }
+  metaInfo = { primative = true }
 }
 ]

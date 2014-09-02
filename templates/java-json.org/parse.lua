@@ -133,6 +133,7 @@
 			str:append('\t\telse\n')
 			if not isListType(fieldType) then str:append('\t') end
 		 end
+
 		 if isListType(fieldType) then
 			local lstType = getListType(fieldType)
 			str:append(
@@ -221,7 +222,8 @@
 			    )
             else
 			    str:append(
-			       ('\t\tif (null != _%s && 0 < _%s.size())\n'):format(
+			       --('\t\tif (null != _%s && 0 < _%s.size())\n'):format(
+			       ('\t\tif (null != _%s )\n'):format(
 			    	  memberName, memberName
 			       )
 			    )
@@ -346,7 +348,6 @@
        for tableName, tableDef in pairs(typedef.fields) do
 			local nextTableName, nextTable = next(tableDef)
             str:append("'"..tableName.."':")
-
             if (isListType(nextTableName)) then
                 if generateData[getListType(nextTableName)] == nil then
                     str:append("[{"..elementOutput(nextTableName, nextTable, visitType).."}]")
@@ -355,7 +356,12 @@
                     str:append( "["..generateData[getListType(nextTableName)].."]" )
                 end
             else
-                if generateData[nextTableName] == nil then
+                if not isSimpleType(nextTable) then
+                    str:append ("{")
+                    str:append(elementOutput(nextTableName, nextTable, visitType))
+                    visitType[nextTableName] = true
+                    str:append ("}")
+                elseif generateData[nextTableName] == nil then
                     str:append(elementOutput(nextTableName, nextTable, visitType))
                     visitType[nextTableName] = true
                 else

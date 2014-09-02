@@ -37,12 +37,24 @@ ItemStrategy = {
 		    end
 		 end,
    marshall = function(type, var, tag)
-		 local fmt = '\t\tretObj.%s(\"%s\", _%s);\n'
-		 return fmt:format(type.marshall, tag, var)
+         if type.metaInfo['primative'] then
+		    local fmt = '\t\tretObj.%s(\"%s\", _%s);\n'
+		    return fmt:format(type.marshall, tag, var)
+         else
+		    local fmt = '\t\tretObj.%s(\"%s\", _%s.marshall());\n'
+		    return fmt:format(type.marshall, tag, var)
+
+         end
 	      end,
    unmarshall = function(type, var, tag)
-		   local fmt = '\t\t_%s= jObj.%s(\"%s\");\n'
-		   return fmt:format(var, type.unmarshall, tag)
+           if type.metaInfo['primative'] then
+		        local fmt = '\t\t_%s= jObj.%s(\"%s\");\n'
+		        return fmt:format(var, type.unmarshall, tag)
+            else
+		        local fmt = '\t\t_%s= new %s(jObj.%s(\"%s\"));\n'
+                return fmt:format(var, type.typename, type.unmarshall, tag)
+           end
+
 		end,
    geter = function(type, var)
 	      local str = {}

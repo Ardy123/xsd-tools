@@ -82,6 +82,9 @@ public class JSONObjectAdapter {
 	public JSONObjectAdapter put(String key, JSONArrayAdapter value) throws JSONException {
 		return new JSONObjectAdapter(_jObj.put(key, value.getJSONArray()));
 	}	
+	public JSONObjectAdapter put(String key, JSONObject value) throws JSONException {
+		return new JSONObjectAdapter(_jObj.put(key, value));
+	}	
 	public JSONObjectAdapter putBase64(String key, byte [] buffer) throws JSONException {
 		return new JSONObjectAdapter(_jObj.put(key, Base64.encodeBase64String(buffer)));
 	}
