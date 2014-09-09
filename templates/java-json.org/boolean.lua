@@ -4,6 +4,6 @@ type_boolean = {
    marshall   = 'put',
    unmarshall = 'getBoolean',
    declrFmt = '%s',
-   metaInfo = { primative = false }
+   metaInfo = { primative = true }
 }
 ]

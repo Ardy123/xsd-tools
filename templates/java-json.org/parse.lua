@@ -222,7 +222,6 @@
 			    )
             else
 			    str:append(
-			       --('\t\tif (null != _%s && 0 < _%s.size())\n'):format(
 			       ('\t\tif (null != _%s )\n'):format(
 			    	  memberName, memberName
 			       )
@@ -300,10 +299,23 @@
        return table.concat(array)
     end
 
-   local function generateInteger()
+    local function generateInteger()
         local positiveOrNegative = 1
         if math.random() > 0.5 then posNegRandInt = -1 end
+        if math.random() > 0.5 then positiveOrNegative = -1 end
         return tostring(positiveOrNegative*math.random(1000000))
+   end
+
+   local function generateDouble()
+        local positiveOrNegative = 1
+        if math.random() > 0.5 then positiveOrNegative = -1 end
+        return tostring(positiveOrNegative*math.random(10000000)/1000)
+   end
+
+   local function generateBoolean()
+        local trueOrFalse = 1
+        if math.random() > 0.5 then trueOrFalse= -1 end
+        if trueOrFalse > 0 then return "true" else return "false" end
    end
 
    local function generatePositiveInteger()
@@ -328,6 +340,10 @@
 
    local function elementOutput(typename, typedef, visitType)
       local generateData = {}
+      generateData["boolean"] = generateBoolean()
+      generateData["double"] = generateDouble()
+      generateData["long"] = generateInteger()
+
       generateData["integer"] = generateInteger()
       generateData["int"] = generateInteger()
       generateData["positiveInteger"] = generatePositiveInteger()
@@ -409,7 +425,7 @@
                         outputStr:append(typename.." "..variableName2.." = new "
                             ..typename.."( "..variableName.." );".."\n        ")
                         outputStr:append("System.out.println("..variableName..
-                            ".toString().equals("..variableName2..".marshall().toString() ));")
+                            ".toString().equals("..variableName2..".marshall().toString() ));\n\n")
                     end
                 end
             end

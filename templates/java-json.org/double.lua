@@ -1,6 +1,6 @@
 [@lua
 type_double = {
-   typename   = 'double',
+   typename   = 'Double',
    marshall   = 'put',
    unmarshall = 'getDouble',
    declrFmt = '%s',

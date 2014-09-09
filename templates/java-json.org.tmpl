@@ -64,6 +64,15 @@ public class JSONObjectAdapter {
 	public byte[] getHex(String key) throws JSONException, DecoderException {
 		return Hex.decodeHex(_jObj.getString(key).toCharArray());
 	}
+	public JSONObjectAdapter put(String key, Boolean value) throws JSONException {
+		return new JSONObjectAdapter(_jObj.put(key, value.booleanValue()));
+	}	
+	public JSONObjectAdapter put(String key, Long value) throws JSONException {
+		return new JSONObjectAdapter(_jObj.put(key, value.longValue()));
+	}	
+	public JSONObjectAdapter put(String key, Integer value) throws JSONException {
+		return new JSONObjectAdapter(_jObj.put(key, value.intValue()));
+	}
 	public JSONObjectAdapter put(String key, boolean value) throws JSONException {
 		return new JSONObjectAdapter(_jObj.put(key, value));
 	}	
