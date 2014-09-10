@@ -1,0 +1,61 @@
+[@lua
+include 'c-xml-expat-dom/baseType'
+
+cstring = {}
+cstring.__index = cstring
+setmetatable(cstring, {__index = baseType})
+
+function cstring:new(typeFactory, typedef)
+   local retObj = baseType:new(typeFactory, typedef)
+   setmetatable(retObj, cstring)
+   return retObj
+end
+
+function cstring:instanceOf()
+   return "string"
+end
+
+function cstring:typeName()
+   return ("xml_string")
+end
+
+function cstring:typeDef()
+   return ("typedef char * %s;\n"):format(self:typeName())
+end
+
+function cstring:typeFactoryMethods()
+   return ""
+end
+
+function cstring:defMarshall()
+   out = stringBuffer:new()
+   out:append("static void\n")
+   out:append("_xml_string_marshall(const xml_string str, char ** ppOut, const xml_typeFactory * pFactory) {\n")
+   out:append("\t_cstr_append(ppOut, str, pFactory);\n")
+   out:append("}\n")
+   return out:str()
+end
+
+function cstring:defUnmarshall()
+   out = stringBuffer:new()
+   out:append("static xml_string\n")
+   out:append("_xml_string_unmarshall(const char * pVal, const xml_typeFactory * pFactory) {\n")
+   out:append("\treturn _cstr_init(pVal, -1, pFactory);\n")
+   out:append("}\n")
+   return out:str()
+end
+
+function cstring:defDestroy()
+   out = stringBuffer:new()
+   out:append("static xml_string\n")
+   out:append("_xml_string_destroy(xml_string str, const xml_typeFactory * pFactory) {\n")
+   out:append("\tif (str) _cstr_destroy(&str, pFactory);\n")
+   out:append("\treturn str;\n")
+   out:append("}\n")
+   return out:str()
+end
+
+function cstring:test()
+   return "testString"
+end
+]

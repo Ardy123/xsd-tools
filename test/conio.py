@@ -60,7 +60,7 @@ class conio:
 		rslt, error = prcssStrm.communicate()
 		# handle a signal error
 		if 0 > prcssStrm.returncode:
-			return (rslt, self.SIGNALS_TO_NAMES_DICT[-prcssStrm.returncode] + "\n" + error)
+                        return (rslt, self.SIGNALS_TO_NAMES_DICT[-prcssStrm.returncode] + "\n" + error, prcssStrm.returncode)
 		return (rslt, error, prcssStrm.returncode)
 
 

@@ -1,0 +1,65 @@
+[@lua
+include 'c-xml-expat-dom/baseType'
+
+boolean = {}
+boolean.__index = boolean
+setmetatable(boolean, {__index = baseType})
+
+function boolean:new(typeFactory, typedef)
+   local retObj = baseType:new(typeFactory, typedef)
+   setmetatable(retObj, boolean)
+   return retObj
+end
+
+function boolean:typeName()
+   return ("xml_boolean")
+end
+
+function boolean:typeDef()
+   return ("typedef unsigned * %s;\n"):format(self:typeName())
+end
+
+function boolean:typeFactoryMethods()
+   return ""
+end
+
+function boolean:defMarshall(elementName)
+   out = stringBuffer:new()
+   out:append("static void")
+   out:append("_xml_boolean_marshall")
+   out:append("(const xml_boolean pVal, char ** ppOut) {\n")
+   out:append("\t_cstr_append(ppOut, (*pVal ? \"true\" : \"false\"));\n")
+   out:append("}\n")   
+   return out:str()
+end
+
+function boolean:defUnmarshall(elementName)
+   out = stringBuffer:new()
+   out:append("static xml_boolean\n")
+   out:append("_xml_boolean_unmarshall(")
+   out:append("const char * pVal, const xml_typeFactory * pFactory) {\n")
+   out:append("\txml_boolean val = ReallocateMemory(pFactory, NULL, sizeof(unsigned));\n")
+   out:append("\tint val = atoi(pStr);\n")
+   out:append("\tif (!val) {\n")
+   out:append("\t\treturn (0 == strncasecmp(pStr, \"true\", 6));\n")
+   out:append("\t}\n")
+   out:append("\treturn val;\n")
+   out:append("}\n")
+   return out:str()
+end
+
+function boolean:defDestroy()
+   out = stringBuffer:new()
+   out:append("static xml_boolean\n")
+   out:append("_xml_boolean_destroy")
+   out:append("(xml_boolean pVal, const xml_typeFactory * pFactory) {\n")
+   out:append("\tif (pVal) pVal = ReallocateMemory(pFactory, pVal, 0);\n")
+   out:append("\treturn pVal;\n")
+   out:append("}\n")
+   return out:str()
+end
+
+function boolean:test()
+   return "True"
+end
+]

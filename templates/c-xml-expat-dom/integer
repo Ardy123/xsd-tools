@@ -1,0 +1,67 @@
+[@lua
+include 'c-xml-expat-dom/baseType'
+
+integer = {}
+integer.__index = integer
+setmetatable(integer, {__index = baseType})
+
+function integer:new(typeFactory, typedef)
+   local retObj = baseType:new(typeFactory, typedef)
+   setmetatable(retObj, integer)
+   return retObj
+end
+
+function integer:instanceOf()
+   return "integer"
+end
+
+function integer:typeName()
+   return ("xml_integer")
+end
+
+function integer:typeDef()
+   return ("typedef int64_t * %s;\n"):format(self:typeName())
+end
+
+function integer:typeFactoryMethods()
+   return ""
+end
+
+function integer:defMarshall(elementName)
+   out = stringBuffer:new()
+   out:append("static void\n")
+   out:append("_xml_integer_marshall")
+   out:append("(const xml_integer pVal, char ** ppOut, const xml_typeFactory * pFactory) {\n")
+   out:append("\tchar num[64];\n")
+   out:append("\tsnprintf(num, 64, \"%ld\", *pVal);\n")
+   out:append("\t_cstr_append(ppOut, num, pFactory);\n")
+   out:append("}\n")   
+   return out:str()
+end
+
+function integer:defUnmarshall(elementName)
+   out = stringBuffer:new()
+   out:append("static xml_integer\n")
+   out:append("_xml_integer_unmarshall(")
+   out:append("const char * pVal, const xml_typeFactory * pFactory) {\n")
+   out:append("\txml_integer val = ReallocateMemory(pFactory, NULL, sizeof(int64_t));\n")
+   out:append("\treturn (*val  = atoll(pVal)), val;\n")
+   out:append("}\n")
+   return out:str()
+end
+
+function integer:defDestroy()
+   out = stringBuffer:new()
+   out:append("static xml_integer\n")
+   out:append("_xml_integer_destroy")
+   out:append("(xml_integer pVal, const xml_typeFactory * pFactory) {\n")
+   out:append("\tif (pVal) pVal = ReallocateMemory(pFactory, pVal, 0);\n")
+   out:append("\treturn pVal;\n")
+   out:append("}\n")
+   return out:str()
+end
+
+function integer:test()
+   return "463"
+end
+]

@@ -1,0 +1,63 @@
+[@lua
+include 'c-xml-expat-dom/baseType'
+
+float = {}
+float.__index = float
+setmetatable(float, {__index = baseType})
+
+function float:new(typeFactory, typedef)
+   local retObj = baseType:new(typeFactory, typedef)
+   setmetatable(retObj, float)
+   return retObj
+end
+
+function float:typeName()
+   return ("xml_float")
+end
+
+function float:typeDef()
+   return ("typedef float * %s;\n"):format(self:typeName())
+end
+
+function float:typeFactoryMethods()
+   return ""
+end
+
+function float:defMarshall(elementName)
+   out = stringBuffer:new()
+   out:append("static void")
+   out:append("_xml_float_marshall")
+   out:append("(const xml_float pVal, char ** ppOut, const xml_typeFactory * pFactory) {\n")
+   out:append("\tchar num[64];\n")
+   out:append("\tsnprintf(num, 64, \"%f\", *pVal);\n")
+   out:append("\t_cstr_append(ppOut, num, pFactory);\n")
+   out:append("}\n")   
+   return out:str()
+end
+
+function float:defUnmarshall(elementName)
+   out = stringBuffer:new()
+   out:append("static xml_float\n")
+   out:append("_xml_float_unmarshall(")
+   out:append("const char * pVal, const xml_typeFactory * pFactory) {\n")
+   out:append("\txml_float val = ReallocateMemory(pFactory, NULL, sizeof(float));\n")
+   out:append("\treturn (*val  = atof(pVal)), val;\n")
+   out:append("}\n")
+   return out:str()
+end
+
+function float:defDestroy()
+   out = stringBuffer:new()
+   out:append("static xml_float\n")
+   out:append("_xml_float_destroy")
+   out:append("(xml_float pVal, const xml_typeFactory * pFactory) {\n")
+   out:append("\tif (pVal) pVal = ReallocateMemory(pFactory, pVal, 0);\n")
+   out:append("\treturn pVal;\n")
+   out:append("}\n")
+   return out:str()
+end
+
+function float:test()
+   return "493.234"
+end
+]

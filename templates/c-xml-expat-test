@@ -4,7 +4,7 @@
 ][@lua --include any shared 'helper' templates
 	return include 'shared/schemaEx'
 ][@lua --include xsd to c type mapping
-	return include 'c-xml/c_type_info'
+	return include 'c-xml-expat-sax/c_type_info'
 ][@lua --generate helper globals
 	schema = schema.c_safeNames()
 	uniqueXSDTypes = schema.uniqueTypes()

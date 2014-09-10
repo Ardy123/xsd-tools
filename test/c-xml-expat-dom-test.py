@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 # Copyright: (c)2012 Ardavon Falls
 #
 # This file is part of xsd-tools.
@@ -15,6 +17,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
 
+import sys
 import glob
 import difflib
 import os
@@ -45,9 +48,8 @@ def genBinding(srcPrefix, xsdfile, rsltPath, template):
 	if not os.path.exists(rsltPath):
 		os.makedirs(rsltPath)
 	os.remove('xx00')
-	shutil.move('xx01', rsltPath + srcPrefix + 'common.h')
-	shutil.move('xx02', rsltPath + srcPrefix + schemaName +'.h')
-	shutil.move('xx03', rsltPath + srcPrefix + schemaName +'.c')
+	shutil.move('xx01', rsltPath + srcPrefix + schemaName +'.h')
+	shutil.move('xx02', rsltPath + srcPrefix + schemaName +'.c')
 	return True
 
 def genBindingTest(xsdfile, rsltPath, template):
@@ -104,8 +106,9 @@ def execTests(xsdfiles, rsltPath):
 		exefile = os.path.splitext(os.path.split(exe)[1])[0]
 		consoleIO.stdout(consoleIO.ENDC, "executing test " + exefile + ": ")
 		cmd = rsltPath + exefile
-		std, err, retcode = consoleIO.call(cmd)
-		if _handleError(retcode, err):
+		std, err, errorCode = consoleIO.call(cmd)
+
+		if _handleError(err, errorCode):
 			return False
 		else:
 			consoleIO.stdout(consoleIO.OKGREEN, "Pass\n")
@@ -157,3 +160,11 @@ def runTest(srcPrefix, testPath, bindingTemplate, op):
 	if not execTests(xsdLst, dstPath):
 		consoleIO.stdout(consoleIO.FAIL, "Fail\n")
 	return
+
+def main(arg):
+	op = arg[1] if len(arg) > 1 and "clean" == arg[1] else ""
+	runTest("xml_", "xsd-positive/", "../templates/c-xml-expat-dom.template", op)
+
+if __name__ == "__main__":
+	main(sys.argv)
+	
