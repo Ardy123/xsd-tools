@@ -102,66 +102,60 @@ end
 function topologicalSort(XSDDoc, processor)
    local visitTable = {}
    local outStrm = stringBuffer:new()
-   local function parseElement(name, XMLElmnt, parentName, XMLParentElmnt)
-      local ctype = XMLElmnt and ctypes:getType(XMLElmnt) or nil
+   local function parseElement(name, ctype, parentName, parentCtype)
       if not ctype or visitTable[ctype:typeName()] then
-        return
-      else 
-         if 'list' == ctype:instanceOf() then
-            parseElement(ctype:listType()._typedef.struct, ctype:listType()._typedef, name, XMLElmnt)
-         end
+         return
+      else
          visitTable[ctype:typeName()] = true
-         for atrName, atrTypename, atrTypedef in attrIterator(XMLElmnt.attributes) do
-            local atrType = ctypes:getType(atrTypedef)
-            parseElement(atrType:instanceOf(), atrTypedef, name, XMLElmnt)
+         if 'list' == ctype:instanceOf() then
+            parseElement(ctype:listType()._typedef.struct, ctype:listType(), name, ctype)
          end
-         table.map(XMLElmnt.content, 
+         for atrName, atrTypename, atrTypedef in attrIterator(ctype._typedef.attributes) do
+            local atrType = ctypes:getType(atrTypedef)
+            parseElement(atrType:instanceOf(), atrType, name, ctype)
+         end
+         table.map(ctype._typedef.content, 
                    function(k, v)
-                      parseElement(k, v, name, XMLElmnt)
+                      parseElement(k, ctypes:getType(v), name, ctype)
                    end)
-         outStrm:append(processor(name, XMLElmnt, parentName, XMLParentElmnt))
+         outStrm:append(processor(name, ctype, parentName, parentCtype))
       end
    end
-   table.map(XSDDoc, parseElement)
+   table.map(XSDDoc, function(k,v) parseElement(k, ctypes:getType(v)) end)
    return outStrm:str()
 end
 
 function countXMLTypes(XSDDoc)
    local numXmlTypes = 0
-   topologicalSort(XSDDoc, function(name, typedef) numXmlTypes = numXmlTypes + 1 end)
+   topologicalSort(XSDDoc, function(name, ctype) numXmlTypes = numXmlTypes + 1 end)
    return numXmlTypes
 end
 
-function outputEnum(name, XSDElement)
-   local ctype = ctypes:getType(XSDElement)
+function outputEnum(name, ctype)
    return ("  %s = 0x%X,\n"):format(ctype:typeEnum(), ctype:typeHash())
 end
 
-function outputTypedef(name, XSDElement)
+function outputTypedef(name, ctype)
    local str = stringBuffer:new()
-   local ctype = ctypes:getType(XSDElement)
    str:append(ctype:typeDef())
    str:append("/* ------------ */\n")
    return str:str()
 end
 
-function outputFactoryMethods(name, XSDElement)
-   local ctype = ctypes:getType(XSDElement)
+function outputFactoryMethods(name, ctype)
    return ctype:typeFactoryMethods()
 end
 
-function outputDclrTypeMthds(name, XSDElement)
+function outputDclrTypeMthds(name, ctype)
    local str = stringBuffer:new()
-   local ctype = ctypes:getType(XSDElement)
    str:append(ctype:dclrUnmarshall(name))
    str:append(ctype:dclrMarshall(name))
    str:append(ctype:dclrDestroy())
    return str:str()
 end
 
-function outputDefTypeMthds(name, XSDElement)
+function outputDefTypeMthds(name, ctype)
    local str = stringBuffer:new()
-   local ctype = ctypes:getType(XSDElement)
    str:append(ctype:defMarshall(name))
    str:append("/* ------------ */\n")
    str:append(ctype:defUnmarshall(name))
@@ -183,8 +177,7 @@ function outputXmlDestroy(XSDDoc)
    str:append(
       topologicalSort(
          XSDDoc, 
-         function(name, typedef)
-            local ctype = ctypes:getType(typedef)       
+         function(name, ctype)
             str:append(("    case %s:\n"):format(ctype:typeEnum()))
             str:append(("      Destroy(%s, pLst->m_pData, pFactory);\n"):format(ctype:typeName()));
             str:append("      break;\n")
@@ -207,14 +200,13 @@ function outputXmlTypelstMrhsll(XSDDoc)
    str:append("    switch(pItr->m_type) {\n")
    str:append(
       topologicalSort(
-     XSDDoc,
-     function(name, typedef)
-        local ctype = ctypes:getType(typedef)   
-        str:append(("    case %s:\n"):format(ctype:typeEnum()))
-        str:append(("      MarshallContent(%s, pItr->m_pData, ppOut, pFactory);\n"):format(ctype:typeName()));
-        str:append("      break;\n")    
-     end
-      )
+                      XSDDoc,
+                      function(name, ctype)
+                         str:append(("    case %s:\n"):format(ctype:typeEnum()))
+                         str:append(("      MarshallContent(%s, pItr->m_pData, ppOut, pFactory);\n"):format(ctype:typeName()));
+                         str:append("      break;\n")    
+                      end
+                     )
    )
    str:append("    default: break;\n")
    str:append("    }\n")
@@ -237,12 +229,10 @@ function outputXmlStartElement(XSDDoc)
    str:append(
       topologicalSort(
      XSDDoc,
-     function(name, typedef, parentName, parentTypedef)
-        if isSimpleType(typedef) then return end
+     function(name, ctype, parentName, parentCType)
+        if isSimpleType(ctype._typedef) then return end
         local elemName = sdbm_hash(name)
-        local ctype = ctypes:getType(typedef)
-        local parentEnum = parentName and 
-           ctypes:getType(parentTypedef):typeEnum() or "0"
+        local parentEnum = parentName and parentCType:typeEnum() or "0"
         if ifCnt == 0 then
            str:append(
           ("    if (%s == parent && 0x%x == elmName) {\n"):format(
@@ -256,7 +246,7 @@ function outputXmlStartElement(XSDDoc)
              elemName)
            )
         end
-        if parentTypedef and isMixedType(parentTypedef) then
+        if parentCType and isMixedType(parentCType._typedef) then
            str:append("      PushMixedContent(pCtx);\n")
         end
         str:append(
@@ -294,10 +284,9 @@ function outputXmlEndElement(XSDDoc)
    str:append(
       topologicalSort(
      XSDDoc,
-     function(name, typedef, parentName, parentTypedef)
-        if isSimpleType(typedef) then return end
+     function(name, ctype, parentName, parentCType)
+        if isSimpleType(ctype._typedef) then return end
         local elemName = sdbm_hash(name)
-        local ctype = ctypes:getType(typedef)
         -- handle first if statment which doesn't use an 'else if'
         if ifCnt == 0 then
            str:append(
@@ -313,7 +302,7 @@ function outputXmlEndElement(XSDDoc)
            )
         end
         -- if simple type as content or is mixed
-        local contentTypename, contentTypedef = getSimpleTypeContent(typedef) 
+        local contentTypename, contentTypedef = getSimpleTypeContent(ctype._typedef) 
         if contentTypename then
            local mixedType = ctypes:getType(contentTypedef)
            str:append(
@@ -348,14 +337,13 @@ function outputXmlElementContent(XSDDoc)
    str:append("    switch(pTop->m_type) {\n")   
    str:append(
       topologicalSort(
-     XSDDoc,
-     function(name, typedef, parentName, parentTypedef)
-        if isSimpleType(typedef) then return end        
-        local elemName = sdbm_hash(name)
-        local ctype = ctypes:getType(typedef)
-        str:append(("    case %s:\n"):format(ctype:typeEnum()))
-     end
-      )
+                      XSDDoc,
+                      function(name, ctype, parentName, parentCType)
+                         if isSimpleType(ctype._typedef) then return end        
+                            local elemName = sdbm_hash(name)
+                            str:append(("    case %s:\n"):format(ctype:typeEnum()))
+                         end
+                      )
    )
    str:append("      _content_addContentStr(pCtx, pData, len);\n")
    str:append("      break;\n")
