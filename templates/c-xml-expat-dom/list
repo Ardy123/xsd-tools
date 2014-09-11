@@ -1,0 +1,135 @@
+[@lua
+include 'c-xml-expat-dom/baseType'
+
+list = {}
+list.__index = list
+setmetatable(list, {__index = baseType})
+
+function list:new(typeFactory, typedef)
+   local lstTypename = typedef.struct:match("list%((.+)%)")
+   local retObj = baseType:new(typeFactory, typedef)   
+   setmetatable(retObj, list)
+   retObj._listType = retObj:_getType({struct=lstTypename, attributes={}, content={}})
+   return retObj
+end
+
+function baseType:instanceOf()
+   return "list"
+end
+
+function list:getTypeFactory()
+   return self._typeFactory
+end
+
+function list:typeName()
+   return ("%slist"):format(self._listType:typeName())
+end
+
+function list:typeDef()
+   return ("typedef %s * %s;\n"):format(
+      self._listType:typeName(), 
+      self:typeName())
+end
+
+function list:typeFactoryMethods()
+   return ""
+end
+
+function list:dclrMarshall()
+   return ("static void _%s_marshall(const %s, char **, const xml_typeFactory *);\n"):format(
+      self:typeName(), self:typeName())
+end
+
+function list:dclrUnmarshall()
+   return (
+      "static %s _%s_unmarshall(const char *, const xml_typeFactory *);\n"
+   ):format(
+      self:typeName(), self:typeName())
+end
+
+function list:dclrDestroy()
+   return ("static %s _%s_destroy(%s, const xml_typeFactory *);\n"):format(
+      self:typeName(), self:typeName(), self:typeName())
+end
+
+function list:defMarshall(elementName)
+   out = stringBuffer:new()
+   out:append("static void\n")
+   out:append(
+      ("_%s_marshall(const %s pVal, char ** ppOut, const xml_typeFactory * pFactory) {\n"):format(
+     self:typeName(), self:typeName())
+   )
+   out:append(("  %s * pItr = (%s *)pVal;\n"):format(self._listType:typeName(),self._listType:typeName()))
+   out:append("  if (pVal && *pItr) {\n")
+   out:append(("    _%s_marshall(*pItr, ppOut, pFactory);\n"):format(self._listType:typeName()))
+   out:append("    if (*(pItr + 1))\n")
+   out:append("      _cstr_append(ppOut, \" \", pFactory);\n")
+   out:append(("    _%s_marshall(++pItr, ppOut, pFactory);\n"):format(self:typeName()))
+   out:append("  }\n")
+   out:append("}\n")
+   return out:str()
+end
+
+function list:defUnmarshall(elementName)
+   out = stringBuffer:new()
+   out:append(("static %s\n"):format(self:typeName()))
+   out:append(
+      ("_%s_unmarshall(const char * pVal, const xml_typeFactory * pFactory) {\n"): format(self:typeName())
+   )
+   out:append(("  %s term = NULL;\n"):format(self._listType:typeName()))
+   out:append(("  list_t list = _list(sizeof(%s), pFactory);\n"):format(
+         self._listType:typeName())
+   )
+   out:append("  tokenizer_t tokenizer = _tokenizer(pVal, pFactory);\n")
+   out:append("  const char * pToken = _tokenizer_next(&tokenizer);\n")
+   out:append("\n")
+   out:append("  for (; *pToken; pToken = _tokenizer_next(&tokenizer)) {\n")
+   out:append(("    %s val = Unmarshall(%s, pToken, pFactory);\n"):format(
+         self._listType:typeName(),
+         self._listType:typeName())
+   )
+   out:append("    _list_push(&list, &val, pFactory);\n")
+   out:append("  }\n")
+   out:append("  _list_push(&list, &term, pFactory);\n")
+   out:append("  _tokenizer_destroy(&tokenizer, pFactory);\n")
+   out:append("  _list_trim(&list, pFactory);\n")
+   out:append("  return _list_carray(&list);\n")
+   out:append("}\n")
+   return out:str()
+end
+
+function list:defDestroy()
+   out = stringBuffer:new()
+   out:append(("static %s\n"):format(self:typeName()))
+   out:append(
+      ("_%s_destroy(%s pVal, const xml_typeFactory * pFactory) {\n"):format(
+     self:typeName(), self:typeName())
+   )
+   out:append("  if (pVal) {\n")
+   out:append(("  %s * pItr = (%s *)pVal;\n"):format(
+         self._listType:typeName(),
+         self._listType:typeName())
+   )
+   out:append(("    for (; *pItr; ++pItr) *pItr = _%s_destroy(*pItr, pFactory);\n"):format(
+         self._listType:typeName())
+   )
+   out:append("    pVal = ReallocateMemory(pFactory, pVal, 0);\n")
+   out:append("  }\n")
+   out:append("  return pVal;\n")
+   out:append("}\n")
+   return out:str()
+end
+
+function list:test()
+   local retVal = { 
+      self._listType:test(), 
+      self._listType:test(), 
+      self._listType:test() 
+   }
+   return table.concat(retVal, " ")
+end
+
+function list:listType()
+	return self._listType
+end
+]

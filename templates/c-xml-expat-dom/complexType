@@ -1,0 +1,195 @@
+[@lua
+include 'c-xml-expat-dom/shared'
+include 'c-xml-expat-dom/baseType'
+
+complexType = {}
+complexType.__index = complexType
+setmetatable(complexType, {__index = baseType})
+
+function complexType:new(typeFactory, typedef)
+   local retObj = baseType:new(typeFactory, typedef)
+   setmetatable(retObj, complexType)
+   return retObj
+end
+
+function complexType:typeDef()
+   out = stringBuffer:new()
+   out:append(("typedef struct %s {\n"):format(self:typeName()))
+   out:append(("  xml_typelist * m_pContent;\n"))
+   table.map(self._typedef.attributes, 
+             function(atrName, atrTypeTbl)
+                local _, atrTypedef = next(atrTypeTbl)
+                local atrType = self:_getType(atrTypedef)
+                out:append(("  %s %s;\n"):format(
+                  atrType:typeName(), 
+                  atrName)
+                )
+             end)
+   out:append(("} * %s;\n"):format(self:typeName()))
+   return out:str()
+end
+
+function complexType:typeFactoryMethods()
+   out = stringBuffer:new()
+   out:append(
+      ("  %s (*%sAllocator)(void);\n"):format(self:typeName(), self:typeName())
+   )
+   out:append(
+      ("  void (*%sConstructor)(%s);\n"):format(
+     self:typeName(), self:typeName())
+   )
+   out:append(
+      ("  %s (*%sDestructor)(%s);\n"):format(
+     self:typeName(), self:typeName(), self:typeName())
+   )
+   return out:str()
+end
+
+function complexType:dclrMarshall()
+   return ("static void _%s_marshall(const %s, char **, const xml_typeFactory *);\n"):format(
+      self:typeName(), self:typeName())
+end
+
+function complexType:dclrUnmarshall()
+   return (
+      "static %s _%s_unmarshall(const char **, const xml_typeFactory *);\n"
+   ):format(
+      self:typeName(), self:typeName())
+end
+
+function complexType:dclrDestroy()
+   return ("static %s _%s_destroy(%s, const xml_typeFactory *);\n"):format(
+      self:typeName(), self:typeName(), self:typeName())
+end
+
+function complexType:defMarshall(elementName)
+   out = stringBuffer:new()
+   out:append("static void\n")
+   out:append(
+      ("_%s_marshall(const %s pObj, char ** ppOut, const xml_typeFactory * pFactory) {\n"):format(
+     self:typeName(), self:typeName())
+   )
+   out:append(("  _cstr_append(ppOut, \"<%s\", pFactory);\n"):format(elementName))
+   table.map(
+      self._typedef.attributes, 
+      function(atrName, atrTypeTbl)
+     local _, atrTypedef = next(atrTypeTbl)
+     local atrType = self:_getType(atrTypedef)
+     out:append(
+        ("  MarshallAttribute(\"%s\", %s, pObj->%s, ppOut, pFactory);\n"):format(
+           atrName, atrType:typeName(), atrName)
+     )
+      end
+   )
+   out:append(("  _cstr_append(ppOut, \">\", pFactory);\n"))
+   out:append(("  _xml_typelist_marshall(pObj->m_pContent, ppOut, pFactory);\n"))
+   out:append(("  _cstr_append(ppOut, \"</%s>\", pFactory);\n"):format(elementName))
+   out:append(("}\n"))
+   return out:str()
+end
+
+function complexType:defUnmarshall(elementName)
+   out = stringBuffer:new()
+   out:append(("static %s\n"):format(self:typeName()))
+   out:append(
+      ("_%s_unmarshall(const char ** ppAttribs, const xml_typeFactory * pFactory) {\n"): format(self:typeName())
+   )
+   out:append("  void * pTmp = NULL;\n")
+   out:append(
+      ("  %s pRet = AllocateElement(%s, pFactory);\n"):format(
+     self:typeName(), self:typeName())
+   )
+   if not table.isEmpty(self._typedef.attributes) then
+      out:append("  for (; *ppAttribs; ppAttribs += 2) {\n")
+      out:append("    switch(_sdbmHash(*ppAttribs)) {\n")
+      table.map(
+     self._typedef.attributes, 
+     function(atrName, atrTypeTbl)
+        local _, atrTypedef = next(atrTypeTbl)
+        local atrType = self:_getType(atrTypedef)
+        out:append(
+           ("    case %s: /* %s */\n"):format(
+          sdbm_hash(atrName), atrName)
+        )
+        out:append(
+           ("      pRet->%s = UnmarshallAttribute(%s, ppAttribs[1], pFactory);\n"):format(
+          atrName, atrType:typeName())
+        )
+        out:append("      break;\n")
+     end
+      )
+      out:append("    }\n")
+      out:append("  }\n")
+      table.map(
+     self._typedef.attributes,
+     function(atrName, atrTypeTbl)
+        local _, atrTypedef = next(atrTypeTbl)
+        local atrType = self:_getType(atrTypedef)
+        if atrType._typedef.default then
+           out:append(
+          ("  pRet->%s = Default(%s, pRet->%s, \"%s\", pFactory);\n"):format(
+             atrName, 
+             atrType:typeName(), 
+             atrName, 
+             atrType._typedef.default)
+           )
+        end
+     end
+      )
+   end
+   out:append("  (void)pTmp;\n")
+   out:append("  return pRet;\n")
+   out:append("}\n")
+   return out:str()
+end
+
+function complexType:defDestroy()
+   out = stringBuffer:new()
+   out:append(("static %s\n"):format(self:typeName()))
+   out:append(
+      ("_%s_destroy(%s pObj, const xml_typeFactory * pFactory) {\n"):format(
+     self:typeName(), self:typeName())
+   )
+   table.map(
+      self._typedef.attributes,
+      function(atrName, atrTypeTbl)
+     local _, atrTypedef = next(atrTypeTbl)
+     local atrType = self:_getType(atrTypedef)
+     out:append(
+        ("  pObj->%s = DestroyAttribute(%s, pObj->%s, pFactory);\n"):format(
+           atrName, atrType:typeName(), atrName)
+     )
+      end
+   )
+   out:append("  xml_destroy(&pObj->m_pContent, pFactory);\n")
+   out:append(
+      ("  return DestroyElement(%s, pObj, pFactory);\n"):format(
+     self:typeName())
+   )
+   out:append("}\n")
+   return out:str()
+end
+
+function complexType:test(XSDName)
+   local out = stringBuffer:new()
+   local attributes = self._typedef.attributes
+   local content = self._typedef.content
+   -- attributes
+   local atrLst = {[1]="<"..XSDName}
+   for atrName, atrTypename, atrTypedef in attrIterator(attributes) do
+      local atrType = ctypes:getType(atrTypedef)
+      atrLst[#atrLst + 1] = atrName.."=\\\""..atrType:test(atrTypeName).."\\\""
+    end
+    out:append(table.concat(atrLst, " "))
+    out:append(">")
+   -- content
+   table.map(
+      content,
+      function(elementName, typedef)
+         local ctype = self:_getType(typedef)
+         out:append(ctype:test(elementName))
+      end)
+   out:append(("</%s>"):format(XSDName))
+   return out:str()
+end
+]

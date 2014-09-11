@@ -42,3 +42,7 @@ function table:find(func)
 		if func(k, v) then return k, v end
 	end
 end
+
+function table:isEmpty()
+	return (nil == next(self))
+end

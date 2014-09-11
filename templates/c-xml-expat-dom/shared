@@ -1,0 +1,25 @@
+[@lua
+function attrIterator(tbl)
+   local function nxtAttrib(lst, key)
+      local name, typeLst = next(lst, key)
+      return name, unpack(typeLst and {next(typeLst)} or {})
+   end
+   return nxtAttrib, tbl, nil
+end
+
+function isSimpleType(typedef)
+   return (not next(typedef.attributes) and not next(typedef.content))
+end
+
+function isMixedType(typedef)
+   return (not isSimpleType(typedef)) and 
+          (nil ~= table.find(typedef.content, 
+                             function(elmName, elmTypedef)
+                                return isSimpleType(elmTypedef)
+                             end))
+end
+
+function schemaNameStripped()
+   return __SCHEMA_NAME__:gsub("_xsd$",'')
+end
+]
