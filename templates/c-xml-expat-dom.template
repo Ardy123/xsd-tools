@@ -479,6 +479,10 @@ typedef struct {
 } context_t;
 /* ------------ */
 static unsigned _sdbmHash(const char *);
+static XML_Memory_Handling_Suite * _XML_initMemSuite(const xml_typeFactory *);
+static void * _malloc(size_t);
+static void * _realloc(void *, size_t);
+static void _free(void*);
 static void * _alloc(size_t, const xml_typeFactory *);
 static list_t _list(const size_t, const xml_typeFactory *);
 static void _list_push(list_t *, const void * const, const xml_typeFactory *);
@@ -503,6 +507,8 @@ static void _elementContent(void *, const XML_Char *, int);
 static void _xml_typelist_marshall(const xml_typelist *, char **, const xml_typeFactory *);
 [@lua return topologicalSort(schema, outputDclrTypeMthds)]
 /* ------------ */
+__thread void * (*_xml_realloc)(void*, size_t, const char *, const unsigned) = NULL;
+/* ------------ */
 xml_typelist *
 xml_unmarshall(const char * pBuf, size_t size, const xml_typeFactory * pFactory) {
   xml_typelist * pRetObj = ReallocateMemory(pFactory, 0, sizeof(xml_typelist) * 2);
@@ -511,7 +517,7 @@ xml_unmarshall(const char * pBuf, size_t size, const xml_typeFactory * pFactory)
     .m_unknownElm = 0, 
     .m_pFactory = pFactory 
   };
-  XML_Parser parser = XML_ParserCreate(NULL);
+  XML_Parser parser = XML_ParserCreate_MM(NULL, _XML_initMemSuite(pFactory), NULL);
   /* zero out return block */
   memset(pRetObj, 0, sizeof(xml_typelist) * 2);
   /* parse xml document */
@@ -538,6 +544,34 @@ _sdbmHash(const char * pStr) {
   for (; *pStr; ++pStr)
     hash = (unsigned)(*pStr) + (hash << 6) + (hash << 16) - hash;
   return hash;
+}
+/* ------------ */
+static XML_Memory_Handling_Suite *
+_XML_initMemSuite(const xml_typeFactory * pFactory) {
+  static XML_Memory_Handling_Suite gsMemSuite = {
+    .malloc_fcn = _malloc,
+    .realloc_fcn = _realloc,
+    .free_fcn = _free
+  };
+  _xml_realloc = (pFactory && pFactory->xml_realloc) 
+    ? pFactory->xml_realloc 
+    : (void * (*)(void*, size_t, const char *, const unsigned))realloc;
+  return &gsMemSuite;
+}
+/* ------------ */
+static void * 
+_malloc(size_t size) {
+  return _xml_realloc(NULL, size, __FILE__, __LINE__);
+}
+/* ------------ */
+static void * 
+_realloc(void * pMem, size_t size) {
+  return _xml_realloc(pMem, size, __FILE__, __LINE__);
+}
+/* ------------ */
+static void 
+_free(void* pMem) {
+  return _xml_realloc(pMem, 0, __FILE__, __LINE__);
 }
 /* ------------ */
 static void *
