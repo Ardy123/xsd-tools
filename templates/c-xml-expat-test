@@ -78,7 +78,7 @@ static void* reallocCb(struct xml_marshaller* pThis, void* pMem, size_t size) {
 	local outbuf = stringBuffer:new()
 	table.map(typeSansRoot, function(_, node)
 		outbuf:append(table.concat({
-			"static void unmarshall_", node.name, "(struct xml_marshaller* pThis, const xml_", node.name, "* pObj, uint32_t parent) {\n",
+			"static void unmarshal_", node.name, "(struct xml_marshaller* pThis, const xml_", node.name, "* pObj, uint32_t parent) {\n",
 		}))
 		local prcssType = function(ncname, xsdtype)
 			local c_type = c_type_info[xsdtype.type]
@@ -100,7 +100,7 @@ int main(void) {
 [@lua --output unmarshal function assignments
 	local tbl = {}
 	table.map(typeSansRoot, function(_, node)
-		table.insert(tbl, "\t\t.unmarshall_"..node.name.." = unmarshall_"..node.name)
+		table.insert(tbl, "\t\t.unmarshal_"..node.name.." = unmarshal_"..node.name)
 	end)
 	return table.concat(tbl, ",\n")
 ]
@@ -111,7 +111,7 @@ int main(void) {
 	table.map(typeSansRoot, function(_,node)
 		if next(node.dependents) then
 			outbuf:append(table.concat({
-				"\tmarshall_", node.name, " ", node.name, ";\n",
+				"\tmarshal_", node.name, " ", node.name, ";\n",
 			}))
 		end
 	end)
@@ -119,39 +119,39 @@ int main(void) {
 ][@lua -- output marshalling start
 	if next(schema.types[schema.root].dependents) then
 		return table.concat({
-			'\tmarshall_', schema.root, ' ', schema.root, ' = marshall(&mrshllr);\n'
+			'\tmarshal_', schema.root, ' ', schema.root, ' = marshal(&mrshllr);\n'
 		})
 	else
 		return table.concat({
-			'\tmarshall(&mrshllr);\n'
+			'\tmarshal(&mrshllr);\n'
 		})
 	end
 ][@lua --output marshalling statments
 	local outbuf = stringBuffer:new()
-	local function marshallRec(parent, node)
+	local function marshalRec(parent, node)
 		if next(node.dependents) then
 			outbuf:append(table.concat({
-				"\t", node.name, " = ", parent, ".marshall_", node.name, "(&mrshllr, &", node.name, "Tst);\n"
+				"\t", node.name, " = ", parent, ".marshal_", node.name, "(&mrshllr, &", node.name, "Tst);\n"
 			}))
 		else
 			outbuf:append(table.concat({
-				"\t", parent, ".marshall_", node.name, "(&mrshllr, &", node.name, "Tst);\n"
+				"\t", parent, ".marshal_", node.name, "(&mrshllr, &", node.name, "Tst);\n"
 			}))
 		end
 		table.map(node.dependents, function(k, v)
 			if next(v.dependents) then
 				outbuf:append(table.concat({
-					"\t", node.name, ".marshall_",k,"(&mrshllr, &", k, "Tst);\n"
+					"\t", node.name, ".marshal_",k,"(&mrshllr, &", k, "Tst);\n"
 				}))
 			end
 		end)
-	table.map(node.dependents, function(_,v) marshallRec(node.name,v) end)
+	table.map(node.dependents, function(_,v) marshalRec(node.name,v) end)
 	end
-	table.map(schema.types[schema.root].dependents, function(_,v) marshallRec(schema.root, v) end)
+	table.map(schema.types[schema.root].dependents, function(_,v) marshalRec(schema.root, v) end)
 	return outbuf:str()
-]	output = marshall_flush(&mrshllr, 1);
+]	output = marshal_flush(&mrshllr, 1);
 	/* test unmarshalling */
-	unmarshall(&mrshllr, &output, 1);
+	unmarshal(&mrshllr, &output, 1);
 	/* clean up */
 	output.m_pBuf = realloc(output.m_pBuf, 0);
 	return 0;

@@ -34,7 +34,7 @@
 			return table.concat({obj,'m_p',member})
 		end,
 		binding = {
-			marshall = {
+			marshal = {
 				definition = function() 
 					return ''
 				end,
@@ -44,10 +44,10 @@
 					})
 				end,
 			},
-			unmarshall = {
+			unmarshal = {
 				definition = function() 
 					return table.concat({
-						'void _unmarshall_charp(xml_marshaller* pMarshaller, const char* pContent, char** ppObj) {\n',
+						'void _unmarshal_charp(xml_marshaller* pMarshaller, const char* pContent, char** ppObj) {\n',
 						'\tif (*ppObj) {\n',
 						'\t\t*ppObj = pMarshaller->realloc(pMarshaller, *ppObj, 0);\n',
 						'\t}\n',
@@ -57,7 +57,7 @@
 				end,
 				statement = function(src, obj)
 					return table.concat({
-						'_unmarshall_charp(pMarshaller, ', src, ', &', obj, ');\n',
+						'_unmarshal_charp(pMarshaller, ', src, ', &', obj, ');\n',
 					})
 				end,
 			},

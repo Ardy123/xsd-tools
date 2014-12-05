@@ -23,10 +23,10 @@ function short:typeFactoryMethods()
    return ""
 end
 
-function short:defMarshall(elementName)
+function short:defMarshal(elementName)
    out = stringBuffer:new()
    out:append("static void")
-   out:append("_xml_short_marshall")
+   out:append("_xml_short_marshal")
    out:append("(const xml_short pVal, char ** ppOut, const xml_typeFactory * pFactory) {\n")
    out:append("\tchar num[8];\n")
    out:append("\tsnprintf(num, 8, \"%d\", *pVal);\n")
@@ -35,10 +35,10 @@ function short:defMarshall(elementName)
    return out:str()
 end
 
-function short:defUnmarshall(elementName)
+function short:defUnmarshal(elementName)
    out = stringBuffer:new()
    out:append("static xml_short\n")
-   out:append("_xml_short_unmarshall(")
+   out:append("_xml_short_unmarshal(")
    out:append("const char * pVal, const xml_typeFactory * pFactory) {\n")
    out:append("\txml_short val = ReallocateMemory(pFactory, NULL, sizeof(int16_t));\n")
    out:append("\treturn (*val  = atoi(pVal)), val;\n")

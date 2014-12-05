@@ -1,8 +1,8 @@
 [@lua
 type_boolean = {
    typename   = 'Boolean',
-   marshall   = 'put',
-   unmarshall = 'getBoolean',
+   marshal   = 'put',
+   unmarshal = 'getBoolean',
    declrFmt = '%s',
    metaInfo = { primative = true }
 }

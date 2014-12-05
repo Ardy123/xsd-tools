@@ -8,14 +8,14 @@
   javaPKGName = __CMD_ARGS__["-package"] or "com.mobitv.generated.json"
 ]
 /* command to split output: csplit - '/\/\* FILE: /' {*} */
-/* FILE: Marshallable.java */
+/* FILE: Marshalable.java */
 package [@lua return javaPKGName];
 
 import org.json.JSONObject;
 import org.json.JSONException;
 
-public interface Marshallable {
-    public JSONObject marshall() throws JSONException;
+public interface Marshalable {
+    public JSONObject marshal() throws JSONException;
 }
 
 /* FILE: JSONObjectAdapter.java */
@@ -164,8 +164,8 @@ public class JSONArrayAdapter {
 	public JSONArrayAdapter put(JSONArrayAdapter value) throws JSONException {
 		return new JSONArrayAdapter(_jObj.put(value.getJSONArray()));
 	}
-	public JSONArrayAdapter put(Marshallable value) throws JSONException {
-		return new JSONArrayAdapter(_jObj.put(value.marshall()));
+	public JSONArrayAdapter put(Marshalable value) throws JSONException {
+		return new JSONArrayAdapter(_jObj.put(value.marshal()));
 	}
 	public JSONArrayAdapter putBase64(byte [] buffer) throws JSONException {
 		return new JSONArrayAdapter(_jObj.put(Base64.encodeBase64String(buffer)));

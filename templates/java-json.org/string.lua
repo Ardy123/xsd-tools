@@ -1,8 +1,8 @@
 [@lua
 type_string = {
    typename = 'String',
-   marshall = 'put',
-   unmarshall = 'getString',
+   marshal = 'put',
+   unmarshal = 'getString',
    declrFmt = '"%s"',
    metaInfo = { primative = true }
 }

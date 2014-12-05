@@ -26,7 +26,7 @@
 			return table.concat({obj,'m_',member})
 		end,
 		binding = {
-			marshall = {
+			marshal = {
 				definition = function() 
 					return ''
 				end,
@@ -36,10 +36,10 @@
 					})
 				end,
 			},
-			unmarshall = {
+			unmarshal = {
 				definition = function() 
 					return table.concat({
-						'void _unmarshall_bool(xml_marshaller* pMarshaller, const char* pContent, xml_bool* pObj) {\n',
+						'void _unmarshal_bool(xml_marshaller* pMarshaller, const char* pContent, xml_bool* pObj) {\n',
 						'\tif(isDigit(pContent[0]) {\n',
 						'\t\tpVal = (0 != *pContent[0]);\n',
 						'\t} else {',
@@ -50,7 +50,7 @@
 				end,
 				statement = function(src, obj)
 					return table.concat({
-						'_unmarshall_bool(pMarshaller, ', src, ', &', obj, ');\n',
+						'_unmarshal_bool(pMarshaller, ', src, ', &', obj, ');\n',
 					})
 				end,
 			},

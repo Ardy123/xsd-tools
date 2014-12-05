@@ -23,10 +23,10 @@ function unsignedInt:typeFactoryMethods()
    return ""
 end
 
-function unsignedInt:defMarshall(elementName)
+function unsignedInt:defMarshal(elementName)
    out = stringBuffer:new()
    out:append("static void")
-   out:append("_xml_unsignedInt_marshall")
+   out:append("_xml_unsignedInt_marshal")
    out:append("(const xml_unsignedInt pVal, char ** ppOut, const xml_typeFactory * pFactory) {\n")
    out:append("\tchar num[16];\n")
    out:append("\tsnprintf(num, 16, \"%u\", *pVal);\n")
@@ -35,10 +35,10 @@ function unsignedInt:defMarshall(elementName)
    return out:str()
 end
 
-function unsignedInt:defUnmarshall(elementName)
+function unsignedInt:defUnmarshal(elementName)
    out = stringBuffer:new()
    out:append("static xml_unsignedInt\n")
-   out:append("_xml_unsignedInt_unmarshall(")
+   out:append("_xml_unsignedInt_unmarshal(")
    out:append("const char * pVal, const xml_typeFactory * pFactory) {\n")
    out:append("\txml_unsignedInt val = ReallocateMemory(pFactory, NULL, sizeof(int32_t));\n")
    out:append("\treturn (*val  = atoi(pVal)), val;\n")

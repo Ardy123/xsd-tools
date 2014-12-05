@@ -27,19 +27,19 @@ function cstring:typeFactoryMethods()
    return ""
 end
 
-function cstring:defMarshall()
+function cstring:defMarshal()
    out = stringBuffer:new()
    out:append("static void\n")
-   out:append("_xml_string_marshall(const xml_string str, char ** ppOut, const xml_typeFactory * pFactory) {\n")
+   out:append("_xml_string_marshal(const xml_string str, char ** ppOut, const xml_typeFactory * pFactory) {\n")
    out:append("\t_cstr_append(ppOut, str, pFactory);\n")
    out:append("}\n")
    return out:str()
 end
 
-function cstring:defUnmarshall()
+function cstring:defUnmarshal()
    out = stringBuffer:new()
    out:append("static xml_string\n")
-   out:append("_xml_string_unmarshall(const char * pVal, const xml_typeFactory * pFactory) {\n")
+   out:append("_xml_string_unmarshal(const char * pVal, const xml_typeFactory * pFactory) {\n")
    out:append("\treturn _cstr_init(pVal, -1, pFactory);\n")
    out:append("}\n")
    return out:str()

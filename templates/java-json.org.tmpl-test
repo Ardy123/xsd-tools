@@ -39,7 +39,7 @@ public class RunTest
     public static void main(String[] args)  throws DecoderException                                    
     {    
         [@lua 
-            return marshallUnmarshallTest(schema)
+            return marshalUnmarshalTest(schema)
         ]
     }                                                                           
 }

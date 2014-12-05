@@ -11,8 +11,8 @@ local types_meta = {
    __index = function(table, key)
 		return {
 		   typename = key,
-		   marshall = 'put',
-		   unmarshall = 'getObject',
+		   marshal = 'put',
+		   unmarshal = 'getObject',
 		   metaInfo = { primative = false }
 		}
 	     end

@@ -35,14 +35,14 @@ function list:typeFactoryMethods()
    return ""
 end
 
-function list:dclrMarshall()
-   return ("static void _%s_marshall(const %s, char **, const xml_typeFactory *);\n"):format(
+function list:dclrMarshal()
+   return ("static void _%s_marshal(const %s, char **, const xml_typeFactory *);\n"):format(
       self:typeName(), self:typeName())
 end
 
-function list:dclrUnmarshall()
+function list:dclrUnmarshal()
    return (
-      "static %s _%s_unmarshall(const char *, const xml_typeFactory *);\n"
+      "static %s _%s_unmarshal(const char *, const xml_typeFactory *);\n"
    ):format(
       self:typeName(), self:typeName())
 end
@@ -52,29 +52,29 @@ function list:dclrDestroy()
       self:typeName(), self:typeName(), self:typeName())
 end
 
-function list:defMarshall(elementName)
+function list:defMarshal(elementName)
    out = stringBuffer:new()
    out:append("static void\n")
    out:append(
-      ("_%s_marshall(const %s pVal, char ** ppOut, const xml_typeFactory * pFactory) {\n"):format(
+      ("_%s_marshal(const %s pVal, char ** ppOut, const xml_typeFactory * pFactory) {\n"):format(
      self:typeName(), self:typeName())
    )
    out:append(("  %s * pItr = (%s *)pVal;\n"):format(self._listType:typeName(),self._listType:typeName()))
    out:append("  if (pVal && *pItr) {\n")
-   out:append(("    _%s_marshall(*pItr, ppOut, pFactory);\n"):format(self._listType:typeName()))
+   out:append(("    _%s_marshal(*pItr, ppOut, pFactory);\n"):format(self._listType:typeName()))
    out:append("    if (*(pItr + 1))\n")
    out:append("      _cstr_append(ppOut, \" \", pFactory);\n")
-   out:append(("    _%s_marshall(++pItr, ppOut, pFactory);\n"):format(self:typeName()))
+   out:append(("    _%s_marshal(++pItr, ppOut, pFactory);\n"):format(self:typeName()))
    out:append("  }\n")
    out:append("}\n")
    return out:str()
 end
 
-function list:defUnmarshall(elementName)
+function list:defUnmarshal(elementName)
    out = stringBuffer:new()
    out:append(("static %s\n"):format(self:typeName()))
    out:append(
-      ("_%s_unmarshall(const char * pVal, const xml_typeFactory * pFactory) {\n"): format(self:typeName())
+      ("_%s_unmarshal(const char * pVal, const xml_typeFactory * pFactory) {\n"): format(self:typeName())
    )
    out:append(("  %s term = NULL;\n"):format(self._listType:typeName()))
    out:append(("  list_t list = _list(sizeof(%s), pFactory);\n"):format(
@@ -84,7 +84,7 @@ function list:defUnmarshall(elementName)
    out:append("  const char * pToken = _tokenizer_next(&tokenizer);\n")
    out:append("\n")
    out:append("  for (; *pToken; pToken = _tokenizer_next(&tokenizer)) {\n")
-   out:append(("    %s val = Unmarshall(%s, pToken, pFactory);\n"):format(
+   out:append(("    %s val = Unmarshal(%s, pToken, pFactory);\n"):format(
          self._listType:typeName(),
          self._listType:typeName())
    )

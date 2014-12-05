@@ -1,8 +1,8 @@
 [@lua
 type_double = {
    typename   = 'Double',
-   marshall   = 'put',
-   unmarshall = 'getDouble',
+   marshal   = 'put',
+   unmarshal = 'getDouble',
    declrFmt = '%s',
    metaInfo = { primative = true }
 }

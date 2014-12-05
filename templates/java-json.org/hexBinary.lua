@@ -1,8 +1,8 @@
 [@lua
 type_hexBinary = {
    typename   = 'byte []',
-   marshall   = 'putHex',
-   unmarshall = 'getHex',
+   marshal   = 'putHex',
+   unmarshal = 'getHex',
    declrFmt = '',
    metaInfo = { primative = true }
 }

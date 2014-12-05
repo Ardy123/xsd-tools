@@ -32,14 +32,14 @@ function baseType:_getType(typedef)
    return self._typeFactory:getType(typedef)
 end
 
-function baseType:dclrMarshall()
-   return ("static void _%s_marshall(const %s, char **, const xml_typeFactory *);\n"):format(
+function baseType:dclrMarshal()
+   return ("static void _%s_marshal(const %s, char **, const xml_typeFactory *);\n"):format(
       self:typeName(), self:typeName())
 end
 
-function baseType:dclrUnmarshall()
+function baseType:dclrUnmarshal()
    return (
-      "static %s _%s_unmarshall(const char *, const xml_typeFactory *);\n"
+      "static %s _%s_unmarshal(const char *, const xml_typeFactory *);\n"
    ):format(
       self:typeName(), self:typeName())
 end

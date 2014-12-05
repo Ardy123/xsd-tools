@@ -27,10 +27,10 @@ function integer:typeFactoryMethods()
    return ""
 end
 
-function integer:defMarshall(elementName)
+function integer:defMarshal(elementName)
    out = stringBuffer:new()
    out:append("static void\n")
-   out:append("_xml_integer_marshall")
+   out:append("_xml_integer_marshal")
    out:append("(const xml_integer pVal, char ** ppOut, const xml_typeFactory * pFactory) {\n")
    out:append("\tchar num[64];\n")
    out:append("\tsnprintf(num, 64, \"%ld\", *pVal);\n")
@@ -39,10 +39,10 @@ function integer:defMarshall(elementName)
    return out:str()
 end
 
-function integer:defUnmarshall(elementName)
+function integer:defUnmarshal(elementName)
    out = stringBuffer:new()
    out:append("static xml_integer\n")
-   out:append("_xml_integer_unmarshall(")
+   out:append("_xml_integer_unmarshal(")
    out:append("const char * pVal, const xml_typeFactory * pFactory) {\n")
    out:append("\txml_integer val = ReallocateMemory(pFactory, NULL, sizeof(int64_t));\n")
    out:append("\treturn (*val  = atoll(pVal)), val;\n")

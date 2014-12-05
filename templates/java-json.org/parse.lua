@@ -4,7 +4,7 @@
    include 'java-json.org/types.lua'
 
    -- TODO: 1) use optJSONArray/opt... for optional fields
-   --       2) make unmarshalling/marshaling handle fields which can be lists
+   --       2) make unmarshalling/marshalling handle fields which can be lists
    --          of one, in which case they are not in brackets
 
    -- helper functions
@@ -89,13 +89,13 @@
 	  str:append('import org.apache.commons.codec.DecoderException;\n')
 	  str:append('import org.json.JSONArray;\n')
 	  str:append('import org.json.JSONException;\n')
-	  str:append(('import %s.Marshallable;\n'):format(javaPKGName))
+	  str:append(('import %s.Marshalable;\n'):format(javaPKGName))
 	  str:append(('import %s.JSONObjectAdapter;\n'):format(javaPKGName))
 	  str:append(('import %s.JSONArrayAdapter;\n\n'):format(javaPKGName))
 	  str:append(('import org.apache.commons.codec.DecoderException;\n\n'))
 	  -- generate class definition	  
 	  str:append(
-		 ('public class %s implements Marshallable {\n'):format(typename)
+		 ('public class %s implements Marshalable {\n'):format(typename)
 	  )	  
 	  -- generate private members
 	  for JSONFieldName, fieldTypename in fieldIterator(typedef.fields) do
@@ -117,12 +117,12 @@
 	  end
 	  -- generate default constructor
 	  str:append(('\n\tpublic %s() {\n\t}\n\n'):format(typename))
-	  -- generate default unmarshall constructor
+	  -- generate default unmarshal constructor
 	  local fmt = '\tpublic %s(JSONObject jObj) throws JSONException, DecoderException {\n'
 	  str:append(fmt:format(typename))
 	  str:append('\t\tthis(new JSONObjectAdapter(jObj));\n')
 	  str:append('\t}\n\n')
-	  -- generate unmarshall constructor
+	  -- generate unmarshal constructor
 	  local fmt = '\tpublic %s(JSONObjectAdapter jObj) throws JSONException, DecoderException {\n'
 	  str:append(fmt:format(typename))
 	  for fieldName, fieldType, fieldTypedef in fieldIterator(typedef.fields) do
@@ -137,13 +137,13 @@
 		 if isListType(fieldType) then
 			local lstType = getListType(fieldType)
 			str:append(
-			   ListItemStrategy.unmarshall(
+			   ListItemStrategy.unmarshal(
 				  types[lstType], memberName, fieldName
 			   )
 			)
 		 else
 			str:append(
-			   ItemStrategy.unmarshall(
+			   ItemStrategy.unmarshal(
 				  types[fieldType], memberName, fieldName
 			   )
 			)
@@ -186,8 +186,8 @@
 			str:append(ItemStrategy.geter(javaType, memberName))
 		 end
 	  end
-	  -- generate marshall funciton
-	  str:append('\tpublic JSONObject marshall() throws JSONException {\n')
+	  -- generate marshal funciton
+	  str:append('\tpublic JSONObject marshal() throws JSONException {\n')
 	  str:append(
 		 '\t\tJSONObjectAdapter retObj = new JSONObjectAdapter(new JSONObject());\n'
 	  )
@@ -233,13 +233,13 @@
 		 if isListType(fieldType) then
 			local lstType = getListType(fieldType)
 			str:append(
-			   ListItemStrategy.marshall(
+			   ListItemStrategy.marshal(
 				  types[lstType], memberName, fieldName
 			   )
 			)
 		 else
 			str:append(
-			   ItemStrategy.marshall(
+			   ItemStrategy.marshal(
 				  types[fieldType], memberName, fieldName
 			   )
 			)
@@ -398,7 +398,7 @@
         return(outputStr:str())
    end
 
-    function marshallUnmarshallTest(JSONSchema)
+    function marshalUnmarshalTest(JSONSchema)
         local visitType = {}
         local outputStr = stringBuffer:new()
 
@@ -425,7 +425,7 @@
                         outputStr:append(typename.." "..variableName2.." = new "
                             ..typename.."( "..variableName.." );".."\n        ")
                         outputStr:append("System.out.println("..variableName..
-                            ".toString().equals("..variableName2..".marshall().toString() ));\n\n")
+                            ".toString().equals("..variableName2..".marshal().toString() ));\n\n")
                     end
                 end
             end

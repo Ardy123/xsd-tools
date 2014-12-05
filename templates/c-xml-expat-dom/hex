@@ -28,10 +28,10 @@ function hex:typeFactoryMethods()
    return ""
 end
 
-function hex:defMarshall()
+function hex:defMarshal()
    out = stringBuffer:new()
    out:append("static void\n")
-   out:append("_xml_hex_marshall(const xml_hex val, char ** ppOut, const xml_typeFactory * pFactory) {\n")
+   out:append("_xml_hex_marshal(const xml_hex val, char ** ppOut, const xml_typeFactory * pFactory) {\n")
    out:append("  int ndx;\n")
    out:append("  static const char hexTbl[] = { \n")
    out:append("    '0', '1', '2', '3', '4', '5', '6', '7', \n")
@@ -49,10 +49,10 @@ function hex:defMarshall()
    return out:str()
 end
 
-function hex:defUnmarshall()
+function hex:defUnmarshal()
    out = stringBuffer:new()
    out:append("static xml_hex\n")
-   out:append("_xml_hex_unmarshall(const char * pVal, const xml_typeFactory * pFactory) {\n")
+   out:append("_xml_hex_unmarshal(const char * pVal, const xml_typeFactory * pFactory) {\n")
    out:append("  static const unsigned char hexTbl[256] = {")
    out:append("    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,\n")
    out:append("    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,\n")

@@ -148,17 +148,17 @@ end
 
 function outputDclrTypeMthds(name, ctype)
    local str = stringBuffer:new()
-   str:append(ctype:dclrUnmarshall(name))
-   str:append(ctype:dclrMarshall(name))
+   str:append(ctype:dclrUnmarshal(name))
+   str:append(ctype:dclrMarshal(name))
    str:append(ctype:dclrDestroy())
    return str:str()
 end
 
 function outputDefTypeMthds(name, ctype)
    local str = stringBuffer:new()
-   str:append(ctype:defMarshall(name))
+   str:append(ctype:defMarshal(name))
    str:append("/* ------------ */\n")
-   str:append(ctype:defUnmarshall(name))
+   str:append(ctype:defUnmarshal(name))
    str:append("/* ------------ */\n")
    str:append(ctype:defDestroy())
    str:append("/* ------------ */\n")
@@ -195,7 +195,7 @@ end
 function outputXmlTypelstMrhsll(XSDDoc)
    local str = stringBuffer:new()
    str:append("static void\n")
-   str:append("_xml_typelist_marshall(const xml_typelist * pItr, char **ppOut, const xml_typeFactory * pFactory) {\n")
+   str:append("_xml_typelist_marshal(const xml_typelist * pItr, char **ppOut, const xml_typeFactory * pFactory) {\n")
    str:append("  for ( ;pItr->m_type ; ++pItr) {\n")
    str:append("    switch(pItr->m_type) {\n")
    str:append(
@@ -203,7 +203,7 @@ function outputXmlTypelstMrhsll(XSDDoc)
                       XSDDoc,
                       function(name, ctype)
                          str:append(("    case %s:\n"):format(ctype:typeEnum()))
-                         str:append(("      MarshallContent(%s, pItr->m_pData, ppOut, pFactory);\n"):format(ctype:typeName()));
+                         str:append(("      MarshalContent(%s, pItr->m_pData, ppOut, pFactory);\n"):format(ctype:typeName()));
                          str:append("      break;\n")    
                       end
                      )
@@ -306,7 +306,7 @@ function outputXmlEndElement(XSDDoc)
         if contentTypename then
            local mixedType = ctypes:getType(contentTypedef)
            str:append(
-          ("      UnmarshallContent(pCtx, %s, %s, pContentStr);\n"):format(
+          ("      UnmarshalContent(pCtx, %s, %s, pContentStr);\n"):format(
              mixedType:typeName(),
              mixedType:typeEnum())
            )
@@ -385,8 +385,8 @@ typedef struct {
 [@lua return topologicalSort(schema, outputFactoryMethods)]
 } xml_typeFactory;
 /* ------------ */
-xml_typelist * xml_unmarshall(const char * pBuf, size_t size, const xml_typeFactory *);
-char * xml_marshall(const xml_typelist * pDoc, const xml_typeFactory * pFactory);
+xml_typelist * xml_unmarshal(const char * pBuf, size_t size, const xml_typeFactory *);
+char * xml_marshal(const xml_typelist * pDoc, const xml_typeFactory * pFactory);
 void xml_destroy(xml_typelist ** ppDoc, const xml_typeFactory *);
 /* ------------ */
 #endif /* XML_[@lua return schemaNameStripped():upper()]_H */
@@ -403,8 +403,8 @@ void xml_destroy(xml_typelist ** ppDoc, const xml_typeFactory *);
 #include "xml_[@lua return schemaNameStripped()].h"
 /* ------------ */
 #define _FactoryMthdName(T, F) T##F
-#define _MarshallMthdName(T, S, B, F) _##T##_marshall(S, B, F)
-#define _UnmarshallMthdName(T, S, F) _##T##_unmarshall(S, F)
+#define _MarshalMthdName(T, S, B, F) _##T##_marshal(S, B, F)
+#define _UnmarshalMthdName(T, S, F) _##T##_unmarshal(S, F)
 #define _DestroyMthdName(T, D, F) _##T##_destroy((T)D, F)
 /* Factory Helpers */
 #define ReallocateMemory(F, P, S) \
@@ -418,30 +418,30 @@ void xml_destroy(xml_typelist ** ppDoc, const xml_typeFactory *);
 #define DestroyElement(T, P, F)		    \
   (F && F->_FactoryMthdName(T, Destructor)) \
   ? F->_FactoryMthdName(T, Destructor)(P) : ReallocateMemory(F, P, 0)
-/* attribute Mashall/Unmarshall/Destroy */
-#define Default(T, A, D, F) (A) ? A : _UnmarshallMthdName(T,D,F)
-#define Unmarshall(T, S, F) _UnmarshallMthdName(T,S,F)
-#define UnmarshallAttribute(T, S, F) _UnmarshallMthdName(T,S,F)
-#define MarshallAttribute(N, T, A, B, F)				\
+/* attribute Mashall/Unmarshal/Destroy */
+#define Default(T, A, D, F) (A) ? A : _UnmarshalMthdName(T,D,F)
+#define Unmarshal(T, S, F) _UnmarshalMthdName(T,S,F)
+#define UnmarshalAttribute(T, S, F) _UnmarshalMthdName(T,S,F)
+#define MarshalAttribute(N, T, A, B, F)				\
   if(A) {								\
     _cstr_append(B, " "N"=\"",F);					\
-    _MarshallMthdName(T,A,B,F);						\
+    _MarshalMthdName(T,A,B,F);						\
     _cstr_append(B, "\"",F);						\
   }
-#define MarshallContent(T, D, B, F) _##T##_marshall((const T)D, B, F)
+#define MarshalContent(T, D, B, F) _##T##_marshal((const T)D, B, F)
 #define DestroyAttribute(T, A, F) _DestroyMthdName(T, A, F)
-/* element Marshall/Unmarshall/Destroy */
-#define UnmarshallContent(C, T, TL, S)			\
+/* element Marshal/Unmarshal/Destroy */
+#define UnmarshalContent(C, T, TL, S)			\
   if (S) {							\
     xml_typelist content = { TL };			\
-    content.m_pData = Unmarshall(T, S, C->m_pFactory);	\
+    content.m_pData = Unmarshal(T, S, C->m_pFactory);	\
     _context_addContent(C, content);			\
   }
 #define Destroy(T, D, F) _DestroyMthdName(T,D,F)
 #define PushElement(C, T, TL, A)					\
   {									\
     xml_typelist element = { TL };					\
-    element.m_pData = Unmarshall(T, A, C->m_pFactory);			\
+    element.m_pData = Unmarshal(T, A, C->m_pFactory);			\
     _context_addContent(C, element);					\
     _context_pushElement(C, element);					\
   }
@@ -504,13 +504,13 @@ static void _cstr_appendEx(char **, const char *, unsigned, const xml_typeFactor
 static void _startElement(void *, const XML_Char *, const XML_Char **);
 static void _endElement(void *, const XML_Char *);
 static void _elementContent(void *, const XML_Char *, int);
-static void _xml_typelist_marshall(const xml_typelist *, char **, const xml_typeFactory *);
+static void _xml_typelist_marshal(const xml_typelist *, char **, const xml_typeFactory *);
 [@lua return topologicalSort(schema, outputDclrTypeMthds)]
 /* ------------ */
 __thread void * (*_xml_realloc)(void*, size_t, const char *, const unsigned) = NULL;
 /* ------------ */
 xml_typelist *
-xml_unmarshall(const char * pBuf, size_t size, const xml_typeFactory * pFactory) {
+xml_unmarshal(const char * pBuf, size_t size, const xml_typeFactory * pFactory) {
   xml_typelist * pRetObj = ReallocateMemory(pFactory, 0, sizeof(xml_typelist) * 2);
   context_t ctx = { 
     .m_depth = 0, 
@@ -532,9 +532,9 @@ xml_unmarshall(const char * pBuf, size_t size, const xml_typeFactory * pFactory)
 }
 /* ------------ */
 char *
-xml_marshall(const xml_typelist * pDoc, const xml_typeFactory * pFactory) {
+xml_marshal(const xml_typelist * pDoc, const xml_typeFactory * pFactory) {
   char * pRet = _cstr_init("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n", -1, pFactory);
-  _xml_typelist_marshall(pDoc, &pRet, pFactory);
+  _xml_typelist_marshal(pDoc, &pRet, pFactory);
   return pRet;
 }
 /* ------------ */

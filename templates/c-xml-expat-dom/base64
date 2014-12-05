@@ -28,10 +28,10 @@ function base64:typeFactoryMethods()
    return ""
 end
 
-function base64:defMarshall()
+function base64:defMarshal()
    out = stringBuffer:new()
    out:append("static void\n")
-   out:append("_xml_base64_marshall(const xml_base64 val, char ** ppOut, const xml_typeFactory * pFactory) {\n")
+   out:append("_xml_base64_marshal(const xml_base64 val, char ** ppOut, const xml_typeFactory * pFactory) {\n")
    out:append("  base64_encodestate base64Encoder;\n")
    out:append("  const size_t srcSz = val->m_size;\n")
    out:append("  /* size calc from http://www.obviex.com/Articles/CiphertextSize.aspx, \n")
@@ -48,10 +48,10 @@ function base64:defMarshall()
    return out:str()
 end
 
-function base64:defUnmarshall()
+function base64:defUnmarshal()
    out = stringBuffer:new()
    out:append("static xml_base64\n")
-   out:append("_xml_base64_unmarshall(const char * pVal, const xml_typeFactory * pFactory) {\n")
+   out:append("_xml_base64_unmarshal(const char * pVal, const xml_typeFactory * pFactory) {\n")
    out:append("  xml_base64 pRet = _alloc(sizeof(struct xml_base64), pFactory);\n")
    out:append("  base64_decodestate base64Decoder;\n")
    out:append("  const size_t srcLen = strlen(pVal);\n")

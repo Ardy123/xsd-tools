@@ -105,9 +105,9 @@ return table.concat(out,"\n")..";"
 int main(void) {
   char *pMarshalledDoc;
   xml_typelist *pItr;  
-  xml_typelist * pDoc = xml_unmarshall(xml_doc, strlen(xml_doc), NULL);
+  xml_typelist * pDoc = xml_unmarshal(xml_doc, strlen(xml_doc), NULL);
   /* verify marshalling */
-  pMarshalledDoc = xml_marshall(pDoc, NULL);
+  pMarshalledDoc = xml_marshal(pDoc, NULL);
   assert(!strcmp(xml_doc, pMarshalledDoc));
   /* clean up */
   xml_destroy(&pDoc, NULL);  

@@ -8,7 +8,7 @@ ListItemStrategy = {
 		    local fmt = '\tprivate Vector<%s> _%s = new Vector<%s>();\n'
 		    return fmt:format(type.typename, var, type.typename)
 		 end,
-   marshall = function(type, var, tag)
+   marshal = function(type, var, tag)
 		 local str = {}
 		 local fmt = {
 		    '\t\t{\n',
@@ -21,12 +21,12 @@ ListItemStrategy = {
 		 str[1] = fmt[1]
 		 str[2] = fmt[2]
 		 str[3] = fmt[3]:format(type.typename, var)
-		 str[4] = fmt[4]:format(type.marshall)
+		 str[4] = fmt[4]:format(type.marshal)
 		 str[5] = fmt[5]:format(tag)
 		 str[6] = fmt[6]
 		 return table.concat(str)
 	      end,
-   unmarshall = function(type, var, tag)
+   unmarshal = function(type, var, tag)
 		   local str = {}
 		   if type.metaInfo['primative'] then
 			local fmt = {
@@ -39,7 +39,7 @@ ListItemStrategy = {
 			str[1] = fmt[1]
 			str[2] = fmt[2]:format(tag)
 			str[3] = fmt[3]
-			str[4] = fmt[4]:format(var, type.unmarshall)
+			str[4] = fmt[4]:format(var, type.unmarshal)
 			str[5] = fmt[5]
 		   else
 			local fmt = {
@@ -52,7 +52,7 @@ ListItemStrategy = {
 			str[1] = fmt[1]
 			str[2] = fmt[2]:format(tag)
 			str[3] = fmt[3]
-			str[4] = fmt[4]:format(var, type.typename, type.unmarshall)
+			str[4] = fmt[4]:format(var, type.typename, type.unmarshal)
 			str[5] = fmt[5]
 		   end
 		   return table.concat(str)

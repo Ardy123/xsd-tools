@@ -23,20 +23,20 @@ function boolean:typeFactoryMethods()
    return ""
 end
 
-function boolean:defMarshall(elementName)
+function boolean:defMarshal(elementName)
    out = stringBuffer:new()
    out:append("static void")
-   out:append("_xml_boolean_marshall")
+   out:append("_xml_boolean_marshal")
    out:append("(const xml_boolean pVal, char ** ppOut) {\n")
    out:append("\t_cstr_append(ppOut, (*pVal ? \"true\" : \"false\"));\n")
    out:append("}\n")   
    return out:str()
 end
 
-function boolean:defUnmarshall(elementName)
+function boolean:defUnmarshal(elementName)
    out = stringBuffer:new()
    out:append("static xml_boolean\n")
-   out:append("_xml_boolean_unmarshall(")
+   out:append("_xml_boolean_unmarshal(")
    out:append("const char * pVal, const xml_typeFactory * pFactory) {\n")
    out:append("\txml_boolean val = ReallocateMemory(pFactory, NULL, sizeof(unsigned));\n")
    out:append("\tint val = atoi(pStr);\n")

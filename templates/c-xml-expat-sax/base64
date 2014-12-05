@@ -39,10 +39,10 @@
 			return table.concat({obj,'m_',member})
 		end,
 		binding = {
-			marshall = {
+			marshal = {
 				definition = function() 
 					return table.concat({
-						'static void _marshall_xmlbase64(xml_marshaller* pMarshaller, xml_buffer* pOutBuffer, const xml_base64* pObj) {\n',
+						'static void _marshal_xmlbase64(xml_marshaller* pMarshaller, xml_buffer* pOutBuffer, const xml_base64* pObj) {\n',
 						'\tbase64_encodestate base64Encoder;\n',
 						'\tconst size_t srcSz = pObj->m_size;\n',
 						'\t/* size calc from http://www.obviex.com/Articles/CiphertextSize.aspx, +2 for /n and null termination */\n',
@@ -60,14 +60,14 @@
 				end,
 				statement = function(dst, obj)
 					return table.concat({
-						'_marshall_xmlbase64(pMarshaller, ', dst, ', &', obj, ');\n',
+						'_marshal_xmlbase64(pMarshaller, ', dst, ', &', obj, ');\n',
 					})
 				end,
 			},
-			unmarshall = {
+			unmarshal = {
 				definition = function() 
 					return table.concat({
-						'static void _unmarshall_xmlbase64(xml_marshaller* pMarshaller, const char* pContent, xml_base64* pObj) {\n',
+						'static void _unmarshal_xmlbase64(xml_marshaller* pMarshaller, const char* pContent, xml_base64* pObj) {\n',
 						'\tbase64_decodestate base64Decoder;\n',
 						'\tconst size_t srcLen = strlen(pContent);\n',
 						'\tconst size_t dataSz = ((srcLen * 3) / 4) + 1;\n',
@@ -81,7 +81,7 @@
 				end,
 				statement = function(src, obj)
 					return table.concat({
-						'_unmarshall_xmlbase64(pMarshaller, ', src, ', &', obj, ');\n',
+						'_unmarshal_xmlbase64(pMarshaller, ', src, ', &', obj, ');\n',
 					})
 				end,
 			},

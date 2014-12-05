@@ -23,10 +23,10 @@ function double:typeFactoryMethods()
    return ""
 end
 
-function double:defMarshall(elementName)
+function double:defMarshal(elementName)
    out = stringBuffer:new()
    out:append("static void")
-   out:append("_xml_double_marshall")
+   out:append("_xml_double_marshal")
    out:append("(const xml_double pVal, char ** ppOut, const xml_typeFactory * pFactory) {\n")
    out:append("\tchar num[64];\n")
    out:append("\tsnprintf(num, 64, \"%f\", *pVal);\n")
@@ -35,10 +35,10 @@ function double:defMarshall(elementName)
    return out:str()
 end
 
-function double:defUnmarshall(elementName)
+function double:defUnmarshal(elementName)
    out = stringBuffer:new()
    out:append("static xml_double\n")
-   out:append("_xml_double_unmarshall(")
+   out:append("_xml_double_unmarshal(")
    out:append("const char * pVal, const xml_typeFactory * pFactory) {\n")
    out:append("\txml_double val = ReallocateMemory(pFactory, NULL, sizeof(double));\n")
    out:append("\treturn (*val  = atof(pVal)), val;\n")
