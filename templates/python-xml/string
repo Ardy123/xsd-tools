@@ -1,36 +1,36 @@
 [@lua --define python String type
 	pythontype_string = {
-		marshall = {
+		marshal = {
 			attribute = function(attribName)
 				return table.concat({
-					"\t\tstream.write(' ", attribName, "=\"' + self._", attribName, " + '\"')\n",
+					"        stream.write(' ", attribName, "=\"' + self._", attribName, " + '\"')\n",
 				})
 			end,
 			content = function()
 				return table.concat({
-					"\t\tfor node in self.getContent():\n",
-					"\t\t\tif isinstance(node, _xmlelement):\n",
-					"\t\t\t\tnode.marshall(stream)\n",
-					"\t\t\telse:\n",
-					"\t\t\t\tstream.write(str(node))\n",
+					"        for node in self.getContent():\n",
+					"            if isinstance(node, _xmlelement):\n",
+					"                node.marshal(stream)\n",
+					"            else:\n",
+					"                stream.write(str(node))\n",
 				})
 			end,
 		},
-		unmarshall = {
+		unmarshal = {
 			attribute = function(attribName)
 				return table.concat({
-					"\t\t\tif \"", attribName, "\" == attribute:\n",
-					"\t\t\t\tself._", attribName, " = attributes[attribute]\n",
+					"            if \"", attribName, "\" == attribute:\n",
+					"                self._", attribName, " = attributes[attribute]\n",
 				})
 			end,
 			content = function()
 				return table.concat({
-					"\t\tself._content = content\n"
+					"        self._content = content\n"
 				})
 			end
 		},
 		default = function(attribName, value)
-			return table.concat({"\t\tself._", attribName, " = \"", value, "\"\n"})
+			return table.concat({"        self._", attribName, " = \"", value, "\"\n"})
 		end,
 		test = {
 			assign = function()

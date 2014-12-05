@@ -32,7 +32,7 @@ test = [
 		outbuf:append(table.concat({'</', node.name, '>'}))
 	end
 	table.map(schema.types[schema.root].dependents, function(name, node)
-		outbuf:append('\t"<?xml version=\\"1.0\\" encoding=\\"UTF-8\\" ?>\\n" \\\n\t"')
+		outbuf:append('    "<?xml version=\\"1.0\\" encoding=\\"UTF-8\\" ?>\\n" \\\n    "')
 		dpOutput(name, node)
 		outbuf:append('",\n')
 	end)
@@ -41,13 +41,13 @@ test = [
 
 
 def runTest(xmlstr):
-	outStr = cStringIO.StringIO()
-	root = [@lua return schemaName].xml_[@lua return schema.root]()
-	root.unmarshall(cStringIO.StringIO(xmlstr))
-	root.marshall(outStr)
-	testval = outStr.getvalue() 
-	assert testval == xmlstr
+    outStr = cStringIO.StringIO()
+    root = [@lua return schemaName].xml_[@lua return schema.root]()
+    root.unmarshal(cStringIO.StringIO(xmlstr))
+    root.marshal(outStr)
+    testval = outStr.getvalue() 
+    assert testval == xmlstr
 
 for testxml in test:
-	runTest(testxml)
+    runTest(testxml)
 

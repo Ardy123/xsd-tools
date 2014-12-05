@@ -1,32 +1,32 @@
 [@lua --define python hex type
 	pythontype_hex = {
-		marshall = {
+		marshal = {
 			attribute = function(attributeName)
 				return table.concat({
-					"\t\tstream.write(' ", attributeName, "= \"' + self._", attributeName, ".encode(\"hex\") + '\"')\n",
+					"        stream.write(' ", attributeName, "= \"' + self._", attributeName, ".encode(\"hex\") + '\"')\n",
 				})
 			end,
 			content = function()
 				return table.concat({
-					"\t\tstream.write(self.getContent()[0].encode(\"hex\"))\n",
+					"        stream.write(self.getContent()[0].encode(\"hex\"))\n",
 				})
 			end,
 		},
-		unmarshall = {
+		unmarshal = {
 			attribute = function(attribName)
 				return table.concat({
-					"\t\t\tif \"", attribName, "\" == attribute:\n",
-					"\t\t\t\tself._", attribName, " = \"\".join(attributes[attribute].split()).decode(\"hex\")\n",
+					"            if \"", attribName, "\" == attribute:\n",
+					"                self._", attribName, " = \"\".join(attributes[attribute].split()).decode(\"hex\")\n",
 				})
 			end,
 			content = function()
 				return table.concat({
-					"\t\tself._content = [\"\".join(content[0].split()).decode(\"hex\")]\n"
+					"        self._content = [\"\".join(content[0].split()).decode(\"hex\")]\n"
 				})
 			end
 		},
 		default = function(attribName, value)
-			return table.concat({"\t\tself._", attribName, " = \"\".join(\"", value, "\".split()).decode(\"hex\")\n"})
+			return table.concat({"        self._", attribName, " = \"\".join(\"", value, "\".split()).decode(\"hex\")\n"})
 		end,
 		test = {
 			assign = function()

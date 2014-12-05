@@ -1,32 +1,32 @@
 [@lua --define python hex type
 	pythontype_listBase64 = {
-		marshall = {
+		marshal = {
 			attribute = function(attribName)
 				return table.concat({
-					"\t\tstream.write(' ", attribName, "=\"' + \" \".join([x.encode(\"base64\") for x in self._", attribName, "])\"')\n",
+					"        stream.write(' ", attribName, "=\"' + \" \".join([x.encode(\"base64\") for x in self._", attribName, "])\"')\n",
 				})
 			end,
 			content = function()
 				return table.concat({
-					"\t\tstream.write(\" \".join([x.encode(\"base64\") for x in self.getContent()]))\n",
+					"        stream.write(\" \".join([x.encode(\"base64\") for x in self.getContent()]))\n",
 				})
 			end,
 		},
-		unmarshall = {
+		unmarshal = {
 			attribute = function(attribName)
 				return table.concat({
-					"\t\t\tif \"", attribName, "\" == attribute:\n",
-					"\t\t\t\tself._", attribName, " = [x.decode(\"base64\") for x in attributes[attribute].split(\" \")]\n"
+					"            if \"", attribName, "\" == attribute:\n",
+					"                self._", attribName, " = [x.decode(\"base64\") for x in attributes[attribute].split(\" \")]\n"
 				})
 			end,
 			content = function()
 				return table.concat({
-					"\t\tself._content = [x.decode(\"base64\") for x in content[0].split(\" \")]\n",
+					"        self._content = [x.decode(\"base64\") for x in content[0].split(\" \")]\n",
 				})
 			end
 		},
 		default = function(attribName, value)
-			return table.concat({"\t\tself._", attribName, " = [x.decode(\"base64\") for x in \"", value, "\".split(\" \")]\n"})
+			return table.concat({"        self._", attribName, " = [x.decode(\"base64\") for x in \"", value, "\".split(\" \")]\n"})
 		end,
 		test = {
 			assign = function()

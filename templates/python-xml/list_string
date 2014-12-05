@@ -1,31 +1,31 @@
 [@lua --define python String type
 	pythontype_listString = {
-		marshall = {
+		marshal = {
 			attribute = function(attribName)
 				return table.concat({
-					"\t\tstream.write(' ", attribName, "=\"' + \" \".join(self._", attribName, ") + '\"')\n",
+					"        stream.write(' ", attribName, "=\"' + \" \".join(self._", attribName, ") + '\"')\n",
 				})
 			end,
 			content = function()
 				return table.concat({
-					"\t\tstream.write(\" \".join(self.getContent()))\n",
+					"        stream.write(\" \".join(self.getContent()))\n",
 				})
 			end,
 		},
-		unmarshall = {
+		unmarshal = {
 			attribute = function(attribName)
 				return table.concat({
-					"\t\t\tself._", attribName," = attributes[attribute].split(\" \")\n",
+					"            self._", attribName," = attributes[attribute].split(\" \")\n",
 				})
 			end,
 			content = function()
 				return table.concat({
-					"\t\tself._content = content[0].split(\" \")\n"
+					"        self._content = content[0].split(\" \")\n"
 				})
 			end
 		},
 		default = function(attribName, value)
-			return table.concat({"\t\tself._", attribName, " = \"", value, "\".split(\" \")\n"})
+			return table.concat({"        self._", attribName, " = \"", value, "\".split(\" \")\n"})
 		end,
 		test = {
 			assign = function()

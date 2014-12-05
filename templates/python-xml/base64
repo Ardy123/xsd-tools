@@ -1,32 +1,32 @@
 [@lua --define python base64 type
 	pythontype_base64 = {
-		marshall = {
+		marshal = {
 			attribute = function(attributeName)
 				return table.concat({
-					"\t\tstream.write(' ", attributeName, " = \\'' + self._", attributeName, ".encode(\"base64\") + '\\'')\n",
+					"        stream.write(' ", attributeName, " = \\'' + self._", attributeName, ".encode(\"base64\") + '\\'')\n",
 				})
 			end,
 			content = function()
 				return table.concat({
-					"\t\tstream.write(self.getContent()[0].encode(\"base64\"))\n",
+					"        stream.write(self.getContent()[0].encode(\"base64\"))\n",
 				})
 			end,
 		},
-		unmarshall = {
+		unmarshal = {
 			attribute = function(attribName)
 				return table.concat({
-					"\t\t\tif \"", attribName, "\" == attribute:\n",
-					"\t\t\t\tself._", attribName, " = attributes[attribute].decode(\"base64\")\n",
+					"            if \"", attribName, "\" == attribute:\n",
+					"                self._", attribName, " = attributes[attribute].decode(\"base64\")\n",
 				})
 			end,
 			content = function()
 				return table.concat({
-					"\t\tself._content = [content[0].decode(\"base64\")]\n"
+					"        self._content = [content[0].decode(\"base64\")]\n"
 				})
 			end
 		},
 		default = function(attribName, value)
-			return table.concat({"\t\tself._", attribName, " = \"", value, "\".decode(\"base64\")\n"})
+			return table.concat({"        self._", attribName, " = \"", value, "\".decode(\"base64\")\n"})
 		end,
 		test = {
 			assign = function()

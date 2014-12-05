@@ -1,32 +1,32 @@
 [@lua --define python list int type
 	pythontype_listInt = {
-		marshall = {
+		marshal = {
 			attribute = function(attribName)
 				return table.concat({
-					"\t\tstream.write(' ", attribName, "=\"' + \" \".join([str(x) for x in self._", attribName, "])\"')\n",
+					"        stream.write(' ", attribName, "=\"' + \" \".join([str(x) for x in self._", attribName, "])\"')\n",
 				})
 			end,
 			content = function()
 				return table.concat({
-					"\t\tstream.write(\" \".join([str(x) for x in self.getContent()]))\n"
+					"        stream.write(\" \".join([str(x) for x in self.getContent()]))\n"
 				})
 			end,
 		},
-		unmarshall = {
+		unmarshal = {
 			attribute = function(attribName)
 				return table.concat({
-					"\t\t\tif \"", attribName, "\" == attribute:\n",
-					"\t\t\t\tself._", attribName, " = [int(\"\".join(x.split())) for x in attributes[attribute].split(\" \")]\n",
+					"            if \"", attribName, "\" == attribute:\n",
+					"                self._", attribName, " = [int(\"\".join(x.split())) for x in attributes[attribute].split(\" \")]\n",
 				})
 			end,
 			content = function()
 				return table.concat({
-					"\t\tself._content = [int(x) for x in content[0].split(\" \")]\n"
+					"        self._content = [int(x) for x in content[0].split(\" \")]\n"
 				})
 			end
 		},
 		default = function(attribName, value)
-			return table.concat({"\t\tself._", attribName, " = [int(\"\".join(x.split())) for x in \"", value, "\".split(\" \")]\n"})
+			return table.concat({"        self._", attribName, " = [int(\"\".join(x.split())) for x in \"", value, "\".split(\" \")]\n"})
 		end,
 		test = {
 			assign = function()
