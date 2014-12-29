@@ -1,0 +1,5 @@
+*.o
+*.luac
+*.pyc
+xsdb
+.sconsign.dblite

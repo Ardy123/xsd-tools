@@ -381,7 +381,7 @@ typedef struct {
 /* ------------ */
 [@lua return topologicalSort(schema, outputTypedef)
 ]typedef struct {
-   void * (*xml_realloc)(void*, size_t, const char *, const unsigned);
+  void * (*xml_realloc)(void*, size_t, const char *, const unsigned);
 [@lua return topologicalSort(schema, outputFactoryMethods)]
 } xml_typeFactory;
 /* ------------ */
@@ -571,7 +571,7 @@ _realloc(void * pMem, size_t size) {
 /* ------------ */
 static void 
 _free(void* pMem) {
-  return _xml_realloc(pMem, 0, __FILE__, __LINE__);
+  _xml_realloc(pMem, 0, __FILE__, __LINE__);
 }
 /* ------------ */
 static void *
