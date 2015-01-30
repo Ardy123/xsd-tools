@@ -5,7 +5,7 @@ end
 
 ListItemStrategy = {
    declaration = function(type, var)
-		    local fmt = '\tprivate Vector<%s> _%s = new Vector<%s>();\n'
+		    local fmt = '\tprivate List<%s> _%s = new ArrayList<%s>();\n'
 		    return fmt:format(type.typename, var, type.typename)
 		 end,
    marshal = function(type, var, tag)
@@ -60,7 +60,7 @@ ListItemStrategy = {
    geter = function(type, var)
 	      local str = {}
 	      local fmt = {
-		 '\tpublic Vector<%s> get%s() {\n',
+		 '\tpublic List<%s> get%s() {\n',
 		 '\t\treturn _%s;\n',
 		 '\t}\n'
 	      }
@@ -72,7 +72,7 @@ ListItemStrategy = {
    seter = function(type, var)
 	      local str = {}
 	      local fmt = {
-		 '\tpublic void set%s(Vector<%s> %sVal) {\n',
+		 '\tpublic void set%s(List<%s> %sVal) {\n',
 		 '\t\t_%s = %sVal;\n',
 		 '\t}\n'
 	      }
