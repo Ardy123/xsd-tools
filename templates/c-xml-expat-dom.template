@@ -311,7 +311,10 @@ function outputXmlEndElement(XSDDoc)
              mixedType:typeEnum())
            )
         end
-        str:append("      PopElement(pCtx);\n");
+        str:append(
+          ("      PopElement(%s, pTop->m_pData, pCtx);\n"):format(
+             ctype:typeName())
+        );
         ifCnt = ifCnt + 1
         numXmlElements = numXmlElements + 1
      end
@@ -451,7 +454,9 @@ void xml_destroy(xml_typelist ** ppDoc, const xml_typeFactory *);
     string.m_pData = _content_popContentStr(C);	\
     _context_addContent(C, string);		\
   }
-#define PopElement(C) _context_popElement(C)
+#define PopElement(T, P , C)			\
+  ConstructElement(T, (T)P, C->m_pFactory);	\
+  _context_popElement(C)
 /* ------------ */
 typedef struct {
   size_t m_elmSz;
