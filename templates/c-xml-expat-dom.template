@@ -384,7 +384,7 @@ typedef struct {
 /* ------------ */
 [@lua return topologicalSort(schema, outputTypedef)
 ]typedef struct {
-  void * (*xml_realloc)(void*, size_t, const char *, const unsigned);
+  void * (*xml_realloc)(const struct xml_typeFactory *, void*, size_t, const char *, const unsigned);
 [@lua return topologicalSort(schema, outputFactoryMethods)]
 } xml_typeFactory;
 /* ------------ */
@@ -411,16 +411,16 @@ void xml_destroy(xml_typelist ** ppDoc, const xml_typeFactory *);
 #define _DestroyMthdName(T, D, F) _##T##_destroy((T)D, F)
 /* Factory Helpers */
 #define ReallocateMemory(F, P, S) \
-  (F && F->xml_realloc) ? F->xml_realloc(P, S, __FILE__, __LINE__) : realloc(P, S)
+  (F && F->xml_realloc) ? F->xml_realloc(F, P, S, __FILE__, __LINE__) : realloc(P, S)
 #define AllocateElement(T, F)		   \
   (F && F->_FactoryMthdName(T, Allocator)) \
-  ? F->_FactoryMthdName(T, Allocator)() : _alloc(sizeof(struct T), F)
-#define ConstructElement(T, P, F)			\
-  if (F && F->_FactoryMthdName(T, Constructor))		\
-	  F->_FactoryMthdName(T, Constructor)(P)
+  ? F->_FactoryMthdName(T, Allocator)(F) : _alloc(sizeof(struct T), F)
+#define ConstructElement(T, P, F)		\
+  if (F && F->_FactoryMthdName(T, Constructor))	\
+    F->_FactoryMthdName(T, Constructor)(F, P)
 #define DestroyElement(T, P, F)		    \
   (F && F->_FactoryMthdName(T, Destructor)) \
-  ? F->_FactoryMthdName(T, Destructor)(P) : ReallocateMemory(F, P, 0)
+  ? F->_FactoryMthdName(T, Destructor)(F, P) : ReallocateMemory(F, P, 0)
 /* attribute Mashall/Unmarshal/Destroy */
 #define Default(T, A, D, F) (A) ? A : _UnmarshalMthdName(T,D,F)
 #define Unmarshal(T, S, F) _UnmarshalMthdName(T,S,F)
@@ -485,6 +485,7 @@ typedef struct {
 /* ------------ */
 static unsigned _sdbmHash(const char *);
 static XML_Memory_Handling_Suite * _XML_initMemSuite(const xml_typeFactory *);
+static void * _xml_realloc(const xml_typeFactory *, void*, size_t, const char *, const unsigned);
 static void * _malloc(size_t);
 static void * _realloc(void *, size_t);
 static void _free(void*);
@@ -512,7 +513,7 @@ static void _elementContent(void *, const XML_Char *, int);
 static void _xml_typelist_marshal(const xml_typelist *, char **, const xml_typeFactory *);
 [@lua return topologicalSort(schema, outputDclrTypeMthds)]
 /* ------------ */
-__thread void * (*_xml_realloc)(void*, size_t, const char *, const unsigned) = NULL;
+__thread const xml_typeFactory * gspFactory = NULL;
 /* ------------ */
 xml_typelist *
 xml_unmarshal(const char * pBuf, size_t size, const xml_typeFactory * pFactory) {
@@ -526,6 +527,7 @@ xml_unmarshal(const char * pBuf, size_t size, const xml_typeFactory * pFactory) 
   /* zero out return block */
   memset(pRetObj, 0, sizeof(xml_typelist) * 2);
   /* parse xml document */
+  gspFactory = pFactory;
   XML_SetUserData(parser, &ctx);
   XML_SetElementHandler(parser, _startElement, _endElement);
   XML_SetCharacterDataHandler(parser, _elementContent);
@@ -558,25 +560,30 @@ _XML_initMemSuite(const xml_typeFactory * pFactory) {
     .realloc_fcn = _realloc,
     .free_fcn = _free
   };
-  _xml_realloc = (pFactory && pFactory->xml_realloc) 
-    ? pFactory->xml_realloc 
-    : (void * (*)(void*, size_t, const char *, const unsigned))realloc;
   return &gsMemSuite;
+}
+/* ------------ */
+static void *
+_xml_realloc(const xml_typeFactory * pFactory, void * pMem, size_t size, const char * pFileName, const unsigned lineNo) {
+  if (pFactory && pFactory->xml_realloc)
+    return pFactory->xml_realloc(pFactory, pMem, size, pFileName, lineNo);
+  else
+    return realloc(pMem, size);
 }
 /* ------------ */
 static void * 
 _malloc(size_t size) {
-  return _xml_realloc(NULL, size, __FILE__, __LINE__);
+  return _xml_realloc(gspFactory, NULL, size, __FILE__, __LINE__);
 }
 /* ------------ */
 static void * 
 _realloc(void * pMem, size_t size) {
-  return _xml_realloc(pMem, size, __FILE__, __LINE__);
+  return _xml_realloc(gspFactory, pMem, size, __FILE__, __LINE__);
 }
 /* ------------ */
 static void 
 _free(void* pMem) {
-  _xml_realloc(pMem, 0, __FILE__, __LINE__);
+  _xml_realloc(gspFactory, pMem, 0, __FILE__, __LINE__);
 }
 /* ------------ */
 static void *

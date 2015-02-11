@@ -32,14 +32,14 @@ end
 function complexType:typeFactoryMethods()
    out = stringBuffer:new()
    out:append(
-      ("  %s (*%sAllocator)(void);\n"):format(self:typeName(), self:typeName())
+      ("  %s (*%sAllocator)(const struct xml_typeFactory *);\n"):format(self:typeName(), self:typeName())
    )
    out:append(
-      ("  void (*%sConstructor)(%s);\n"):format(
+      ("  void (*%sConstructor)(const struct xml_typeFactory *, %s);\n"):format(
      self:typeName(), self:typeName())
    )
    out:append(
-      ("  %s (*%sDestructor)(%s);\n"):format(
+      ("  %s (*%sDestructor)(const struct xml_typeFactory *, %s);\n"):format(
      self:typeName(), self:typeName(), self:typeName())
    )
    return out:str()
