@@ -383,7 +383,7 @@ typedef struct {
 } xml_typelist;
 /* ------------ */
 [@lua return topologicalSort(schema, outputTypedef)
-]typedef struct {
+]typedef struct xml_typeFactory {
   void * (*xml_realloc)(const struct xml_typeFactory *, void*, size_t, const char *, const unsigned);
 [@lua return topologicalSort(schema, outputFactoryMethods)]
 } xml_typeFactory;
