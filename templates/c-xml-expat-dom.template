@@ -132,7 +132,7 @@ function countXMLTypes(XSDDoc)
 end
 
 function outputEnum(name, ctype)
-   return ("  %s = 0x%X,\n"):format(ctype:typeEnum(), ctype:typeHash())
+   return ("  %s = (int32_t)0x%X,\n"):format(ctype:typeEnum(), ctype:typeHash())
 end
 
 function outputTypedef(name, ctype)

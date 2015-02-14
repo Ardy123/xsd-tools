@@ -1,7 +1,7 @@
 CC :=gcc
 RM :=rm
 TEST := testA001
-CFLAGS := -g -I. -I./$(TEST)-xsdb/ -I../libb64/include/
+CFLAGS := -g -I. -std=c99 -pedantic -I./$(TEST)-xsdb/ -I../libb64/include/
 VPATH = ./$(TEST)-xsdb
 
 .SUFFIXES: 
