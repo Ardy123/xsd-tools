@@ -326,7 +326,8 @@ function outputXmlEndElement(XSDDoc)
    str:append("  } else {\n")
    str:append("    pCtx->m_unknownElm--;\n")
    str:append("  }\n")
-   str:append("}\n")   
+   str:append("  (void)pContentStr;\n")
+   str:append("}\n")
    return str:str()
 end
 
