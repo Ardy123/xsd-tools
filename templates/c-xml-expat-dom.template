@@ -456,8 +456,8 @@ void xml_destroy(xml_typelist ** ppDoc, const xml_typeFactory *);
     _context_addContent(C, string);		\
   }
 #define PopElement(T, P , C)			\
-  ConstructElement(T, (T)P, C->m_pFactory);	\
-  _context_popElement(C)
+  _context_popElement(C);				\
+  ConstructElement(T, (T)P, C->m_pFactory)
 /* ------------ */
 typedef struct {
   size_t m_elmSz;
@@ -568,8 +568,11 @@ static void *
 _xml_realloc(const xml_typeFactory * pFactory, void * pMem, size_t size, const char * pFileName, const unsigned lineNo) {
   if (pFactory && pFactory->xml_realloc)
     return pFactory->xml_realloc(pFactory, pMem, size, pFileName, lineNo);
-  else
-    return realloc(pMem, size);
+  else {
+    pMem = realloc(pMem, size);
+    if (pMem && !size) free(pMem);
+    return pMem;
+  }
 }
 /* ------------ */
 static void * 
