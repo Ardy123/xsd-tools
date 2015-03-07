@@ -25,7 +25,7 @@ end
 
 function unsignedInt:defMarshal(elementName)
    out = stringBuffer:new()
-   out:append("static void")
+   out:append("static void\n")
    out:append("_xml_unsignedInt_marshal")
    out:append("(const xml_unsignedInt pVal, char ** ppOut, const xml_typeFactory * pFactory) {\n")
    out:append("  char num[16];\n")
