@@ -108,7 +108,7 @@ function complexType:defUnmarshal(elementName)
         local _, atrTypedef = next(atrTypeTbl)
         local atrType = self:_getType(atrTypedef)
         out:append(
-           ("    case %s: /* %s */\n"):format(
+           ("    case %sU: /* %s */\n"):format(
           sdbm_hash(atrName), atrName)
         )
         out:append(
