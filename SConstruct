@@ -3,7 +3,12 @@ import os.path
 import platform
 
 def _getLuaLib():
-    return 'lua5.1' if platform.linux_distribution()[0] == "Ubuntu" else 'lua'
+    if platform.system() == "Linux" and platform.linux_distribution()[0] == "Ubuntu":
+        return 'lua5.1'
+    elif platform.system() == "Darwin":
+        return 'lua5.1'
+    else:
+        return 'lua'
 
 xsdb = { 
     'src': ['src/main.cpp',

@@ -29,7 +29,7 @@ def _createIncludePaths(libs):
     for lib in libs:
         cflag = os.popen('pkg-config --silence-errors --cflags '+lib)
         flags += cflag.readline()
-    return ' ' + flags.replace('\n','')
+    return ' ' + flags.replace('\n',' ')
 
 def _createLibDeps(libs):
     flags=''

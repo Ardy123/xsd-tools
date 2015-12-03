@@ -25,10 +25,11 @@ import subprocess
 LuacObjectBuilder = SCons.Builder.Builder(action = '$LUACMD', suffix = '.luac', src_suffix = '.lua')
 LuacProgramBuilder = SCons.Builder.Builder(action = '$LLCCMD', suffix = '.luac', src_suffix = '.luac', src_builder = ['LuaC'])
 
+
 def generate(env):
     # set env variables/settings
     env['BUILDERS']['LuaC'] = LuacObjectBuilder
-    env['LUAC'] = 'luac'
+    env['LUAC'] = env.Detect(['luac5.1', 'luac'])
     env['LUACFLAGS'] = ''
     env['LUACMD'] = '$LUAC -o $TARGET $LUACFLAGS $SOURCE'
     env['BUILDERS']['Lua'] = LuacProgramBuilder
@@ -54,8 +55,8 @@ def generate(env):
                                output_target[architecture] + \
                                ' --binary-architecture i386 $SOURCE $TARGET'
     except KeyError, e:
-        raise Exception( "Architecture {0} not supported".format(architecture))
-    
+        raise Exception( "Architecture {0} not supported".format(architecture))    
     
 def exists(env):
-    return env.Detect('luac') and env.Detect('objcopy')
+    return env.Detect(['luac5.1', 'luac']) and env.Detect('objcopy')
+
