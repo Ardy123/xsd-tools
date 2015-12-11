@@ -111,7 +111,7 @@ install_target_bin  = os.path.join(install_prefix, 'local/bin/')
 install_target_data = os.path.join(install_prefix, 'share/xsdtools/templates/')
 build_platform      = platforms.get(
     ("%s-%s" % (platform.system(), platform.linux_distribution()[0])), 
-    'Linux-Default'
+    'linux-default'
 )
 
 # Setup Environment
