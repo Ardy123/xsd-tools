@@ -24,39 +24,6 @@ CSuffixes = ['.c', '.m']
 CXXSuffixes = ['.cpp', '.cc', '.cxx', '.c++', '.C++', '.mm']
 LUASuffixes = ['.lua', '.luac']
 
-def _createIncludePaths(libs):
-    flags=''
-    for lib in libs:
-        cflag = os.popen('pkg-config --silence-errors --cflags '+lib)
-        flags += cflag.readline()
-    return ' ' + flags.replace('\n',' ')
-
-def _createLibDeps(libs):
-    flags=''
-    for lib in libs:
-        ldflag = os.popen('pkg-config --silence-errors --libs '+lib)
-        tmpflag = ldflag.readline()
-        if ldflag.close() == 0:
-            flags += tmpflag
-        else:
-            flags += '-l' + lib+' '
-    return flags.replace('\n','').replace('-l','').split()
-
-def _createCFlags(buildSettings, config):
-    return buildSettings["cflags"][config] + \
-           _createIncludePaths(buildSettings['libs'])
-
-def _createCScannerPaths(buildSettings, config):
-    return re.findall('-I(\S+)', _createCFlags(buildSettings, config))
-    
-def _createLuaFlags(buildSettings, config):
-    return buildSettings["luaflags"][config]
-
-def _createLdFlags(buildSettings, config):
-    return buildSettings["linkFlags"][config]
-
-def _extractTarget(buildSettings):
-    return buildSettings['target']
 
 def _extractCPPFiles(buildSettings):
     srcLSt = buildSettings['src']
@@ -77,31 +44,29 @@ def _extractLuaFiles(buildSettings):
 def _sconsWrap(str):
     return SCons.Util.CLVar(str)
 
-def SetupEnv(buildSettings, env, config):
+def SetupEnv(buildSettings, env, platform, config):
     # setup lua builders
     env.Tool('luac')
-    # setup C flags and lib paths
-    if os.environ.has_key('CC'):
-        env['CC'] = os.environ['CC']
-    env['CCFLAGS'] = _sconsWrap(_createCFlags(buildSettings, config))
-    env['LIBS'] = _sconsWrap(_createLibDeps(buildSettings['libs']))
-    env['LIBPATH'] = _sconsWrap(buildSettings['libpath'] if 'libpath' in buildSettings else "")
-    env['CPPPATH'] = _sconsWrap(_createCScannerPaths(buildSettings, config))
-    env['LUACFLAGS']= _sconsWrap(_createLuaFlags(buildSettings, config))
-    if sys.platform.startswith("linux"):
-        env['LINKFLAGS']= _sconsWrap(_createLdFlags(buildSettings, config))
-    elif sys.platform.startswith("darwin"):
-        linkData = ' -sectcreate __DATA __luascript_luac luascript.luac '
-        buildSettings['linkFlags']={'debug':'-g'+linkData,'release':'-Wl,-S'+linkData} 
-        buildSettings['cflags']['release']+='-Wl,-S'
-        env['LINKFLAGS']= _sconsWrap(_createLdFlags(buildSettings, config))
+    # pull compiler from environment variables
+    env['CC'] = SCons.Util.CLVar(os.environ.get('CC', str(env['CC'])))
+    # set C/C++/Lua/link flags with variant settings
+    env['CFLAGS']   = SCons.Util.CLVar(buildSettings['cflags'][platform][config])
+    env['CCFLAGS']  = SCons.Util.CLVar(buildSettings['cflags'][platform][config])
+    env['LUACFLAGS']=SCons.Util.CLVar(buildSettings['luaflags'][config])
+    env['LINKFLAGS']=SCons.Util.CLVar(buildSettings['linkflags'][platform][config])
+    # update C/C++ flags with paths
+    for lib in buildSettings['libs'][platform]:
+        try:
+            env.ParseConfig('pkg-config --silence-errors --cflags --libs ' + lib)
+        except OSError:
+            env.MergeFlags(('-l%s' % (lib)))
     return env
 
 def Program(buildSettings, env, config):
     lua = env.Lua('luascript', _extractLuaFiles(buildSettings))
 
     xsdb = None
-    targets = _extractTarget(buildSettings)
+    targets  = buildSettings['target']
     cppFiles = _extractCPPFiles(buildSettings) 
     if sys.platform.startswith("linux"):
         xsdb = env.Program(targets, cppFiles + lua)

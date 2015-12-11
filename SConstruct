@@ -2,13 +2,11 @@ import BuildUtil
 import os.path
 import platform
 
-def _getLuaLib():
-    if platform.system() == "Linux" and platform.linux_distribution()[0] == "Ubuntu":
-        return 'lua5.1'
-    elif platform.system() == "Darwin":
-        return 'lua5.1'
-    else:
-        return 'lua'
+platforms = { 
+    'Linux-Default': 'linux-default',
+    'Linux-Ubuntu' : 'linux-ubuntu',
+    'Darwin-': 'darwin'
+    }
 
 xsdb = { 
     'src': ['src/main.cpp',
@@ -66,14 +64,43 @@ xsdb = {
             'src/TemplateEngine/safeEnv.lua',
             'src/TemplateEngine/stringbuffer.lua',
             'src/TemplateEngine/templateEngine.lua'],
-    'libs': [ 'tinyxml', 
-              'libboost_system', 
-              'boost_filesystem', 
-              _getLuaLib()],
-    'cflags': { 'debug'  : '-Wall -Werror -I. -g -g3 -ggdb -gdwarf-4 -Winit-self -Wformat -Wformat-nonliteral',
-                'release': '-Wall -Werror -I. -O3 -fomit-frame-pointer -Winit-self -Wformat -Wformat-nonliteral' },
-    'luaflags': { 'debug': '', 'release': '-s' },
-    'linkFlags': {'debug':'-g', 'release': '-Wl,-O1 -Wl,--discard-all -Wl,--no-undefined' },
+    'libs': {
+            'linux-default' : [ 'tinyxml', 'libboost_system', 'boost_filesystem', 'lua'],
+            'linux-ubuntu' : ['tinyxml', 'libboost_system', 'boost_filesystem', 'lua5.1'],
+            'darwin' : ['tinyxml', 'libboost_system', 'boost_filesystem', 'lua5.1'] 
+            },
+    'cflags': { 
+            'linux-default' : {
+                'debug'  : '-Wall -Werror -I. -g -g3 -ggdb -gdwarf-4 -Winit-self -Wformat -Wformat-nonliteral',
+                'release': '-Wall -Werror -I. -O3 -fomit-frame-pointer -Winit-self -Wformat -Wformat-nonliteral' 
+                },
+            'linux-ubuntu' : {
+                'debug'  : '-Wall -Werror -I. -g -g3 -ggdb -gdwarf-4 -Winit-self -Wformat -Wformat-nonliteral',
+                'release': '-Wall -Werror -I. -O3 -fomit-frame-pointer -Winit-self -Wformat -Wformat-nonliteral'
+                },
+            'darwin' : {
+                'debug'  : '-Wall -Werror -I. -g -g3 -ggdb -gdwarf-4 -Winit-self -Wformat -Wformat-nonliteral -I/usr/local/include -Wno-unused-local-typedefs -Wno-potentially-evaluated-expression',
+                'release': '-Wall -Werror -I. -O3 -fomit-frame-pointer -Winit-self -Wformat -Wformat-nonliteral -I/usr/local/include -Wno-unused-local-typedefs -Wno-potentially-evaluated-expression'
+                }
+            },    
+    'luaflags': { 
+            'debug': '', 
+            'release': '-s' 
+            },
+    'linkflags': {
+            'linux-default' : {
+                'debug':'-g', 
+                'release': '-Wl,-O1 -Wl,--discard-all -Wl,--no-undefined' 
+                },
+            'linux-ubuntu' : {
+                'debug':'-g',
+                'release': '-Wl,-O1 -Wl,--discard-all -Wl,--no-undefined'                
+                },
+            'darwin' : {
+                'debug':'-g -sectcreate __DATA __luascript_luac luascript.luac',
+                'release': '-Wl,-S -sectcreate __DATA __luascript_luac luascript.luac'
+                }
+            },
     'target': 'xsdb'
 }
 
@@ -82,9 +109,13 @@ release_target      = ARGUMENTS.get('conf', 'release')
 install_prefix      = ARGUMENTS.get('prefix', '/usr/')
 install_target_bin  = os.path.join(install_prefix, 'local/bin/')
 install_target_data = os.path.join(install_prefix, 'share/xsdtools/templates/')
+build_platform      = platforms.get(
+    ("%s-%s" % (platform.system(), platform.linux_distribution()[0])), 
+    'Linux-Default'
+)
 
 # Setup Environment
-env = BuildUtil.SetupEnv(xsdb, Environment(), release_target)
+env = BuildUtil.SetupEnv(xsdb, Environment(), build_platform, release_target)
 
 # Build xsdb
 lua, xsdb = BuildUtil.Program(xsdb, env, release_target)
