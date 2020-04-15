@@ -1,6 +1,7 @@
 import BuildUtil
 import os.path
 import platform
+import distro
 
 platforms = { 
     'Linux-Default': 'linux-default',
@@ -79,8 +80,8 @@ xsdb = {
                 'release': '-Wall -Werror -I. -O3 -fomit-frame-pointer -Winit-self -Wformat -Wformat-nonliteral'
                 },
             'darwin' : {
-                'debug'  : '-Wall -Werror -I. -g -g3 -ggdb -gdwarf-4 -Winit-self -Wformat -Wformat-nonliteral -I/usr/local/include -Wno-unused-local-typedefs -Wno-potentially-evaluated-expression',
-                'release': '-Wall -Werror -I. -O3 -fomit-frame-pointer -Winit-self -Wformat -Wformat-nonliteral -I/usr/local/include -Wno-unused-local-typedefs -Wno-potentially-evaluated-expression'
+                'debug'  : '-std=c++11 -Wall -Werror -I. -g -g3 -ggdb -gdwarf-4 -Winit-self -Wformat -Wformat-nonliteral -I/usr/local/include -Wno-unused-local-typedefs -Wno-potentially-evaluated-expression',
+                'release': '-std=c++11 -Wall -Werror -I. -O3 -fomit-frame-pointer -Winit-self -Wformat -Wformat-nonliteral -I/usr/local/include -Wno-unused-local-typedefs -Wno-potentially-evaluated-expression'
                 }
             },    
     'luaflags': { 
@@ -110,7 +111,7 @@ install_prefix      = ARGUMENTS.get('prefix', '/usr/')
 install_target_bin  = os.path.join(install_prefix, 'local/bin/')
 install_target_data = os.path.join(install_prefix, 'share/xsdtools/templates/')
 build_platform      = platforms.get(
-    ("%s-%s" % (platform.system(), platform.linux_distribution()[0])), 
+    ("%s-%s" % (platform.system(), distro.linux_distribution()[0])), 
     'linux-default'
 )
 
