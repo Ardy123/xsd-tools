@@ -30,17 +30,17 @@ namespace Core {
 	class ResourceException : public std::exception {
 	public:
 		ResourceException(const std::string& rMsg);
-		virtual ~ResourceException() throw ();
-		virtual const char* what() const throw();
+		virtual ~ResourceException() noexcept;
+		virtual const char* what() const noexcept;
 	private:
 		std::string	m_errorMsg;
 	};
 	class Resource {
 	public:
 		Resource();
-		virtual ~Resource() throw();
-		const uint8_t* GetEngineScript(size_t* pRetSz) throw();
-		std::string GetTemplatePath(const std::string& templateName) throw(ResourceException);
+		virtual ~Resource() noexcept;
+		const uint8_t* GetEngineScript(size_t* pRetSz) noexcept;
+		std::string GetTemplatePath(const std::string& templateName) noexcept(false);
 	};
 }
 #endif /* RESOURCE_HPP_ */

@@ -42,9 +42,9 @@ List::List(const List& lst)
 { }
 
 void
-List::ParseChildren(BaseProcessor& rProcessor) const throw(XMLException) {
+List::ParseChildren(BaseProcessor& rProcessor) const noexcept(false) {
 	/* process children */
-	std::auto_ptr<Node> pNode(Node::FirstChild());
+	std::unique_ptr<Node> pNode(Node::FirstChild());
 	if (NULL != pNode.get()) {
 		do {
 			if (XSD_ISELEMENT(pNode.get(), SimpleType) ||
@@ -52,12 +52,12 @@ List::ParseChildren(BaseProcessor& rProcessor) const throw(XMLException) {
 				pNode->ParseElement(rProcessor);
 			} else
 				throw XMLException(pNode->GetXMLElm(), XMLException::InvallidChildXMLElement);
-		} while (NULL != (pNode = std::auto_ptr<Node>(pNode->NextSibling())).get());
+		} while (NULL != (pNode = std::unique_ptr<Node>(pNode->NextSibling())).get());
 	}
 }
 
 void
-List::ParseElement(BaseProcessor& rProcessor) const throw(XMLException) {
+List::ParseElement(BaseProcessor& rProcessor) const noexcept(false) {
 	/* verify that is has an item type defined or it has a sub type defined */
 	if (HasItemType()) {
 		if (Node::HasContent(SimpleType::XSDTag()))
@@ -70,7 +70,7 @@ List::ParseElement(BaseProcessor& rProcessor) const throw(XMLException) {
 }
 
 Types::BaseType * 
-List::GetParentType(void) const throw(XMLException) {
+List::GetParentType(void) const noexcept(false) {
 	return this->ItemType();
 }
 
@@ -80,7 +80,7 @@ List::HasItemType() const {
 }
 
 Types::BaseType*
-List::ItemType() const throw(XMLException) {
+List::ItemType() const noexcept(false) {
 	if (HasContent(SimpleType::XSDTag()))
 		return new Types::SimpleType(FindXSDChildElm<SimpleType>());
 	else
@@ -88,7 +88,7 @@ List::ItemType() const throw(XMLException) {
 };
 
 Types::BaseType*
-List::_type() const throw(XMLException) {
+List::_type() const noexcept(false) {
 	Types::BaseType* pType = Node::GetAttribute<Types::BaseType*>("itemType");
 	if (XSD_ISTYPE(pType, Types::Unknown)) {
 		delete pType;

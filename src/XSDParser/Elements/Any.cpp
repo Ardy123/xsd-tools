@@ -28,6 +28,7 @@
 #include <string.h>
 #include <string>
 #include <tinyxml.h>
+#include "./src/XSDParser/Elements/Schema.hpp"
 #include "./src/XSDParser/Elements/Any.hpp"
 #include "./src/XSDParser/Elements/Element.hpp"
 #include "./src/XSDParser/Elements/Annotation.hpp"
@@ -45,9 +46,9 @@ Any::Any(const Any& cpy)
 { }
 
 void
-Any::ParseChildren(BaseProcessor& rProcessor) const throw(XMLException) {
+Any::ParseChildren(BaseProcessor& rProcessor) const noexcept(false) {
 	/* parse document children */
-	std::auto_ptr<Node> pNode(Node::FirstChild());
+	std::unique_ptr<Node> pNode(Node::FirstChild());
 	if (NULL != pNode.get()) {
 		do {
 			if (XSD_ISELEMENT(pNode.get(), Annotation))
@@ -55,12 +56,12 @@ Any::ParseChildren(BaseProcessor& rProcessor) const throw(XMLException) {
 			else
 				throw XMLException(pNode->GetXMLElm(), XMLException::InvallidChildXMLElement);
 			break;
-		} while (NULL != (pNode = std::auto_ptr<Node>(pNode->NextSibling())).get());
+		} while (NULL != (pNode = std::unique_ptr<Node>(pNode->NextSibling())).get());
 	}
 }
 
 void
-Any::ParseElement(BaseProcessor& rProcessor) const throw(XMLException) {
+Any::ParseElement(BaseProcessor& rProcessor) const noexcept(false) {
 	/* verify that 'maxOccurs' is not negative unless its -1 (unbounded) */
 	if (-1 > MaxOccurs())
 		throw XMLException(Node::GetXMLElm(), XMLException::InvalidAttributeValue);
@@ -72,8 +73,8 @@ Any::ParseElement(BaseProcessor& rProcessor) const throw(XMLException) {
 }
 
 Types::BaseType * 
-Any::GetParentType() const throw(XMLException) {
-	std::auto_ptr<Node> pParent(Node::Parent());
+Any::GetParentType() const noexcept(false) {
+	std::unique_ptr<Node> pParent(Node::Parent());
 	return pParent->GetParentType();
 }
 
@@ -82,10 +83,10 @@ Any::GetAllowedElements() const {
   Processors::ElementExtracter::ElementLst retLst;
 	if (STRICT == ProcessContents()) {
 		Processors::ElementExtracter elmExtrctr;
-		std::auto_ptr<Schema> pDocRoot(Node::GetSchema());
+		std::unique_ptr<Schema> pDocRoot(Node::GetSchema());
 		retLst = elmExtrctr.Extract(*pDocRoot);
 		/* find parent element and remove it from list to prevent recursive loops */
-		std::auto_ptr<Element> pElement(_findParentElement(this));
+		std::unique_ptr<Element> pElement(_findParentElement(this));
 		if (NULL != pElement.get()) {
 			for (	Processors::ElementExtracter::ElementLst::iterator itr = retLst.begin();
 				  itr != retLst.end();
@@ -169,6 +170,6 @@ Any::_findParentElement(const Node * pNode) {
 		return NULL;
 	if (XSD_ISELEMENT(pNode, Element)) 
 		return new Element(*(static_cast<const Element *>(pNode)));
-	std::auto_ptr<Node> pParent(pNode->Parent());
+	std::unique_ptr<Node> pParent(pNode->Parent());
 	return _findParentElement(pParent.get());
 }

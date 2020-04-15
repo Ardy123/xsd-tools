@@ -43,10 +43,10 @@ namespace XSD {
 		public:
 			SimpleType(const TiXmlElement& elm, const Parser& rParser);
 			SimpleType(const SimpleType& rType);
-			void ParseChildren(BaseProcessor& rProcessor) const throw(XMLException);
-			void ParseElement(BaseProcessor& rProcessor) const throw(XMLException);
-			Types::BaseType * GetParentType(void) const throw(XMLException);
-			std::string Name() const throw(XMLException);
+			void ParseChildren(BaseProcessor& rProcessor) const noexcept(false);;
+			void ParseElement(BaseProcessor& rProcessor) const noexcept(false);;
+			Types::BaseType * GetParentType(void) const noexcept(false);;
+			std::string Name() const noexcept(false);;
 			bool HasName() const;
 			bool HasUnion() const;
 			bool HasRestriction() const;

@@ -38,10 +38,10 @@ namespace XSD {
 		public:
 			Pattern(const TiXmlElement& elm, const Parser& rParser);
 			Pattern(const Pattern& cpy);
-			void ParseChildren(BaseProcessor& rProcessor) const throw(XMLException);
-			void ParseElement(BaseProcessor& rProcessor) const throw(XMLException);
-			Types::BaseType * GetParentType() const throw(XMLException);
-			std::string Value() const throw(XMLException);
+			void ParseChildren(BaseProcessor& rProcessor) const noexcept(false);
+			void ParseElement(BaseProcessor& rProcessor) const noexcept(false);
+			Types::BaseType * GetParentType() const noexcept(false);
+			std::string Value() const noexcept(false);
 			bool HasValue() const;
 		};
 	}	/* namespace Elements */

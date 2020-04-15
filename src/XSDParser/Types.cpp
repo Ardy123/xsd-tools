@@ -21,6 +21,7 @@
  *  along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <memory>
 #include <boost/foreach.hpp>
 #include "./src/XSDParser/Types.hpp"
 #include "./src/XSDParser/Elements/SimpleType.hpp"
@@ -48,7 +49,7 @@ SimpleType::isTypeRelated(const BaseType* pType) const {
 				return true;
 	}
 	/* break down this simpleType to its parent type */
-	std::auto_ptr<BaseType> pBaseType(m_pValue->GetParentType());
+	std::unique_ptr<BaseType> pBaseType(m_pValue->GetParentType());
 	if (NULL == pBaseType.get())
 		return false;
 	else
@@ -85,7 +86,7 @@ ComplexType::isTypeRelated(const BaseType* pType) const {
 				return true;
 	}
 	/* break down complexType to its parent type */
-	std::auto_ptr<BaseType> pBaseType(m_pValue->GetParentType());
+	std::unique_ptr<BaseType> pBaseType(m_pValue->GetParentType());
 	if (NULL == pBaseType.get())
 		return false;
 	else

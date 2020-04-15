@@ -46,9 +46,9 @@ Element::Element(const Element& elm)
 { }
 
 void
-Element::ParseChildren(BaseProcessor& rProcessor) const throw(XMLException) {
+Element::ParseChildren(BaseProcessor& rProcessor) const noexcept(false) {
 	/* process children */
-	std::auto_ptr<Node> pNode(Node::FirstChild());
+	std::unique_ptr<Node> pNode(Node::FirstChild());
 	if (NULL != pNode.get()) {
 		do {
 			if (XSD_ISELEMENT(pNode.get(), SimpleType) ||
@@ -57,12 +57,12 @@ Element::ParseChildren(BaseProcessor& rProcessor) const throw(XMLException) {
 				pNode->ParseElement(rProcessor);
 			} else
 				throw XMLException(pNode->GetXMLElm(), XMLException::InvallidChildXMLElement);
-		} while (NULL != (pNode = std::auto_ptr<Node>(pNode->NextSibling())).get());
+		} while (NULL != (pNode = std::unique_ptr<Node>(pNode->NextSibling())).get());
 	}
 }
 
 void
-Element::ParseElement(BaseProcessor& rProcessor) const throw(XMLException) {
+Element::ParseElement(BaseProcessor& rProcessor) const noexcept(false) {
 	/* don't process if node is abstract */
 	if (Abstract()) return;
 	/* if an element is a substitution group verify types */
@@ -81,7 +81,7 @@ Element::ParseElement(BaseProcessor& rProcessor) const throw(XMLException) {
 		throw XMLException(Node::GetXMLElm(), XMLException::InvalidAttribute);
 	/* if the node is a reference, check its reference */
 	if (HasRef()) {
-		std::auto_ptr<XSD::Elements::Element> pRefElm(RefElement());
+		std::unique_ptr<XSD::Elements::Element> pRefElm(RefElement());
 		if (pRefElm->Abstract()) return;
 		/* a name is only allowed when it's parent element is a schema */
 		if (!pRefElm->IsRootNode())
@@ -98,7 +98,7 @@ Element::ParseElement(BaseProcessor& rProcessor) const throw(XMLException) {
 }
 
 Types::BaseType * 
-Element::GetParentType(void) const throw(XMLException) {
+Element::GetParentType(void) const noexcept(false) {
 	return this->Type();
 }
 
@@ -111,27 +111,27 @@ Element::Abstract() const {
 }
 
 std::string
-Element::Name() const throw(XMLException) {
+Element::Name() const noexcept(false) {
 	return std::string(Node::GetAttribute<const char*>("name"));
 }
 
 Element*
-Element::SubstitutionGroup() const throw(XMLException) {
+Element::SubstitutionGroup() const noexcept(false) {
 	return Node::FindXSDElm<Element>(Node::GetAttribute<const char*>("substitutionGroup"));
 }
 
 bool
-Element::VerifySubstitutionGroup() const throw(XMLException) {
-	std::auto_ptr<Element> pSubElm(this->SubstitutionGroup());
-	std::auto_ptr<Types::BaseType> pType(this->Type());
-	std::auto_ptr<Types::BaseType> pSubElmType(pSubElm->Type());
+Element::VerifySubstitutionGroup() const noexcept(false) {
+	std::unique_ptr<Element> pSubElm(this->SubstitutionGroup());
+	std::unique_ptr<Types::BaseType> pType(this->Type());
+	std::unique_ptr<Types::BaseType> pSubElmType(pSubElm->Type());
 	return pType->isTypeRelated(pSubElmType.get());
 }
 
 Types::BaseType*
-Element::Type() const throw(XMLException) {
+Element::Type() const noexcept(false) {
 	if (HasRef()) {
-		std::auto_ptr<XSD::Elements::Element> pRefElm(RefElement());
+		std::unique_ptr<XSD::Elements::Element> pRefElm(RefElement());
 		return _ParseType(*pRefElm.get());
 	} else {
 		return _ParseType(*this);
@@ -139,7 +139,7 @@ Element::Type() const throw(XMLException) {
 }
 
 Element*
-Element::RefElement() const throw(XMLException) {
+Element::RefElement() const noexcept(false) {
 	return Node::FindXSDRef<Element>("ref");
 }
 
@@ -182,7 +182,7 @@ Element::HasMaxOccurs() const {
 }
 
 Types::BaseType*
-Element::_Type() const throw(XMLException) {
+Element::_Type() const noexcept(false) {
 	Types::BaseType* pRetType = Node::GetAttribute<Types::BaseType*>("type");
 	if (XSD_ISTYPE(pRetType, Types::Unknown)) {
 		delete pRetType;
@@ -193,7 +193,7 @@ Element::_Type() const throw(XMLException) {
 }
 
 /* static */ Types::BaseType*
-Element::_ParseType(const Element& rElm) throw(XMLException) {
+Element::_ParseType(const Element& rElm) noexcept(false) {
 	if (rElm.HasChildType() &&
 		(rElm.HasContent(SimpleType::XSDTag()) || rElm.HasContent(ComplexType::XSDTag()))) {
 		if (rElm.HasContent(SimpleType::XSDTag())) {
@@ -204,7 +204,7 @@ Element::_ParseType(const Element& rElm) throw(XMLException) {
 	} else if (rElm.HasType()) {
 		return rElm._Type();
 	} else if (rElm.HasSubstitutionGroup()) {
-		std::auto_ptr<Element> pElm(rElm.SubstitutionGroup());
+		std::unique_ptr<Element> pElm(rElm.SubstitutionGroup());
 		return _ParseType(*(pElm.get()));
 	} else {
 		return new Types::String();

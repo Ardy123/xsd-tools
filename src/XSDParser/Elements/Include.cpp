@@ -47,23 +47,23 @@ Include::~Include() {
 }
 
 void
-Include::ParseChildren(BaseProcessor& rProcessor) const throw(XMLException) {
+Include::ParseChildren(BaseProcessor& rProcessor) const noexcept(false) {
 	/* does nothing, doesn't have child elements */
 }
 
 void
-Include::ParseElement(BaseProcessor& rProcessor) const throw(XMLException) {
+Include::ParseElement(BaseProcessor& rProcessor) const noexcept(false) {
 	rProcessor.ProcessInclude(this);
 }
 
 Types::BaseType * 
-Include::GetParentType() const throw(XMLException) {
-	std::auto_ptr<Node> pParent(Node::Parent());
+Include::GetParentType() const noexcept(false) {
+	std::unique_ptr<Node> pParent(Node::Parent());
 	return pParent->GetParentType();
 }
 
 const Schema*
-Include::QuerySchema() const throw(XMLException) {
+Include::QuerySchema() const noexcept(false) {
 	if (NULL == m_pSchema) {
 		m_pSchema = Node::GetParser().Parse(_schemaURI());
 	}
@@ -76,7 +76,7 @@ Include::HasSchema() const {
 }
 
 std::string
-Include::_schemaURI() const throw(XMLException) {
+Include::_schemaURI() const noexcept(false) {
 	std::string uri(Node::GetAttribute<const char*>("schemaLocation"));
 	/* handle file URIs differently */
 	if (_isFileURI(uri)) {
@@ -86,7 +86,7 @@ Include::_schemaURI() const throw(XMLException) {
 			retStr += (path.string() + _extractQuery(uri));
 			return retStr;
 		} else {
-			std::auto_ptr<Schema> pDocRoot(Node::GetSchema());
+			std::unique_ptr<Schema> pDocRoot(Node::GetSchema());
 #if defined(BOOST_FILESYSTEM_VERSION) && (BOOST_FILESYSTEM_VERSION > 2)
 			boost::filesystem::path schemaPath = (boost::filesystem::absolute(_extractURIPath(pDocRoot->URI()))).branch_path();
 #else

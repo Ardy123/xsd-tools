@@ -42,17 +42,17 @@ AppInfo::AppInfo(const AppInfo& cpy)
 { }
 
 void
-AppInfo::ParseChildren(BaseProcessor& rProcessor) const throw(XMLException) {
+AppInfo::ParseChildren(BaseProcessor& rProcessor) const noexcept(false) {
 	/* does nothing */
 }
 
 void
-AppInfo::ParseElement(BaseProcessor& rProcessor) const throw(XMLException) {
+AppInfo::ParseElement(BaseProcessor& rProcessor) const noexcept(false) {
 	rProcessor.ProcessAppInfo(this);
 }
 
 Types::BaseType * 
-AppInfo::GetParentType() const throw(XMLException) {
-	std::auto_ptr<Node> pParent(Node::Parent());
+AppInfo::GetParentType() const noexcept(false) {
+	std::unique_ptr<Node> pParent(Node::Parent());
 	return pParent->GetParentType();
 }

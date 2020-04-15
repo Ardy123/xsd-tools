@@ -36,7 +36,7 @@ namespace Processors {
 		RestrictionVerify();
 		RestrictionVerify(const RestrictionVerify& rProccessor);
 		virtual ~RestrictionVerify();
-		bool Verify(const XSD::Elements::Restriction* pRestriciton, const XSD::Elements::ComplexType* pParentType) throw(XSD::XMLException);
+		bool Verify(const XSD::Elements::Restriction* pRestriciton, const XSD::Elements::ComplexType* pParentType) noexcept(false);
 		virtual void ProcessElement(const XSD::Elements::Element* pNode);
 		virtual void ProcessRestriction(const XSD::Elements::Restriction* pNode);
 		virtual void ProcessSequence(const XSD::Elements::Sequence* pNode);

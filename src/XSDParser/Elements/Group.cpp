@@ -46,9 +46,9 @@ Group::Group(const Group& cpy)
 { }
 
 void
-Group::ParseChildren(BaseProcessor& rProcessor) const throw(XMLException) {
+Group::ParseChildren(BaseProcessor& rProcessor) const noexcept(false) {
 	/* process children */
-	std::auto_ptr<Node> pNode(Node::FirstChild());
+	std::unique_ptr<Node> pNode(Node::FirstChild());
 	if (NULL != pNode.get()) {
 		do {
 			if (XSD_ISELEMENT(pNode.get(), Choice) ||
@@ -58,12 +58,12 @@ Group::ParseChildren(BaseProcessor& rProcessor) const throw(XMLException) {
 				pNode->ParseElement(rProcessor);
 			} else
 				throw XMLException(pNode->GetXMLElm(), XMLException::InvallidChildXMLElement);
-		} while (NULL != (pNode = std::auto_ptr<Node>(pNode->NextSibling())).get());
+		} while (NULL != (pNode = std::unique_ptr<Node>(pNode->NextSibling())).get());
 	}
 }
 
 void
-Group::ParseElement(BaseProcessor& rProcessor) const throw(XMLException) {
+Group::ParseElement(BaseProcessor& rProcessor) const noexcept(false) {
 	/* a ref and a name are not allowed */
 	if (HasName() && HasRef())
 		throw XMLException(Node::GetXMLElm(), XMLException::InvalidAttribute);
@@ -73,7 +73,7 @@ Group::ParseElement(BaseProcessor& rProcessor) const throw(XMLException) {
 			throw XMLException(Node::GetXMLElm(), XMLException::InvalidAttribute);
 	}
 	if (HasRef()) {
-		std::auto_ptr<Group> pRefGroup(RefGroup());
+		std::unique_ptr<Group> pRefGroup(RefGroup());
 		/* a name is only allowed when it's parent element is a schema */
 		if (pRefGroup->GetXMLElm().Parent()->Type() != TiXmlNode::TINYXML_DOCUMENT)
 			throw XMLException(pRefGroup->GetXMLElm(), XMLException::InvalidAttribute);
@@ -89,8 +89,8 @@ Group::ParseElement(BaseProcessor& rProcessor) const throw(XMLException) {
 }
 
 Types::BaseType * 
-Group::GetParentType() const throw(XMLException) {
-	std::auto_ptr<Node> pParent(Node::Parent());
+Group::GetParentType() const noexcept(false) {
+	std::unique_ptr<Node> pParent(Node::Parent());
 	return pParent->GetParentType();
 }
 
@@ -114,12 +114,12 @@ Group::MinOccurs() const {
 }
 
 std::string
-Group::Name() const throw(XMLException) {
+Group::Name() const noexcept(false) {
 	return std::string(Node::GetAttribute<const char*>("name"));
 }
 
 Group*
-Group::RefGroup() const throw(XMLException) {
+Group::RefGroup() const noexcept(false) {
 	return Node::FindXSDRef<Group>("ref");
 }
 

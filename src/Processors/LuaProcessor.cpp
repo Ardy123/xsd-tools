@@ -98,7 +98,7 @@ LuaProcessor::ProcessElement(const XSD::Elements::Element* pNode) {
 		return;
 	/* output the element */
 	if (!pNode->HasRef()) {
-		auto_ptr<XSD::Types::BaseType> pElmType(pNode->Type());
+		unique_ptr<XSD::Types::BaseType> pElmType(pNode->Type());
 		/* process element type */
 		/* inserts basic type. Handle array types the same as basic types */
 		LuaContent * pLuaContent = dynamic_cast<LuaContent*>(_luaAdapter());
@@ -114,7 +114,7 @@ LuaProcessor::ProcessElement(const XSD::Elements::Element* pNode) {
 			luaPrcssr._parseType(*pElmType);
 		}
 	} else {
-		auto_ptr<XSD::Elements::Element> pRefElm(pNode->RefElement());
+		unique_ptr<XSD::Elements::Element> pRefElm(pNode->RefElement());
 		ProcessElement(pRefElm.get());
 	}
 }
@@ -131,17 +131,17 @@ LuaProcessor::ProcessRestriction(const XSD::Elements::Restriction* pNode ) {
 		pNode->ParseChildren(*this);
 	} else if (pNode->isParentSimpleContent()) {
 		pNode->ParseChildren(*this);
-		auto_ptr<XSD::Types::BaseType> pType(pNode->Base());
+		unique_ptr<XSD::Types::BaseType> pType(pNode->Base());
 		_parseType(*pType);
 	} else {
-		auto_ptr<XSD::Types::BaseType> pType(pNode->Base());
+		unique_ptr<XSD::Types::BaseType> pType(pNode->Base());
 		_parseType(*pType);
 	}
 }
 
 /* virtual */ void
 LuaProcessor::ProcessList(const XSD::Elements::List* pNode) {
-	auto_ptr<XSD::Types::BaseType> pTypeLst(pNode->ItemType());
+	unique_ptr<XSD::Types::BaseType> pTypeLst(pNode->ItemType());
 	/* extract xsd native type from simple type */
 	SimpleTypeExtracter typeXtr;
 	/* create array type */
@@ -161,16 +161,16 @@ LuaProcessor::ProcessChoice(const XSD::Elements::Choice * pNode) {
 /* virtual */ void
 LuaProcessor::ProcessAttribute(const XSD::Elements::Attribute* pNode) {
 	if (pNode->HasRef()) {
-		auto_ptr<XSD::Elements::Attribute> pRefAtt(pNode->RefAttribute());
+		unique_ptr<XSD::Elements::Attribute> pRefAtt(pNode->RefAttribute());
 		ProcessAttribute(pRefAtt.get());
 	} else {
 		/* extract xsd native type from simple type and add it */
 		SimpleTypeExtracter typeXtr;
-		auto_ptr<XSD::Types::BaseType> pType(pNode->Type());
+		unique_ptr<XSD::Types::BaseType> pType(pNode->Type());
 		LuaType * pLuaType = dynamic_cast<LuaType*>(_luaAdapter());
-		auto_ptr<string> pDefault(NULL);
-		auto_ptr<string> pFixed(NULL);
-		auto_ptr<string> pUse(new string("optional"));
+		unique_ptr<string> pDefault(nullptr);
+		unique_ptr<string> pFixed(nullptr);
+		unique_ptr<string> pUse(new string("optional"));
 		if (pNode->HasDefault()) {
 			pDefault.reset(new string(pNode->Default()));
 		}
@@ -194,7 +194,7 @@ LuaProcessor::ProcessAttribute(const XSD::Elements::Attribute* pNode) {
 						(pNode->Use() != XSD::Elements::Attribute::REQUIRED));
 			}
 		}
-		auto_ptr<LuaAttribute> pAttribute(	
+		unique_ptr<LuaAttribute> pAttribute(	
 			pLuaType->Attribute(pNode->Name(), 
 								typeXtr.Extract(*pType), 
 								pDefault.get(),
@@ -217,7 +217,7 @@ LuaProcessor::ProcessComplexType(const XSD::Elements::ComplexType* pNode) {
 			LuaProcessor processor(pLuaType->Content());
 			processor.ProcessComplexType(pNode);
 		} else {
-			auto_ptr<XSD::Types::String> pType(new XSD::Types::String());
+			unique_ptr<XSD::Types::String> pType(new XSD::Types::String());
 			delete (pLuaContent->Type(pType->Name(), 1));
 			pNode->ParseChildren(*this);
 		}
@@ -230,7 +230,7 @@ LuaProcessor::ProcessComplexType(const XSD::Elements::ComplexType* pNode) {
 LuaProcessor::ProcessGroup(const XSD::Elements::Group* pNode) {
 	/* only parse groups when they are referred */
 	if (pNode->HasRef()) {
-		auto_ptr<XSD::Elements::Group> pGroup(pNode->RefGroup());
+		unique_ptr<XSD::Elements::Group> pGroup(pNode->RefGroup());
 		pGroup->ParseChildren(*this);
 	}
 }
@@ -253,7 +253,7 @@ LuaProcessor::ProcessAny(const XSD::Elements::Any* pNode) {
 
 /* virtual */ void
 LuaProcessor::ProcessExtension(const XSD::Elements::Extension* pNode) {
-	auto_ptr<XSD::Types::BaseType> pBase(pNode->Base());
+	unique_ptr<XSD::Types::BaseType> pBase(pNode->Base());
 	_parseType(*pBase);
 	pNode->ParseChildren(*this);
 }
@@ -262,7 +262,7 @@ LuaProcessor::ProcessExtension(const XSD::Elements::Extension* pNode) {
 LuaProcessor::ProcessAttributeGroup(const XSD::Elements::AttributeGroup* pNode) {
 	/* only parse attribute groups when they are referred */
 	if (pNode->HasRef()) {
-		auto_ptr<XSD::Elements::AttributeGroup> pGroup(pNode->RefGroup());
+		unique_ptr<XSD::Elements::AttributeGroup> pGroup(pNode->RefGroup());
 		pGroup->ParseChildren(*this);
 	}
 }
@@ -291,7 +291,7 @@ LuaProcessor::_parseType(const XSD::Types::BaseType& rXSDType) {
 	} else {
 		/* inserts basic type. Handles array types the same as basic types */
 		LuaType * pLuaType = dynamic_cast<LuaType*>(_luaAdapter());
-		auto_ptr<LuaContent> pLuaContent(pLuaType->Content());
+		unique_ptr<LuaContent> pLuaContent(pLuaType->Content());
 		delete (pLuaContent->Type(rXSDType.Name(), 1));
 	}
 }

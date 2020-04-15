@@ -56,11 +56,11 @@ ResourceException::ResourceException(const string& rMsg)
 { }
 
 /* virtual */
-ResourceException::~ResourceException() throw ()
+ResourceException::~ResourceException() noexcept
 { }
 
 /* virtual */ const char*
-ResourceException::what() const throw() {
+ResourceException::what() const noexcept {
 	return m_errorMsg.c_str();
 }
 
@@ -68,17 +68,17 @@ Resource::Resource()
 { }
 
 /* virtual */
-Resource::~Resource() throw()
+Resource::~Resource() noexcept
 { }
 
 const uint8_t *
-Resource::GetEngineScript(size_t* pRetSz) throw() {
+Resource::GetEngineScript(size_t* pRetSz) noexcept {
 	*pRetSz = _binary_luascript_luac_size;
 	return reinterpret_cast<uint8_t*> (_binary_luascript_luac);
 }
 
 string
-Resource::GetTemplatePath(const std::string& templateName) throw(ResourceException) {
+Resource::GetTemplatePath(const std::string& templateName) noexcept(false) {
 	/* test if the template name exists */
 	if (0 == access(templateName.c_str(), R_OK))
 		return templateName;

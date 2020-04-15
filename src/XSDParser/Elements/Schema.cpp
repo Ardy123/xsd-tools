@@ -45,9 +45,9 @@ Schema::~Schema()
 { }
 
 void
-Schema::ParseChildren(BaseProcessor& rProcessor) const throw(XMLException) {
+Schema::ParseChildren(BaseProcessor& rProcessor) const noexcept(false) {
 	/* process children */
-	std::auto_ptr<Node> pNode(Node::FirstChild());
+	std::unique_ptr<Node> pNode(Node::FirstChild());
 	if (NULL != pNode.get()) {
 		do {
 			if (XSD_ISELEMENT(pNode.get(), Element) ||
@@ -55,27 +55,27 @@ Schema::ParseChildren(BaseProcessor& rProcessor) const throw(XMLException) {
 				XSD_ISELEMENT(pNode.get(), Include)) {
 				pNode->ParseElement(rProcessor);
 			}
-		} while (NULL != (pNode = std::auto_ptr<Node>(pNode->NextSibling())).get());
+		} while (NULL != (pNode = std::unique_ptr<Node>(pNode->NextSibling())).get());
 	}
 }
 
 void
-Schema::ParseElement(BaseProcessor& rProcessor) const throw(XMLException) {
+Schema::ParseElement(BaseProcessor& rProcessor) const noexcept(false) {
 	rProcessor.ProcessSchema(this);
 }
 
 const std::string
-Schema::Name() const throw(XMLException) {
+Schema::Name() const noexcept(false) {
 	return _extractName(m_documentURI);
 }
 
 const std::string&
-Schema::URI() const throw(XMLException) {
+Schema::URI() const noexcept(false) {
 	return m_documentURI;
 }
 
 const std::string
-Schema::Namespace() const throw(XMLException) {
+Schema::Namespace() const noexcept(false) {
 	/* search for xmlns attribute (sans the namespace prefix) */
 	const TiXmlAttribute * pAttrib = Node::GetXMLElm().FirstAttribute();
 	for ( ; pAttrib && (std::string::npos == std::string(pAttrib->Value()).find("http://www.w3.org/2001/XMLSchema"));
@@ -90,8 +90,8 @@ Schema::Namespace() const throw(XMLException) {
 }
 
 Types::BaseType * 
-Schema::GetParentType() const throw(XMLException) {
-	std::auto_ptr<Node> pParent(Node::Parent());
+Schema::GetParentType() const noexcept(false) {
+	std::unique_ptr<Node> pParent(Node::Parent());
 	return (pParent.get()) ? pParent->GetParentType() : NULL;
 }
 

@@ -44,8 +44,8 @@ Annotation::Annotation(const Annotation& cpy)
 { }
 
 void
-Annotation::ParseChildren(BaseProcessor& rProcessor) const throw(XMLException) {
-	std::auto_ptr<Node> pNode(Node::FirstChild());
+Annotation::ParseChildren(BaseProcessor& rProcessor) const noexcept(false) {
+	std::unique_ptr<Node> pNode(Node::FirstChild());
 	if (NULL != pNode.get()) {
 		do {
 			if (XSD_ISELEMENT(pNode.get(), Documentation) ||
@@ -54,17 +54,17 @@ Annotation::ParseChildren(BaseProcessor& rProcessor) const throw(XMLException) {
 			} else
 				throw XMLException(pNode->GetXMLElm(), XMLException::InvallidChildXMLElement);
 			break;
-		} while (NULL != (pNode = std::auto_ptr<Node>(pNode->NextSibling())).get());
+		} while (NULL != (pNode = std::unique_ptr<Node>(pNode->NextSibling())).get());
 	}
 }
 
 void
-Annotation::ParseElement(BaseProcessor& rProcessor) const throw(XMLException) {
+Annotation::ParseElement(BaseProcessor& rProcessor) const noexcept(false) {
 	rProcessor.ProcessAnnotation(this);
 }
 
 Types::BaseType * 
-Annotation::GetParentType() const throw(XMLException) {
-	std::auto_ptr<Node> pParent(Node::Parent());
+Annotation::GetParentType() const noexcept(false) {
+	std::unique_ptr<Node> pParent(Node::Parent());
 	return pParent->GetParentType();
 }

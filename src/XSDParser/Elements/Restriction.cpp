@@ -62,10 +62,10 @@ Restriction::Restriction(const Restriction& rCpy)
 { }
 
 void
-Restriction::ParseChildren(BaseProcessor& rProcessor) const throw(XMLException) {
+Restriction::ParseChildren(BaseProcessor& rProcessor) const noexcept(false) {
 	if (isParentComplexContent()) {
 		/* process children */
-		std::auto_ptr<Node> pNode(Node::FirstChild());
+		std::unique_ptr<Node> pNode(Node::FirstChild());
 		if (NULL != pNode.get()) {
 			do {
 				if (XSD_ISELEMENT(pNode.get(), Group) ||
@@ -78,11 +78,11 @@ Restriction::ParseChildren(BaseProcessor& rProcessor) const throw(XMLException) 
 					pNode->ParseElement(rProcessor);
 				} else
 					throw XMLException(pNode->GetXMLElm(), XMLException::InvallidChildXMLElement);
-			} while (NULL != (pNode = std::auto_ptr<Node>(pNode->NextSibling())).get());
+			} while (NULL != (pNode = std::unique_ptr<Node>(pNode->NextSibling())).get());
 		}
 	} else if (isParentSimpleContent()){
 		/* process children */
-		std::auto_ptr<Node> pNode(Node::FirstChild());
+		std::unique_ptr<Node> pNode(Node::FirstChild());
 		if (NULL != pNode.get()) {
 			do {
 				if (XSD_ISELEMENT(pNode.get(), XSD::Elements::Attribute) ||
@@ -102,12 +102,12 @@ Restriction::ParseChildren(BaseProcessor& rProcessor) const throw(XMLException) 
 					  pNode->ParseElement(rProcessor);
 				} else
 					throw XMLException(pNode->GetXMLElm(), XMLException::InvallidChildXMLElement);
-			} while (NULL != (pNode = std::auto_ptr<Node>(pNode->NextSibling())).get());
+			} while (NULL != (pNode = std::unique_ptr<Node>(pNode->NextSibling())).get());
 		}
 	} else {
 		/* process children */
-		std::auto_ptr<Node> pNode(Node::FirstChild());
-		std::auto_ptr<Types::BaseType> pBase(Base());
+		std::unique_ptr<Node> pNode(Node::FirstChild());
+		std::unique_ptr<Types::BaseType> pBase(Base());
 		if (NULL != pNode.get()) {
 			do {
 				if (XSD_ISELEMENT(pNode.get(), XSD::Elements::MinExclusive) ||
@@ -145,25 +145,25 @@ Restriction::ParseChildren(BaseProcessor& rProcessor) const throw(XMLException) 
 					pNode->ParseElement(rProcessor);
 				} else
 					throw XMLException(pNode->GetXMLElm(), XMLException::InvallidChildXMLElement);
-			} while (NULL != (pNode = std::auto_ptr<Node>(pNode->NextSibling())).get());
+			} while (NULL != (pNode = std::unique_ptr<Node>(pNode->NextSibling())).get());
 		}
 	}
 }
 
 void
-Restriction::ParseElement(BaseProcessor& rProcessor) const throw(XMLException) {
+Restriction::ParseElement(BaseProcessor& rProcessor) const noexcept(false) {
 	/* make sure the base element is there */
 	if (!Node::HasAttribute("base"))
 		throw XMLException(GetXMLElm(), XMLException::MissingAttribute);
 	/* make sure that if the parent is a simpleContent element that the base
 	 * type is a simple type or base type */
 	if (isParentSimpleContent()) {
-		std::auto_ptr<Types::BaseType> pType(Base());
+		std::unique_ptr<Types::BaseType> pType(Base());
 		if (XSD_ISTYPE(pType.get(), Types::ComplexType))
 			throw XMLException(GetXMLElm(), XMLException::RestrictionTypeMismatch);
 	}
 	/* make sure the restriction is related to the base element */
-	std::auto_ptr<Types::BaseType> pBase(Base());
+	std::unique_ptr<Types::BaseType> pBase(Base());
 	if (XSD_ISTYPE(pBase.get(), Types::ComplexType)) {
 		Types::ComplexType* pCmplxType = static_cast<Types::ComplexType*>(pBase.get());
 		Processors::RestrictionVerify verifyRestriciton;
@@ -179,13 +179,13 @@ Restriction::ParseElement(BaseProcessor& rProcessor) const throw(XMLException) {
 }
 
 Types::BaseType * 
-Restriction::GetParentType() const throw(XMLException) {
+Restriction::GetParentType() const noexcept(false) {
 	return this->Base();
 }
 
 /*static * bool
-Restriction::_isElmRelated(const Node* pRstrctn, const TiXmlElement* pBase) const throw(XMLException) {
-	std::auto_ptr<Node> pRstrctnChld(pRstrctn->FirstChild());
+Restriction::_isElmRelated(const Node* pRstrctn, const TiXmlElement* pBase) const noexcept(false) {
+	std::unique_ptr<Node> pRstrctnChld(pRstrctn->FirstChild());
 	* iterate through children comparing against parent type *
 	if (NULL != pRstrctnChld.get()) {
 	  do {
@@ -198,13 +198,13 @@ Restriction::_isElmRelated(const Node* pRstrctn, const TiXmlElement* pBase) cons
 				} else
 					return false;
 			}
-		} while (NULL != (pRstrctnChld = std::auto_ptr<Node>(pRstrctnChld->NextSibling())).get());
+		} while (NULL != (pRstrctnChld = std::unique_ptr<Node>(pRstrctnChld->NextSibling())).get());
 	}
 	return true;
 }
 
 * static * const TiXmlElement*
-Restriction::_findElm(const TiXmlElement* pTreeBase, const TiXmlElement* pNode) throw(XMLException) {
+Restriction::_findElm(const TiXmlElement* pTreeBase, const TiXmlElement* pNode) noexcept(false) {
 	const TiXmlElement* pBaseChld = pTreeBase->FirstChildElement(pNode->Value());
 	bool cmpHasName = (pNode->Attribute("name") != NULL);
 	bool cmpHasType = (pNode->Attribute("type") != NULL);
@@ -235,18 +235,18 @@ Restriction::_findElm(const TiXmlElement* pTreeBase, const TiXmlElement* pNode) 
 }
 */
 bool
-Restriction::isParentComplexContent() const throw(XMLException) {
-	std::auto_ptr<Node> pParent(Node::Parent());
+Restriction::isParentComplexContent() const noexcept(false) {
+	std::unique_ptr<Node> pParent(Node::Parent());
 	return XSD_ISELEMENT(pParent.get(), XSD::Elements::ComplexContent);
 }
 
 bool
-Restriction::isParentSimpleContent() const throw(XMLException) {
-	std::auto_ptr<Node> pParent(Node::Parent());
+Restriction::isParentSimpleContent() const noexcept(false) {
+	std::unique_ptr<Node> pParent(Node::Parent());
 	return XSD_ISELEMENT(pParent.get(), XSD::Elements::SimpleContent);
 }
 
 Types::BaseType*
-Restriction::Base() const throw(XMLException) {
+Restriction::Base() const noexcept(false) {
 	return Node::GetAttribute<Types::BaseType*>("base");
 }

@@ -41,9 +41,9 @@ AttributeGroup::AttributeGroup(const AttributeGroup& cpy)
 { }
 
 void
-AttributeGroup::ParseChildren(BaseProcessor& rProcessor) const throw(XMLException) {
+AttributeGroup::ParseChildren(BaseProcessor& rProcessor) const noexcept(false) {
 	/* process children */
-	std::auto_ptr<Node> pNode(Node::FirstChild());
+	std::unique_ptr<Node> pNode(Node::FirstChild());
 	if (NULL != pNode.get()) {
 		do {
 			if (XSD_ISELEMENT(pNode.get(), Attribute) ||
@@ -51,12 +51,12 @@ AttributeGroup::ParseChildren(BaseProcessor& rProcessor) const throw(XMLExceptio
 				pNode->ParseElement(rProcessor);
 			} else
 				throw XMLException(pNode->GetXMLElm(), XMLException::InvallidChildXMLElement);
-		} while (NULL != (pNode = std::auto_ptr<Node>(pNode->NextSibling())).get());
+		} while (NULL != (pNode = std::unique_ptr<Node>(pNode->NextSibling())).get());
 	}
 }
 
 void
-AttributeGroup::ParseElement(BaseProcessor& rProcessor) const throw(XMLException) {
+AttributeGroup::ParseElement(BaseProcessor& rProcessor) const noexcept(false) {
 	/* a ref and a name are not allowed */
 	if (HasName() && HasRef())
 		throw XMLException(Node::GetXMLElm(), XMLException::InvalidAttribute);
@@ -66,7 +66,7 @@ AttributeGroup::ParseElement(BaseProcessor& rProcessor) const throw(XMLException
 			throw XMLException(Node::GetXMLElm(), XMLException::InvalidAttribute);
 	}
 	if (HasRef()) {
-		std::auto_ptr<AttributeGroup> pRefGroup(RefGroup());
+		std::unique_ptr<AttributeGroup> pRefGroup(RefGroup());
 		/* a name is only allowed when it's parent element is a schema */
 		if (pRefGroup->GetXMLElm().Parent()->Type() != TiXmlNode::TINYXML_DOCUMENT)
 			throw XMLException(pRefGroup->GetXMLElm(), XMLException::InvalidAttribute);
@@ -75,18 +75,18 @@ AttributeGroup::ParseElement(BaseProcessor& rProcessor) const throw(XMLException
 }
 
 Types::BaseType * 
-AttributeGroup::GetParentType() const throw(XMLException) {
-	std::auto_ptr<Node> pParent(Node::Parent());
+AttributeGroup::GetParentType() const noexcept(false) {
+	std::unique_ptr<Node> pParent(Node::Parent());
 	return pParent->GetParentType();
 }
 
 std::string
-AttributeGroup::Name() const throw(XMLException) {
+AttributeGroup::Name() const noexcept(false) {
 	return std::string(Node::GetAttribute<const char*>("name"));
 }
 
 AttributeGroup*
-AttributeGroup::RefGroup() const throw(XMLException) {
+AttributeGroup::RefGroup() const noexcept(false) {
 	return Node::FindXSDRef<AttributeGroup>("ref");
 }
 

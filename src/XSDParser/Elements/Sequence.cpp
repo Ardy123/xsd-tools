@@ -39,9 +39,9 @@ Sequence::Sequence(const Sequence& rCpy)
 { }
 
 void
-Sequence::ParseChildren(BaseProcessor& rProcessor) const throw(XMLException) {
+Sequence::ParseChildren(BaseProcessor& rProcessor) const noexcept(false) {
 	/* process children */
-	std::auto_ptr<Node> pNode(Node::FirstChild());
+	std::unique_ptr<Node> pNode(Node::FirstChild());
 	if (NULL != pNode.get()) {
 		do {
 			if (XSD_ISELEMENT(pNode.get(), Element) ||
@@ -52,22 +52,22 @@ Sequence::ParseChildren(BaseProcessor& rProcessor) const throw(XMLException) {
 				pNode->ParseElement(rProcessor);
 			} else
 				throw XMLException(pNode->GetXMLElm(), XMLException::InvallidChildXMLElement);
-		} while (NULL != (pNode = std::auto_ptr<Node>(pNode->NextSibling())).get());
+		} while (NULL != (pNode = std::unique_ptr<Node>(pNode->NextSibling())).get());
 	}
 }
 
 void
-Sequence::ParseElement(BaseProcessor& rProcessor) const throw(XMLException) {
+Sequence::ParseElement(BaseProcessor& rProcessor) const noexcept(false) {
 	rProcessor.ProcessSequence(this);
 }
 
 Types::BaseType * 
-Sequence::GetParentType() const throw(XMLException) {
-	std::auto_ptr<Node> pParent(Node::Parent());
+Sequence::GetParentType() const noexcept(false) {
+	std::unique_ptr<Node> pParent(Node::Parent());
 	return pParent->GetParentType();
 }
 
 bool
-Sequence::HasElements() const throw(XMLException) {
+Sequence::HasElements() const noexcept(false) {
 	return this->HasContent(Element::XSDTag());
 }

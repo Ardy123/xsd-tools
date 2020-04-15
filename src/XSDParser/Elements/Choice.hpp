@@ -40,13 +40,13 @@ namespace XSD {
 		public:
 			Choice(const TiXmlElement& elm, const Parser& rParser);
 			Choice(const Choice& rCpy);
-			void ParseChildren(BaseProcessor& rProcessor) const throw(XMLException);
-			void ParseElement(BaseProcessor& rProcessor) const throw(XMLException);
-			Types::BaseType * GetParentType() const throw(XMLException);
+			void ParseChildren(BaseProcessor& rProcessor) const noexcept(false);;
+			void ParseElement(BaseProcessor& rProcessor) const noexcept(false);;
+			Types::BaseType * GetParentType() const noexcept(false);;
 			int MaxOccurs() const;
 			int MinOccurs() const;
-			bool HasElements() const throw(XMLException);
-			bool HasSequence() const throw(XMLException);
+			bool HasElements() const noexcept(false);;
+			bool HasSequence() const noexcept(false);;
 			bool HasMaxOccurs() const;
 			bool HasMinOccurs() const;
 		};

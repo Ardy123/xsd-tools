@@ -44,9 +44,9 @@ TotalDigits::TotalDigits(const TotalDigits& cpy)
 { }
 
 void
-TotalDigits::ParseChildren(BaseProcessor& rProcessor) const throw(XMLException) {
+TotalDigits::ParseChildren(BaseProcessor& rProcessor) const noexcept(false) {
 	/* no children allowed */
-	std::auto_ptr<Node> pNode(Node::FirstChild());
+	std::unique_ptr<Node> pNode(Node::FirstChild());
 	if (NULL != pNode.get()) {
 		do {
 			if (XSD_ISELEMENT(pNode.get(), Annotation))
@@ -54,23 +54,23 @@ TotalDigits::ParseChildren(BaseProcessor& rProcessor) const throw(XMLException) 
 			else
 				throw XMLException(pNode->GetXMLElm(), XMLException::InvallidChildXMLElement);
 			break;
-		} while (NULL != (pNode = std::auto_ptr<Node>(pNode->NextSibling())).get());
+		} while (NULL != (pNode = std::unique_ptr<Node>(pNode->NextSibling())).get());
 	}
 }
 
 void
-TotalDigits::ParseElement(BaseProcessor& rProcessor) const throw(XMLException) {
+TotalDigits::ParseElement(BaseProcessor& rProcessor) const noexcept(false) {
 	rProcessor.ProcessTotalDigits(this);
 }
 
 Types::BaseType * 
-TotalDigits::GetParentType() const throw(XMLException) {
-	std::auto_ptr<Node> pParent(Node::Parent());
+TotalDigits::GetParentType() const noexcept(false) {
+	std::unique_ptr<Node> pParent(Node::Parent());
 	return pParent->GetParentType();
 }
 
 uint64_t
-TotalDigits::Value() const throw(XMLException) {
+TotalDigits::Value() const noexcept(false) {
 	return Node::GetAttribute<uint64_t>("value");
 }
 

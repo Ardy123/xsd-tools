@@ -12,9 +12,14 @@ License for more details.
 xsdtools (c)2012 Ardavon Falls
 
 Requirments
+ - lua5.1
  - liblua5.1-0-dev
  - libtinyxml-dev
  - libboost-dev
+ - libboost-system-dev
+ - libboost-filesystem-dev
+ - libexpat1-dev
+ - maven
  - python
  - scons
 

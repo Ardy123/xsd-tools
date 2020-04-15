@@ -37,20 +37,20 @@ namespace XSD {
 			XSD_ELEMENT_TAG("element")
 		private:
 			Element();
-			Types::BaseType* _Type() const throw(XMLException);
-			static Types::BaseType* _ParseType(const Element& rElm) throw(XMLException);
+			Types::BaseType* _Type() const noexcept(false);;
+			static Types::BaseType* _ParseType(const Element& rElm) noexcept(false);;
 		public:
 			Element(const TiXmlElement& elm, const Parser& rParser);
 			Element( const Element& elm);
-			void ParseChildren(BaseProcessor& rProcessor) const throw(XMLException);
-			void ParseElement(BaseProcessor& rProcessor) const throw(XMLException);
-			Types::BaseType * GetParentType(void) const throw(XMLException);
+			void ParseChildren(BaseProcessor& rProcessor) const noexcept(false);;
+			void ParseElement(BaseProcessor& rProcessor) const noexcept(false);;
+			Types::BaseType * GetParentType(void) const noexcept(false);;
 			bool Abstract() const;
-			std::string Name() const throw(XMLException);
-			Element* SubstitutionGroup() const throw(XMLException);
-			bool VerifySubstitutionGroup() const throw(XMLException);
-			Types::BaseType* Type() const throw(XMLException);
-			Element* RefElement() const throw(XMLException);
+			std::string Name() const noexcept(false);;
+			Element* SubstitutionGroup() const noexcept(false);;
+			bool VerifySubstitutionGroup() const noexcept(false);;
+			Types::BaseType* Type() const noexcept(false);;
+			Element* RefElement() const noexcept(false);;
 			int MaxOccurs() const;
 			bool HasName() const;
 			bool HasSubstitutionGroup() const;

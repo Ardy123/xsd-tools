@@ -42,12 +42,12 @@ namespace XSD {
 		public:
 			ComplexType(const TiXmlElement& elm, const Parser& rParser);
 			ComplexType(const ComplexType& rType);
-			void ParseChildren(BaseProcessor& rProcessor) const throw(XMLException);
-			void ParseElement(BaseProcessor& rProcessor) const throw(XMLException);
-			Types::BaseType * GetParentType(void) const throw(XMLException);
+			void ParseChildren(BaseProcessor& rProcessor) const noexcept(false);;
+			void ParseElement(BaseProcessor& rProcessor) const noexcept(false);;
+			Types::BaseType * GetParentType(void) const noexcept(false);;
 			bool Abstract() const;
 			bool Mixed() const;
-			std::string Name() const throw(XMLException);
+			std::string Name() const noexcept(false);;
 			bool HasSequence() const;
 			bool HasAttribute() const;
 			bool HasChoice() const;

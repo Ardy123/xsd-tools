@@ -36,11 +36,11 @@ namespace XSD {
 			typedef std::vector<Types::BaseType*> TypeLst;
 			Union(const TiXmlElement& elm, const Parser& rParser);
 			Union(const Union& rCpy);
-			void ParseChildren(BaseProcessor& rProcessor) const throw(XMLException);
-			void ParseElement(BaseProcessor& rProcessor) const throw(XMLException);
-			Types::BaseType * GetParentType() const throw(XMLException);
+			void ParseChildren(BaseProcessor& rProcessor) const noexcept(false);
+			void ParseElement(BaseProcessor& rProcessor) const noexcept(false);
+			Types::BaseType * GetParentType() const noexcept(false);
 			/* Add parser funciton to parse child elements */
-			TypeLst* MemberTypes() const throw(XMLException);
+			TypeLst* MemberTypes() const noexcept(false);
 			bool HasMemberTypes() const;
 		};
 	}	/* namespace Elements */

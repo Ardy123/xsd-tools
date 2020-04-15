@@ -53,45 +53,45 @@ namespace XSD {
 			const Parser&			m_rParser;	// <-- XSD parser engine
 
 			Node();
-			const TiXmlElement* ContentElement(const char* pElemName) const throw(XMLException);
-			const TiXmlElement* _FindChildXMLElement(const char* pXMLElmTag, const char* pAttrib, const char* pName) const throw(XMLException);
-			Node* _FindXSDElm(const char* pName, const char* pTypeName) const throw(XMLException);
+			const TiXmlElement* ContentElement(const char* pElemName) const noexcept(false);
+			const TiXmlElement* _FindChildXMLElement(const char* pXMLElmTag, const char* pAttrib, const char* pName) const noexcept(false);
+			Node* _FindXSDElm(const char* pName, const char* pTypeName) const noexcept(false);
 			Node* _ConstructNode(const TiXmlElement* pElm, const Parser& rParser) const;
-			Node* _FindXSDNode(const char* pName, const char* pTypeName) const throw(XMLException);
-			Node* _FindChildXSDNode(const char* pXMLTag) const throw(XMLException);
-			Node* _FindXSDRef(const char* pRefAttribStr, const char* pTypeName) const throw (XMLException);
-			std::string _Attribute(const char* pAttrib) const throw (XMLException);
-			Types::BaseType* _Type(const char* pType) const throw(XMLException);
-			const std::string _StripNamespace(const std::string& rQName) const throw(XMLException);
+			Node* _FindXSDNode(const char* pName, const char* pTypeName) const noexcept(false);
+			Node* _FindChildXSDNode(const char* pXMLTag) const noexcept(false);
+			Node* _FindXSDRef(const char* pRefAttribStr, const char* pTypeName) const noexcept(false);
+			std::string _Attribute(const char* pAttrib) const noexcept(false);
+			Types::BaseType* _Type(const char* pType) const noexcept(false);
+			const std::string _StripNamespace(const std::string& rQName) const noexcept(false);
 		protected:
 			Node(const TiXmlElement& elm, const Parser& rParser);
 			Node(const Node& rCpy);
-			Types::BaseType* LookupType(const char* pType) const throw(XMLException) { return _Type(pType); }
+			Types::BaseType* LookupType(const char* pType) const noexcept(false) { return _Type(pType); }
 			/* QueryRootElement(): returns the root element of the document containg the node*/
 			const TiXmlElement& QueryRootElement() const;
-			Schema * GetSchema() const throw (XMLException);
+			Schema * GetSchema() const noexcept(false);
 			const Parser& GetParser() const { return m_rParser; }
-			bool HasAttribute(const char* pAttrib) const throw();
-			bool HasContent(const char* pElemName) const throw();
-			bool HasContent() const throw();
-			bool IsRootNode() const throw ();
-			std::string QualifyElementName(const char* pElemName) const throw();
-			template<typename T> T GetAttribute(const char* pAttrib) const throw(XMLException) {
+			bool HasAttribute(const char* pAttrib) const noexcept;
+			bool HasContent(const char* pElemName) const noexcept;
+			bool HasContent() const noexcept;
+			bool IsRootNode() const noexcept;
+			std::string QualifyElementName(const char* pElemName) const noexcept;
+			template<typename T> T GetAttribute(const char* pAttrib) const noexcept(false) {
 				T retVal;
 				std::stringstream sstrm(_Attribute(pAttrib));
 				sstrm >> retVal;
 				return retVal;
 			}
-			template<typename T> T* FindXSDElm(const char* pName) const throw(XMLException) {
+			template<typename T> T* FindXSDElm(const char* pName) const noexcept(false) {
 				return static_cast<T*>(_FindXSDNode(pName, T::XSDTag()));
 			}
-			template<typename T> T* FindXSDRef(const char* pRefAttribStr) const throw (XMLException) {
+			template<typename T> T* FindXSDRef(const char* pRefAttribStr) const noexcept(false) {
 				return static_cast<T*>(_FindXSDRef(pRefAttribStr, T::XSDTag()));
 			}
-			template<typename T> T* FindXSDChildElm() const throw(XMLException) {
+			template<typename T> T* FindXSDChildElm() const noexcept(false) {
 				return static_cast<T*>(_FindChildXSDNode(T::XSDTag()));
 			}
-			template<typename T> T* SearchXSDChildElm() const throw() {
+			template<typename T> T* SearchXSDChildElm() const noexcept {
 				try {
 					return static_cast<T*>(_FindChildXSDNode(T::XSDTag()));
 				} catch (XMLException& e) {
@@ -100,8 +100,8 @@ namespace XSD {
 			}
 		public:
 			virtual ~Node();
-			virtual void ParseChildren(BaseProcessor& rProcessor) const throw(XMLException) = 0;
-			virtual void ParseElement(BaseProcessor& rProcessor) const throw(XMLException) = 0;
+			virtual void ParseChildren(BaseProcessor& rProcessor) const noexcept(false) = 0;
+			virtual void ParseElement(BaseProcessor& rProcessor) const noexcept(false) = 0;
 			/* for "element" : return their type 
 			 * for "simpleType/complexType" : return the base type of their child elements
 			 * for "simpleContent/complexContent" : return type of their child restriction/extension elements
@@ -109,18 +109,18 @@ namespace XSD {
 			 * for "list" : return type
 			 * for "union" : return xs:string HACK
 			 * for all other elements: return the type they are enclosed in */
-			virtual Types::BaseType * GetParentType() const throw(XMLException) = 0;
-			Node* Parent() const throw(XMLException);
-			Node* FirstChild() const throw(XMLException);
-			Node* NextSibling() const throw(XMLException);
+			virtual Types::BaseType * GetParentType() const noexcept(false) = 0;
+			Node* Parent() const noexcept(false);
+			Node* FirstChild() const noexcept(false);
+			Node* NextSibling() const noexcept(false);
 			bool operator == (const Node& elm) const;
 			bool operator == (const Node& elm);
 			inline const TiXmlElement& GetXMLElm() const { return m_rXmlElm;}
 			const TiXmlDocument& GetXmlDocument() const;
 		};
-		template<> bool Node::GetAttribute<bool>(const char* pAttrib) const throw(XMLException);
-		template<> const char* Node::GetAttribute<const char*>(const char* pAttrib) const throw (XMLException);
-		template<> Types::BaseType* Node::GetAttribute<Types::BaseType*>(const char* pAttrib) const throw (XMLException);
+		template<> bool Node::GetAttribute<bool>(const char* pAttrib) const noexcept(false);
+		template<> const char* Node::GetAttribute<const char*>(const char* pAttrib) const noexcept(false);
+		template<> Types::BaseType* Node::GetAttribute<Types::BaseType*>(const char* pAttrib) const noexcept(false);
 	}	/* namespace Elements */
 }	/* namespace XSD */
 

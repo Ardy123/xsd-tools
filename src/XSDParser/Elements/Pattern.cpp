@@ -43,9 +43,9 @@ Pattern::Pattern(const Pattern& cpy)
 { }
 
 void
-Pattern::ParseChildren(BaseProcessor& rProcessor) const throw(XMLException) {
+Pattern::ParseChildren(BaseProcessor& rProcessor) const noexcept(false) {
 	/* no children allowed */
-	std::auto_ptr<Node> pNode(Node::FirstChild());
+	std::unique_ptr<Node> pNode(Node::FirstChild());
 	if (NULL != pNode.get()) {
 		do {
 			if (XSD_ISELEMENT(pNode.get(), Annotation))
@@ -53,23 +53,23 @@ Pattern::ParseChildren(BaseProcessor& rProcessor) const throw(XMLException) {
 			else
 				throw XMLException(pNode->GetXMLElm(), XMLException::InvallidChildXMLElement);
 			break;
-		} while (NULL != (pNode = std::auto_ptr<Node>(pNode->NextSibling())).get());
+		} while (NULL != (pNode = std::unique_ptr<Node>(pNode->NextSibling())).get());
 	}
 }
 
 void
-Pattern::ParseElement(BaseProcessor& rProcessor) const throw(XMLException) {
+Pattern::ParseElement(BaseProcessor& rProcessor) const noexcept(false) {
 	rProcessor.ProcessPattern(this);
 }
 
 Types::BaseType * 
-Pattern::GetParentType() const throw(XMLException) {
-	std::auto_ptr<Node> pParent(Node::Parent());
+Pattern::GetParentType() const noexcept(false) {
+	std::unique_ptr<Node> pParent(Node::Parent());
 	return pParent->GetParentType();
 }
 
 std::string
-Pattern::Value() const throw(XMLException) {
+Pattern::Value() const noexcept(false) {
 	return std::string(Node::GetAttribute<const char*>("value"));
 }
 

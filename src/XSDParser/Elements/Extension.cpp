@@ -50,10 +50,10 @@ Extension::Extension(const Extension& rCpy)
 { }
 
 void
-Extension::ParseChildren(BaseProcessor& rProcessor) const throw(XMLException) {
+Extension::ParseChildren(BaseProcessor& rProcessor) const noexcept(false) {
 	if (isParentComplex()) {
 		/* process children */
-		std::auto_ptr<Node> pNode(Node::FirstChild());
+		std::unique_ptr<Node> pNode(Node::FirstChild());
 		if (NULL != pNode.get()) {
 			do {
 				if (XSD_ISELEMENT(pNode.get(), Group) ||
@@ -65,11 +65,11 @@ Extension::ParseChildren(BaseProcessor& rProcessor) const throw(XMLException) {
 					pNode->ParseElement(rProcessor);
 				} else
 					throw XMLException(pNode->GetXMLElm(), XMLException::InvallidChildXMLElement);
-			} while (NULL != (pNode = std::auto_ptr<Node>(pNode->NextSibling())).get());
+			} while (NULL != (pNode = std::unique_ptr<Node>(pNode->NextSibling())).get());
 		}
 	} else {
 		/* process children */
-		std::auto_ptr<Node> pNode(Node::FirstChild());
+		std::unique_ptr<Node> pNode(Node::FirstChild());
 		if (NULL != pNode.get()) {
 			do {
 				if (XSD_ISELEMENT(pNode.get(), Attribute) ||
@@ -77,18 +77,18 @@ Extension::ParseChildren(BaseProcessor& rProcessor) const throw(XMLException) {
 					pNode->ParseElement(rProcessor);
 				} else
 					throw XMLException(pNode->GetXMLElm(), XMLException::InvallidChildXMLElement);
-			} while (NULL != (pNode = std::auto_ptr<Node>(pNode->NextSibling())).get());
+			} while (NULL != (pNode = std::unique_ptr<Node>(pNode->NextSibling())).get());
 		}
 	}
 }
 
 void
-Extension::ParseElement(BaseProcessor& rProcessor) const throw(XMLException) {
+Extension::ParseElement(BaseProcessor& rProcessor) const noexcept(false) {
 	/* make sure the base element is there */
 	if (!Node::HasAttribute("base"))
 		throw XMLException(GetXMLElm(), XMLException::MissingAttribute);
 	/* make sure that no child particles have match base child particles */
-	std::auto_ptr<Types::BaseType> pBase(Base());
+	std::unique_ptr<Types::BaseType> pBase(Base());
 	if (XSD_ISTYPE(pBase.get(),Types::SimpleType)) {
 		const Types::SimpleType* pSmplType = static_cast<const Types::SimpleType*>(pBase.get());
 		if (_checkForDuplicateNamedParticles(&Node::GetXMLElm(), &pSmplType->m_pValue->GetXMLElm())) {
@@ -104,18 +104,18 @@ Extension::ParseElement(BaseProcessor& rProcessor) const throw(XMLException) {
 }
 
 Types::BaseType * 
-Extension::GetParentType(void) const throw(XMLException) {
+Extension::GetParentType(void) const noexcept(false) {
 	return this->Base();
 }
 
 Types::BaseType*
-Extension::Base() const throw(XMLException) {
+Extension::Base() const noexcept(false) {
 	return Node::GetAttribute<Types::BaseType*>("base");
 }
 
 bool
-Extension::isParentComplex() const throw(XMLException) {
-	std::auto_ptr<Node> pParent(Node::Parent());
+Extension::isParentComplex() const noexcept(false) {
+	std::unique_ptr<Node> pParent(Node::Parent());
 	return XSD_ISELEMENT(pParent.get(), XSD::Elements::ComplexContent);
 }
 

@@ -33,8 +33,8 @@ namespace Core {
 	public:
 		LuaException(const std::string& rMsg);
 		LuaException(const std::string& rMsg, int err_number);
-		virtual ~LuaException() throw ();
-		virtual const char* what() const throw();
+		virtual ~LuaException() noexcept;
+		virtual const char* what() const noexcept;
 	private:
 		std::string	m_errorMsg;
 	};
@@ -42,14 +42,14 @@ namespace Core {
 	public:
 		LuaScriptAdapter(lua_State* pLuaState);
 		virtual ~LuaScriptAdapter();
-		void Open() throw();
+		void Open() noexcept;
 		/* returns true on error */
 		bool ParseCommandLineArgs(const char* pArgv[], int nArgs);
-		void Load(const uint8_t* pBuf, size_t bufSz) throw(LuaException);
-		void Execute(const std::string& templateName) throw(LuaException);
-		void Close() throw();
-		void SetSchemaName(const std::string& schemaName) throw();
-		lua_State* LuaState() throw();
+		void Load(const uint8_t* pBuf, size_t bufSz) noexcept(false);
+		void Execute(const std::string& templateName) noexcept(false);
+		void Close() noexcept;
+		void SetSchemaName(const std::string& schemaName) noexcept;
+		lua_State* LuaState() noexcept;
 	private:
 		lua_State*	m_pLuaState;
 		LuaScriptAdapter();

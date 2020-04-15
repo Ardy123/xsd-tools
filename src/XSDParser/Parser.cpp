@@ -40,13 +40,13 @@ Parser::~Parser() {
 }
 
 Elements::Schema*
-Parser::Parse(const char* pUri) const throw(XMLException) {
+Parser::Parse(const char* pUri) const noexcept(false) {
 	std::string uri(pUri);
 	return Parse(uri);
 }
 
 Elements::Schema*
-Parser::Parse(const std::string& rUri) const throw(XMLException) {
+Parser::Parse(const std::string& rUri) const noexcept(false) {
 	/* search if the document has already been parsed */
 	if (HasDocument(rUri)) {
 		return new Elements::Schema(*(GetDocument(rUri)->RootElement()), *this, rUri);

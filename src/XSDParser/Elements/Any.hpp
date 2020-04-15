@@ -45,9 +45,9 @@ namespace XSD {
 			} ContentValidation;
 			Any(const TiXmlElement& elm, const Parser& rParser);
 			Any(const Any& cpy);
-			void ParseChildren(BaseProcessor& rProcessor) const throw(XMLException);
-			void ParseElement(BaseProcessor& rProcessor) const throw(XMLException);
-			Types::BaseType * GetParentType() const throw(XMLException);
+			void ParseChildren(BaseProcessor& rProcessor) const noexcept(false);;
+			void ParseElement(BaseProcessor& rProcessor) const noexcept(false);;
+			Types::BaseType * GetParentType() const noexcept(false);;
 			Processors::ElementExtracter::ElementLst GetAllowedElements() const;
 			int MaxOccurs() const;
 			int MinOccurs() const;

@@ -40,10 +40,10 @@ namespace XSD {
 		public:
 			Sequence(const TiXmlElement& elm, const Parser& rParser);
 			Sequence(const Sequence& rCpy);
-			void ParseChildren(BaseProcessor& rProcessor) const throw(XMLException);
-			void ParseElement(BaseProcessor& rProcessor) const throw(XMLException);
-			Types::BaseType * GetParentType() const throw(XMLException);
-			bool HasElements() const throw(XMLException);
+			void ParseChildren(BaseProcessor& rProcessor) const noexcept(false);;
+			void ParseElement(BaseProcessor& rProcessor) const noexcept(false);;
+			Types::BaseType * GetParentType() const noexcept(false);;
+			bool HasElements() const noexcept(false);;
 		};
 	}	/* namespace Elements */
 }	/* namespace XSD */

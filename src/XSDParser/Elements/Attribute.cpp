@@ -45,9 +45,9 @@ Attribute::Attribute(const Attribute& rAttrib)
 { }
 
 void
-Attribute::ParseChildren(BaseProcessor& rProcessor) const throw(XMLException) {
+Attribute::ParseChildren(BaseProcessor& rProcessor) const noexcept(false) {
 	/* process children */
-	std::auto_ptr<Node> pNode(Node::FirstChild());
+	std::unique_ptr<Node> pNode(Node::FirstChild());
 	if (NULL != pNode.get()) {
 		do {
 			if (XSD_ISELEMENT(pNode.get(), SimpleType) ||
@@ -55,15 +55,15 @@ Attribute::ParseChildren(BaseProcessor& rProcessor) const throw(XMLException) {
 				rProcessor.ProcessSimpleType(static_cast<SimpleType*>(pNode.get()));
 			} else
 				throw XMLException(pNode->GetXMLElm(), XMLException::InvallidChildXMLElement);
-		} while (NULL != (pNode = std::auto_ptr<Node>(pNode->NextSibling())).get());
+		} while (NULL != (pNode = std::unique_ptr<Node>(pNode->NextSibling())).get());
 	}
 }
 
 void
-Attribute::ParseElement(BaseProcessor& rProcessor) const throw(XMLException) {
+Attribute::ParseElement(BaseProcessor& rProcessor) const noexcept(false) {
 	if (!HasName()) {
 		/* if the attribute is a child of the schema root, it must have a name */
-		std::auto_ptr<Node> pParent(Node::Parent());
+		std::unique_ptr<Node> pParent(Node::Parent());
 		if (XSD_ISELEMENT(pParent.get(), SimpleType))
 			throw XMLException(Node::GetXMLElm(), XMLException::InvalidAttribute);
 	} else if (HasRef()) {
@@ -84,7 +84,7 @@ Attribute::ParseElement(BaseProcessor& rProcessor) const throw(XMLException) {
 	}
 	/* if the node is a reference, check its reference */
 	if (HasRef()) {
-		std::auto_ptr<Node> pRefElm(RefAttribute());
+		std::unique_ptr<Node> pRefElm(RefAttribute());
 		pRefElm->ParseElement(rProcessor);
 	} else {
 		rProcessor.ProcessAttribute(this);
@@ -92,25 +92,25 @@ Attribute::ParseElement(BaseProcessor& rProcessor) const throw(XMLException) {
 }
 
 Types::BaseType * 
-Attribute::GetParentType() const throw(XMLException) {
-	std::auto_ptr<Node> pParent(Node::Parent());
+Attribute::GetParentType() const noexcept(false) {
+	std::unique_ptr<Node> pParent(Node::Parent());
 	return pParent->GetParentType();
 }
 
 std::string
-Attribute::Name() const throw(XMLException) {
+Attribute::Name() const noexcept(false) {
 	return std::string(Node::GetAttribute<const char*>("name"));
 }
 
 Attribute*
-Attribute::RefAttribute() const throw(XMLException) {
+Attribute::RefAttribute() const noexcept(false) {
 	return Node::FindXSDRef<Attribute>("ref");
 }
 
 Types::BaseType*
-Attribute::Type() const throw(XMLException) {
+Attribute::Type() const noexcept(false) {
 	if (HasRef()) {
-		std::auto_ptr<XSD::Elements::Attribute> pRefAttrib(RefAttribute());
+		std::unique_ptr<XSD::Elements::Attribute> pRefAttrib(RefAttribute());
 		return _parseType(*pRefAttrib);
 	} else {
 		return _parseType(*this);
@@ -118,17 +118,17 @@ Attribute::Type() const throw(XMLException) {
 }
 
 std::string
-Attribute::Default() const throw(XMLException) {
+Attribute::Default() const noexcept(false) {
 	return std::string(Node::GetAttribute<const char*>("default"));
 }
 
 std::string 
-Attribute::Fixed() const throw(XMLException) {
+Attribute::Fixed() const noexcept(false) {
 	return std::string(Node::GetAttribute<const char*>("fixed"));
 }
 
 Attribute::AttributeUse 
-Attribute::Use() const throw(XMLException) {
+Attribute::Use() const noexcept(false) {
 	if (HasUse()) {
 		std::string use(Node::GetAttribute<const char*>("use"));
 		if (!use.compare("optional")) {
@@ -174,7 +174,7 @@ Attribute::HasUse() const {
 }
 			
 Types::BaseType*
-Attribute::_type() const throw(XMLException) {
+Attribute::_type() const noexcept(false) {
 	Types::BaseType* pType = Node::GetAttribute<Types::BaseType*>("type");
 	if (XSD_ISTYPE(pType, Types::Unknown)) {
 		delete pType;
@@ -186,7 +186,7 @@ Attribute::_type() const throw(XMLException) {
 }
 
 /* static */ Types::BaseType*
-Attribute::_parseType(const Attribute& rAttrib) throw(XMLException) {
+Attribute::_parseType(const Attribute& rAttrib) noexcept(false) {
 	if (rAttrib.HasContent(SimpleType::XSDTag()))
 		return new Types::SimpleType(rAttrib.FindXSDChildElm<SimpleType>());
 	else

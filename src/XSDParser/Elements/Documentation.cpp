@@ -42,30 +42,30 @@ Documentation::Documentation(const Documentation& cpy)
 { }
 
 void
-Documentation::ParseChildren(BaseProcessor& rProcessor) const throw(XMLException) {
+Documentation::ParseChildren(BaseProcessor& rProcessor) const noexcept(false) {
 	/* no children allowed */
-	std::auto_ptr<Node> pNode(Node::FirstChild());
+	std::unique_ptr<Node> pNode(Node::FirstChild());
 	if (NULL != pNode.get()) {
 		do {
 			throw XMLException(pNode->GetXMLElm(), XMLException::InvallidChildXMLElement);
 			break;
-		} while (NULL != (pNode = std::auto_ptr<Node>(pNode->NextSibling())).get());
+		} while (NULL != (pNode = std::unique_ptr<Node>(pNode->NextSibling())).get());
 	}
 }
 
 void
-Documentation::ParseElement(BaseProcessor& rProcessor) const throw(XMLException) {
+Documentation::ParseElement(BaseProcessor& rProcessor) const noexcept(false) {
 	rProcessor.ProcessDocumentation(this);
 }
 
 Types::BaseType * 
-Documentation::GetParentType() const throw(XMLException) {
-	std::auto_ptr<Node> pParent(Node::Parent());
+Documentation::GetParentType() const noexcept(false) {
+	std::unique_ptr<Node> pParent(Node::Parent());
 	return pParent->GetParentType();
 }
 
 std::string
-Documentation::DocumentationStr() const throw(XMLException) {
+Documentation::DocumentationStr() const noexcept(false) {
 	if (Node::HasContent()) {
 		std::string retTxt;
 		const TiXmlNode* pXmlNode = Node::GetXMLElm().FirstChild();

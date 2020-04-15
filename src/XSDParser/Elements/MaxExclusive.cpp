@@ -43,9 +43,9 @@ MaxExclusive::MaxExclusive(const MaxExclusive& cpy)
 { }
 
 void
-MaxExclusive::ParseChildren(BaseProcessor& rProcessor) const throw(XMLException) {
+MaxExclusive::ParseChildren(BaseProcessor& rProcessor) const noexcept(false) {
 	/* no children allowed */
-	std::auto_ptr<Node> pNode(Node::FirstChild());
+	std::unique_ptr<Node> pNode(Node::FirstChild());
 	if (NULL != pNode.get()) {
 		do {
 			if (XSD_ISELEMENT(pNode.get(), Annotation))
@@ -53,23 +53,23 @@ MaxExclusive::ParseChildren(BaseProcessor& rProcessor) const throw(XMLException)
 			else
 				throw XMLException(pNode->GetXMLElm(), XMLException::InvallidChildXMLElement);
 			break;
-		} while (NULL != (pNode = std::auto_ptr<Node>(pNode->NextSibling())).get());
+		} while (NULL != (pNode = std::unique_ptr<Node>(pNode->NextSibling())).get());
 	}
 }
 
 void
-MaxExclusive::ParseElement(BaseProcessor& rProcessor) const throw(XMLException) {
+MaxExclusive::ParseElement(BaseProcessor& rProcessor) const noexcept(false) {
 	rProcessor.ProcessMaxExclusive(this);
 }
 
 Types::BaseType * 
-MaxExclusive::GetParentType() const throw(XMLException) {
-	std::auto_ptr<Node> pParent(Node::Parent());
+MaxExclusive::GetParentType() const noexcept(false) {
+	std::unique_ptr<Node> pParent(Node::Parent());
 	return pParent->GetParentType();
 }
 
 long double
-MaxExclusive::Value() const throw(XMLException) {
+MaxExclusive::Value() const noexcept(false) {
 	return Node::GetAttribute<long double>("value");
 }
 

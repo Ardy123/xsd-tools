@@ -67,7 +67,7 @@ using namespace XSD::Elements;
 namespace XSD{
 	namespace Elements {
 		template<> bool
-		Node::GetAttribute<bool>(const char* pAttrib) const throw(XMLException) {
+		Node::GetAttribute<bool>(const char* pAttrib) const noexcept(false) {
 			bool retVal;
 			std::string attribStr(_Attribute(pAttrib));
 			std::transform(attribStr.begin(), attribStr.end(), attribStr.begin(),::tolower);
@@ -77,14 +77,14 @@ namespace XSD{
 		}
 
 		template<> const char*
-		Node::GetAttribute<const char*>(const char* pAttrib) const throw (XMLException) {
+		Node::GetAttribute<const char*>(const char* pAttrib) const noexcept(false) {
 			const char* pRetVal = m_rXmlElm.Attribute(pAttrib);
 			if (!pRetVal) throw XMLException(m_rXmlElm, XMLException::MissingAttribute);
 			return pRetVal;
 		}
 
 		template<> Types::BaseType*
-		Node::GetAttribute<Types::BaseType*>(const char* pAttrib) const throw(XMLException) {
+		Node::GetAttribute<Types::BaseType*>(const char* pAttrib) const noexcept(false) {
 			const char* pTypeStr = GetAttribute<const char*>(pAttrib);
 			if (!pTypeStr) throw XMLException(m_rXmlElm, XMLException::MissingAttribute);
 			return _Type(pTypeStr);
@@ -126,7 +126,7 @@ Node::~Node() {
 }
 
 const TiXmlElement*
-Node::_FindChildXMLElement(const char* pXMLElmTag, const char* pAttrib, const char* pName) const throw(XMLException) {
+Node::_FindChildXMLElement(const char* pXMLElmTag, const char* pAttrib, const char* pName) const noexcept(false) {
 	/* search all nodes in root document */
 	const TiXmlElement* pElm = m_rXmlElm.FirstChildElement(pXMLElmTag);
 	for ( ;
@@ -210,17 +210,17 @@ Node::_ConstructNode(const TiXmlElement* pElm, const Parser& rParser) const {
 }
 
 Node*
-Node::_FindXSDElm(const char* pName, const char* pTypeName) const throw(XMLException) {
+Node::_FindXSDElm(const char* pName, const char* pTypeName) const noexcept(false) {
 	std::string elementName = QualifyElementName(pTypeName);
 	/* search root document */
 	Node* pRetNode = NULL;
-	std::auto_ptr<Schema> pSchemaRoot(GetSchema());
+	std::unique_ptr<Schema> pSchemaRoot(GetSchema());
 	const TiXmlElement* pElm = pSchemaRoot->_FindChildXMLElement(elementName.c_str(), "name", pName);
 	/* search all included documents */
 	if (!pElm) {
 		const TiXmlElement* pIncludElm = pSchemaRoot->GetXMLElm().FirstChildElement(XSD::Elements::Include::XSDTag());
 		for ( ; pIncludElm; pIncludElm = pIncludElm->NextSiblingElement(XSD::Elements::Include::XSDTag()) ) {
-			std::auto_ptr<Include> pNode(static_cast<Include*>(_ConstructNode(pIncludElm, m_rParser)));
+			std::unique_ptr<Include> pNode(static_cast<Include*>(_ConstructNode(pIncludElm, m_rParser)));
 			const Schema* pSchema = pNode->QuerySchema();
 			if (NULL != (pElm = pSchema->_FindChildXMLElement(elementName.c_str(), "name", pName))) {
 				pRetNode = _ConstructNode(pElm, pSchema->m_rParser);
@@ -233,7 +233,7 @@ Node::_FindXSDElm(const char* pName, const char* pTypeName) const throw(XMLExcep
 }
 
 Node*
-Node::_FindXSDNode(const char* pName, const char* pTypeName) const throw(XMLException) {
+Node::_FindXSDNode(const char* pName, const char* pTypeName) const noexcept(false) {
 	Node* pNode = _FindXSDElm(pName, pTypeName);
 	if (!pNode)
 		throw XMLException(m_rXmlElm, XMLException::MissingElement);
@@ -241,7 +241,7 @@ Node::_FindXSDNode(const char* pName, const char* pTypeName) const throw(XMLExce
 }
 
 Node*
-Node::_FindChildXSDNode(const char* pXMLTag) const throw(XMLException) {
+Node::_FindChildXSDNode(const char* pXMLTag) const noexcept(false) {
 	std::string elementName = QualifyElementName(pXMLTag);
 	/* search all nodes in root document */
 	const TiXmlElement* pElm = m_rXmlElm.FirstChildElement(elementName.c_str());
@@ -251,16 +251,16 @@ Node::_FindChildXSDNode(const char* pXMLTag) const throw(XMLException) {
 }
 
 Node*
-Node::_FindXSDRef(const char* pRefAttribStr, const char* pTypeName) const throw (XMLException) {
+Node::_FindXSDRef(const char* pRefAttribStr, const char* pTypeName) const noexcept(false) {
 	if (HasAttribute(pRefAttribStr)) {
-		std::auto_ptr<Node> pRefElm(_FindXSDNode(GetAttribute<const char*>(pRefAttribStr), pTypeName));
+		std::unique_ptr<Node> pRefElm(_FindXSDNode(GetAttribute<const char*>(pRefAttribStr), pTypeName));
 		return pRefElm->_FindXSDRef(pRefAttribStr, pTypeName);
 	} else
 		return _ConstructNode(&m_rXmlElm, m_rParser);
 }
 
 std::string
-Node::_Attribute(const char* pAttrib) const throw (XMLException) {
+Node::_Attribute(const char* pAttrib) const noexcept(false) {
 	if (HasAttribute(pAttrib)) {
 		return std::string(m_rXmlElm.Attribute(pAttrib));
 	} else
@@ -269,7 +269,7 @@ Node::_Attribute(const char* pAttrib) const throw (XMLException) {
 }
 
 Types::BaseType*
-Node::_Type(const char* pType) const throw(XMLException) {
+Node::_Type(const char* pType) const noexcept(false) {
 	/* search for type name */
 	std::string typeName = _StripNamespace(std::string(pType));
 	Types::BaseType* pRetType = m_rParser.QueryTypesDb().FindType(typeName.c_str());
@@ -291,8 +291,8 @@ Node::_Type(const char* pType) const throw(XMLException) {
 }
 
 const std::string 
-Node::_StripNamespace(const std::string& rQName) const throw(XMLException) {
-	std::auto_ptr<Schema> pSchema(GetSchema());
+Node::_StripNamespace(const std::string& rQName) const noexcept(false) {
+	std::unique_ptr<Schema> pSchema(GetSchema());
 	std::string xmlNamespace = pSchema->Namespace();
 	/* verify that the namespace is in the qualified name */
 	if (0 == rQName.find(xmlNamespace)) {
@@ -306,24 +306,24 @@ Node::_StripNamespace(const std::string& rQName) const throw(XMLException) {
 }
 
 Node* 
-Node::Parent() const throw(XMLException) {
+Node::Parent() const noexcept(false) {
 	const TiXmlElement* pElm = m_rXmlElm.Parent()->ToElement();
 	return pElm ? _ConstructNode(pElm, m_rParser) : NULL;
 }
 
 Node*
-Node::FirstChild() const throw(XMLException) {
+Node::FirstChild() const noexcept(false) {
 	const TiXmlElement* pElm = m_rXmlElm.FirstChildElement();
 	return pElm ? _ConstructNode(pElm, m_rParser) : NULL;
 }
 Node*
-Node::NextSibling() const throw(XMLException) {
+Node::NextSibling() const noexcept(false) {
 	const TiXmlElement* pElm = m_rXmlElm.NextSiblingElement();
 	return pElm ? _ConstructNode(pElm, m_rParser) : NULL;
 }
 
 const TiXmlElement*
-Node::ContentElement(const char* pElemName) const throw(XMLException) {
+Node::ContentElement(const char* pElemName) const noexcept(false) {
 	std::string elementName = QualifyElementName(pElemName);
 	const TiXmlElement* pElm = m_rXmlElm.FirstChildElement(elementName.c_str());
 	if (!pElm) throw XMLException(m_rXmlElm,XMLException::MissingChildXMLElement);
@@ -337,7 +337,7 @@ Node::QueryRootElement() const {
 }
 
 Schema * 
-Node::GetSchema() const throw (XMLException) {
+Node::GetSchema() const noexcept(false) {
 	return new Elements::Schema(QueryRootElement(), m_rParser, m_rParser.GetUri(GetXmlDocument()));
 }
 
@@ -384,7 +384,7 @@ Node::operator == (const Node& elm) {
 std::string 
 Node::QualifyElementName(const char* pElemName) const throw() {
 	std::string elementName(pElemName);
-	std::auto_ptr<Schema> pDocRoot(GetSchema());
+	std::unique_ptr<Schema> pDocRoot(GetSchema());
 	std::string xmlNamespace = pDocRoot->Namespace();
 	/* verify that the namespace is in the qualified name */
 	if (0 != elementName.find(xmlNamespace)) {

@@ -43,9 +43,9 @@ FractionDigits::FractionDigits(const FractionDigits& cpy)
 { }
 
 void
-FractionDigits::ParseChildren(BaseProcessor& rProcessor) const throw(XMLException) {
+FractionDigits::ParseChildren(BaseProcessor& rProcessor) const noexcept(false) {
 	/* no children allowed */
-	std::auto_ptr<Node> pNode(Node::FirstChild());
+	std::unique_ptr<Node> pNode(Node::FirstChild());
 	if (NULL != pNode.get()) {
 		do {
 			if (XSD_ISELEMENT(pNode.get(), Annotation))
@@ -53,23 +53,23 @@ FractionDigits::ParseChildren(BaseProcessor& rProcessor) const throw(XMLExceptio
 			else
 				throw XMLException(pNode->GetXMLElm(), XMLException::InvallidChildXMLElement);
 			break;
-		} while (NULL != (pNode = std::auto_ptr<Node>(pNode->NextSibling())).get());
+		} while (NULL != (pNode = std::unique_ptr<Node>(pNode->NextSibling())).get());
 	}
 }
 
 void
-FractionDigits::ParseElement(BaseProcessor& rProcessor) const throw(XMLException) {
+FractionDigits::ParseElement(BaseProcessor& rProcessor) const noexcept(false) {
 	rProcessor.ProcessFractionDigits(this);
 }
 
 Types::BaseType * 
-FractionDigits::GetParentType() const throw(XMLException) {
-	std::auto_ptr<Node> pParent(Node::Parent());
+FractionDigits::GetParentType() const noexcept(false) {
+	std::unique_ptr<Node> pParent(Node::Parent());
 	return pParent->GetParentType();
 }
 
 uint64_t
-FractionDigits::Value() const throw(XMLException) {
+FractionDigits::Value() const noexcept(false) {
 	return Node::GetAttribute<uint64_t>("value");
 }
 

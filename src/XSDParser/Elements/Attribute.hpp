@@ -37,8 +37,8 @@ namespace XSD {
 			XSD_ELEMENT_TAG("attribute")
 		private:
 			Attribute();
-			Types::BaseType* _type() const throw(XMLException);
-			static Types::BaseType* _parseType(const Attribute& rAttrib) throw(XMLException);
+			Types::BaseType* _type() const noexcept(false);;
+			static Types::BaseType* _parseType(const Attribute& rAttrib) noexcept(false);;
 		public:
 			typedef enum {
 				OPTIONAL,
@@ -47,15 +47,15 @@ namespace XSD {
 			} AttributeUse;
 			Attribute(const TiXmlElement& elm, const Parser& rParser);
 			Attribute(const Attribute& rAttrib);
-			void ParseChildren(BaseProcessor& rProcessor) const throw(XMLException);
-			void ParseElement(BaseProcessor& rProcessor) const throw(XMLException);
-			Types::BaseType * GetParentType() const throw(XMLException);
-			std::string Name() const throw(XMLException);
-			Attribute* RefAttribute() const throw(XMLException);
-			Types::BaseType* Type() const throw(XMLException);
-			std::string Default() const throw(XMLException);
-			std::string Fixed() const throw(XMLException);
-			AttributeUse Use() const throw(XMLException);
+			void ParseChildren(BaseProcessor& rProcessor) const noexcept(false);;
+			void ParseElement(BaseProcessor& rProcessor) const noexcept(false);;
+			Types::BaseType * GetParentType() const noexcept(false);;
+			std::string Name() const noexcept(false);;
+			Attribute* RefAttribute() const noexcept(false);;
+			Types::BaseType* Type() const noexcept(false);;
+			std::string Default() const noexcept(false);;
+			std::string Fixed() const noexcept(false);;
+			AttributeUse Use() const noexcept(false);;
 			bool HasName() const;
 			bool HasRef() const;
 			bool HasType() const;

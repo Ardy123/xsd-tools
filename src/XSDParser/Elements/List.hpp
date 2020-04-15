@@ -34,15 +34,15 @@ namespace XSD {
 			XSD_ELEMENT_TAG("list")
 		private:
 			List();
-			Types::BaseType* _type() const throw(XMLException);
+			Types::BaseType* _type() const noexcept(false);;
 		public:
 			List(const TiXmlElement& elm, const Parser& rParser);
 			List(const List& lst);
-			void ParseChildren(BaseProcessor& rProcessor) const throw(XMLException);
-			void ParseElement(BaseProcessor& rProcessor) const throw(XMLException);
-			Types::BaseType * GetParentType(void) const throw(XMLException);
+			void ParseChildren(BaseProcessor& rProcessor) const noexcept(false);;
+			void ParseElement(BaseProcessor& rProcessor) const noexcept(false);;
+			Types::BaseType * GetParentType(void) const noexcept(false);;
 			bool HasItemType() const;
-			Types::BaseType* ItemType() const throw(XMLException);
+			Types::BaseType* ItemType() const noexcept(false);;
 		};
 	}	/* namespace Elements */
 }	/* namespace XSD */

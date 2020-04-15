@@ -45,9 +45,9 @@ Choice::Choice(const Choice& rCpy)
 { }
 
 void
-Choice::ParseChildren(BaseProcessor& rProcessor) const throw(XMLException) {
+Choice::ParseChildren(BaseProcessor& rProcessor) const noexcept(false) {
 	/* process children */
-	std::auto_ptr<Node> pNode(Node::FirstChild());
+	std::unique_ptr<Node> pNode(Node::FirstChild());
 	if (NULL != pNode.get()) {
 		do {
 			if (XSD_ISELEMENT(pNode.get(), Element) ||
@@ -58,12 +58,12 @@ Choice::ParseChildren(BaseProcessor& rProcessor) const throw(XMLException) {
 				pNode->ParseElement(rProcessor);
 			} else
 				throw XMLException(pNode->GetXMLElm(), XMLException::InvallidChildXMLElement);
-		} while (NULL != (pNode = std::auto_ptr<Node>(pNode->NextSibling())).get());
+		} while (NULL != (pNode = std::unique_ptr<Node>(pNode->NextSibling())).get());
 	}
 }
 
 void
-Choice::ParseElement(BaseProcessor& rProcessor) const throw(XMLException) {
+Choice::ParseElement(BaseProcessor& rProcessor) const noexcept(false) {
 	/* verify that 'maxOccurs' is not negative unless its -1 (unbounded) */
 	if (-1 > MaxOccurs())
 		throw XMLException(Node::GetXMLElm(), XMLException::InvalidAttributeValue);
@@ -75,8 +75,8 @@ Choice::ParseElement(BaseProcessor& rProcessor) const throw(XMLException) {
 }
 
 Types::BaseType * 
-Choice::GetParentType() const throw(XMLException) {
-	std::auto_ptr<Node> pParent(Node::Parent());
+Choice::GetParentType() const noexcept(false) {
+	std::unique_ptr<Node> pParent(Node::Parent());
 	return pParent->GetParentType();
 }
 
@@ -100,12 +100,12 @@ Choice::MinOccurs() const {
 }
 
 bool
-Choice::HasElements() const throw(XMLException) {
+Choice::HasElements() const noexcept(false) {
 	return Node::HasContent(Element::XSDTag());
 }
 
 bool
-Choice::HasSequence() const throw(XMLException) {
+Choice::HasSequence() const noexcept(false) {
 	return Node::HasContent(Sequence::XSDTag());
 }
 

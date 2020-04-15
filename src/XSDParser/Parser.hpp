@@ -50,8 +50,8 @@ namespace XSD {
 	public:
 		Parser();
 		virtual ~Parser();
-		Elements::Schema* Parse(const char * uri) const throw(XMLException);
-		Elements::Schema* Parse(const std::string& rURI) const throw(XMLException);
+		Elements::Schema* Parse(const char * uri) const noexcept(false);
+		Elements::Schema* Parse(const std::string& rURI) const noexcept(false);
 		const Types::TypesDB& QueryTypesDb() const throw();
 		bool HasDocument(const TiXmlDocument& document) const;
 		bool HasDocument(const std::string& uri) const;

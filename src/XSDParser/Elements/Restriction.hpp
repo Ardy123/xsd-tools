@@ -35,17 +35,17 @@ namespace XSD {
 			XSD_ELEMENT_TAG("restriction")
 		private:
 			Restriction();
-			// bool _isElmRelated(const Node* pRstrctn, const TiXmlElement* pBase) const throw(XMLException);
-			//static const TiXmlElement* _findElm(const TiXmlElement* pTreeBase, const TiXmlElement* pNode) throw(XMLException);
+			// bool _isElmRelated(const Node* pRstrctn, const TiXmlElement* pBase) const noexcept(false);
+			//static const TiXmlElement* _findElm(const TiXmlElement* pTreeBase, const TiXmlElement* pNode) noexcept(false);
 		public:
 			Restriction(const TiXmlElement& elm, const Parser& rParser);
 			Restriction(const Restriction& rCpy);
-			void ParseChildren(BaseProcessor& rProcessor) const throw(XMLException);
-			void ParseElement(BaseProcessor& rProcessor) const throw(XMLException);
-			Types::BaseType * GetParentType() const throw(XMLException);
-			bool isParentComplexContent() const throw(XMLException);
-			bool isParentSimpleContent() const throw(XMLException);
-			Types::BaseType* Base() const throw(XMLException);
+			void ParseChildren(BaseProcessor& rProcessor) const noexcept(false);
+			void ParseElement(BaseProcessor& rProcessor) const noexcept(false);
+			Types::BaseType * GetParentType() const noexcept(false);
+			bool isParentComplexContent() const noexcept(false);
+			bool isParentSimpleContent() const noexcept(false);
+			Types::BaseType* Base() const noexcept(false);
 		};
 	}	/* namespace Elements */
 }	/* namespace XSD */

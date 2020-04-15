@@ -44,7 +44,7 @@ LuaException::LuaException(const std::string& rMsg, int err_number) {
 }
 
 /* virtual */
-LuaException::~LuaException() throw() 
+LuaException::~LuaException() noexcept
 { }
 
 /* virtual */ const char*
@@ -61,7 +61,7 @@ LuaScriptAdapter::~LuaScriptAdapter()
 { }
 
 void
-LuaScriptAdapter::Open() throw() {
+LuaScriptAdapter::Open() noexcept {
 	/* load std lua libs */
 	luaL_openlibs(m_pLuaState);
 	/* add custom helper hash function */
@@ -88,7 +88,7 @@ LuaScriptAdapter::ParseCommandLineArgs(const char* pArgv[], int nArgs) {
 }
 
 void
-LuaScriptAdapter::Load(const uint8_t* pBuf, size_t bufSz) throw(LuaException) {
+LuaScriptAdapter::Load(const uint8_t* pBuf, size_t bufSz) noexcept(false) {
 	int err = luaL_loadbuffer(m_pLuaState, (const char*)pBuf, bufSz, "TemplateEngine");
 	switch (err) {
 	case 0: break; /* no error */
@@ -105,7 +105,7 @@ LuaScriptAdapter::Load(const uint8_t* pBuf, size_t bufSz) throw(LuaException) {
 }
 
 void
-LuaScriptAdapter::Execute(const std::string& templateName) throw(LuaException) {
+LuaScriptAdapter::Execute(const std::string& templateName) noexcept(false) {
 	int err = 0;
 	/* force a run of the script to load global symbols */
 	if (0 != (err = lua_pcall(m_pLuaState, 0, 0, 0)))
@@ -132,18 +132,18 @@ LuaScriptAdapterExecute_error:
 }
 
 void
-LuaScriptAdapter::Close() throw() {
+LuaScriptAdapter::Close() noexcept {
 	lua_close(m_pLuaState);
 }
 
 void 
-LuaScriptAdapter::SetSchemaName(const std::string& schemaName) throw() {
+LuaScriptAdapter::SetSchemaName(const std::string& schemaName) noexcept {
 	lua_pushstring(m_pLuaState, (Util::StripFileExtension(Util::ExtractResourceName(schemaName)) + "_xsd").c_str());
 	lua_setglobal(m_pLuaState, "__SCHEMA_NAME__");
 }
 
 lua_State*
-LuaScriptAdapter::LuaState() throw() {
+LuaScriptAdapter::LuaState() noexcept {
 	return m_pLuaState;
 }
 

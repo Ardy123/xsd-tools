@@ -56,7 +56,7 @@ ElementExtracter::Extract(const Schema& rDocRoot) {
 /* virtual */ void 
 ElementExtracter::ProcessSchema(const Schema* pNode) {
 	/* different iterator accross the schema children */
-	std::auto_ptr<Node> pChildNode(pNode->FirstChild());
+	std::unique_ptr<Node> pChildNode(pNode->FirstChild());
 	if (NULL != pChildNode.get()) {
 		do {
 			if (XSD_ISELEMENT(pChildNode.get(), Element) ||
@@ -67,7 +67,7 @@ ElementExtracter::ProcessSchema(const Schema* pNode) {
 				XSD_ISELEMENT(pChildNode.get(), Group)) {
 				pChildNode->ParseElement(*this);
 			}
-		} while (NULL != (pChildNode = std::auto_ptr<Node>(pChildNode->NextSibling())).get());
+		} while (NULL != (pChildNode = std::unique_ptr<Node>(pChildNode->NextSibling())).get());
 	}
 }
 

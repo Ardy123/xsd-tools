@@ -47,9 +47,9 @@ ComplexContent::ComplexContent(const ComplexContent& rType)
 { }
 
 void
-ComplexContent::ParseChildren(BaseProcessor& rProcessor) const throw(XMLException) {
+ComplexContent::ParseChildren(BaseProcessor& rProcessor) const noexcept(false) {
 	/* process children */
-	std::auto_ptr<Node> pNode(Node::FirstChild());
+	std::unique_ptr<Node> pNode(Node::FirstChild());
 	if (NULL != pNode.get()) {
 		do {
 			if (XSD_ISELEMENT(pNode.get(), Restriction) ||
@@ -58,19 +58,19 @@ ComplexContent::ParseChildren(BaseProcessor& rProcessor) const throw(XMLExceptio
 				pNode->ParseElement(rProcessor);
 			} else
 				throw XMLException(pNode->GetXMLElm(), XMLException::InvallidChildXMLElement);
-		} while (NULL != (pNode = std::auto_ptr<Node>(pNode->NextSibling())).get());
+		} while (NULL != (pNode = std::unique_ptr<Node>(pNode->NextSibling())).get());
 	}
 }
 
 void
-ComplexContent::ParseElement(BaseProcessor& rProcessor) const throw(XMLException) {
+ComplexContent::ParseElement(BaseProcessor& rProcessor) const noexcept(false) {
 	rProcessor.ProcessComplexContent(this);
 }
 
 Types::BaseType * 
-ComplexContent::GetParentType() const throw(XMLException) {
-	std::auto_ptr<Restriction> pRestriction(Node::SearchXSDChildElm<Restriction>());
-	std::auto_ptr<Extension> pExtension(Node::SearchXSDChildElm<Extension>());
+ComplexContent::GetParentType() const noexcept(false) {
+	std::unique_ptr<Restriction> pRestriction(Node::SearchXSDChildElm<Restriction>());
+	std::unique_ptr<Extension> pExtension(Node::SearchXSDChildElm<Extension>());
 	if ((NULL != pRestriction.get()) && (NULL == pExtension.get())) {
 		return pRestriction->GetParentType();
 	} else if ((NULL == pRestriction.get()) && (NULL != pExtension.get())) {

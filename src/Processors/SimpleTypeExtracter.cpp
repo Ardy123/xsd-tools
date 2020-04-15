@@ -62,14 +62,14 @@ SimpleTypeExtracter::ProcessRestriction(const XSD::Elements::Restriction* pNode 
 	if (pNode->isParentSimpleContent() || pNode->isParentSimpleContent())
 		pNode->ParseChildren(*this);
 	else {
-		auto_ptr<XSD::Types::BaseType> pType(pNode->Base());
+		unique_ptr<XSD::Types::BaseType> pType(pNode->Base());
 		_parseType(*pType);
 	}
 }
 
 /* virtual */ void
 SimpleTypeExtracter::ProcessList(const XSD::Elements::List* pNode) {
-	auto_ptr<XSD::Types::BaseType> pTypeLst(pNode->ItemType());
+	unique_ptr<XSD::Types::BaseType> pTypeLst(pNode->ItemType());
 	/* extract xsd native type from simple type */
 	SimpleTypeExtracter typeXtr;
 	_parseType(Types::ArrayType(typeXtr.Extract(*pTypeLst)));

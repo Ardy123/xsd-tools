@@ -53,9 +53,9 @@ ComplexType::ComplexType(const ComplexType& rType)
 { }
 
 void
-ComplexType::ParseChildren(BaseProcessor& rProcessor) const throw(XMLException) {
+ComplexType::ParseChildren(BaseProcessor& rProcessor) const noexcept(false) {
 	/* process children */
-	std::auto_ptr<Node> pNode(Node::FirstChild());
+	std::unique_ptr<Node> pNode(Node::FirstChild());
 	if (NULL != pNode.get()) {
 		enum { CMODEL_UNKNOWN, CMODEL_TRUE, CMODEL_FALSE };
 		int contentModel = CMODEL_UNKNOWN;
@@ -82,12 +82,12 @@ ComplexType::ParseChildren(BaseProcessor& rProcessor) const throw(XMLException) 
 				pNode->ParseElement(rProcessor);
 			} else
 				throw XMLException(pNode->GetXMLElm(), XMLException::InvallidChildXMLElement);
-		} while (NULL != (pNode = std::auto_ptr<Node>(pNode->NextSibling())).get());
+		} while (NULL != (pNode = std::unique_ptr<Node>(pNode->NextSibling())).get());
 	}
 }
 
 void
-ComplexType::ParseElement(BaseProcessor& rProcessor) const throw(XMLException) {
+ComplexType::ParseElement(BaseProcessor& rProcessor) const noexcept(false) {
 	if (HasName() && !Node::IsRootNode()) {
 		throw XMLException(Node::GetXMLElm(), XMLException::InvalidAttribute);
 	}
@@ -95,9 +95,9 @@ ComplexType::ParseElement(BaseProcessor& rProcessor) const throw(XMLException) {
 }
 
 Types::BaseType * 
-ComplexType::GetParentType(void) const throw(XMLException) {
-	std::auto_ptr<SimpleContent> pSimpleContent(Node::SearchXSDChildElm<SimpleContent>());
-	std::auto_ptr<ComplexContent> pComplexContent(Node::SearchXSDChildElm<ComplexContent>());
+ComplexType::GetParentType(void) const noexcept(false) {
+	std::unique_ptr<SimpleContent> pSimpleContent(Node::SearchXSDChildElm<SimpleContent>());
+	std::unique_ptr<ComplexContent> pComplexContent(Node::SearchXSDChildElm<ComplexContent>());
 	if ((NULL != pSimpleContent.get()) && (NULL == pComplexContent.get())) {
 		return pSimpleContent->GetParentType();
 	} else if ((NULL == pSimpleContent.get()) && (NULL != pComplexContent.get())) {
@@ -127,7 +127,7 @@ ComplexType::Mixed() const {
 }
 
 std::string
-ComplexType::Name() const throw(XMLException) {
+ComplexType::Name() const noexcept(false) {
 	return std::string(Node::GetAttribute<const char*>("name"));
 }
 

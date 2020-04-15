@@ -46,9 +46,9 @@ Union::Union(const Union& rCpy)
 { }
 
 void
-Union::ParseChildren(BaseProcessor& rProcessor) const throw(XMLException) {
+Union::ParseChildren(BaseProcessor& rProcessor) const noexcept(false) {
 	/* process children */
-	std::auto_ptr<Node> pNode(Node::FirstChild());
+	std::unique_ptr<Node> pNode(Node::FirstChild());
 	if (NULL != pNode.get()) {
 		do {
 			if (XSD_ISELEMENT(pNode.get(), SimpleType) ||
@@ -56,22 +56,22 @@ Union::ParseChildren(BaseProcessor& rProcessor) const throw(XMLException) {
 				pNode->ParseElement(rProcessor);
 			} else
 				throw XMLException(pNode->GetXMLElm(), XMLException::InvallidChildXMLElement);
-		} while (NULL != (pNode = std::auto_ptr<Node>(pNode->NextSibling())).get());
+		} while (NULL != (pNode = std::unique_ptr<Node>(pNode->NextSibling())).get());
 	}
 }
 
 void
-Union::ParseElement(BaseProcessor& rProcessor) const throw(XMLException) {
+Union::ParseElement(BaseProcessor& rProcessor) const noexcept(false) {
 	rProcessor.ProcessUnion(this);
 }
 
 Types::BaseType * 
-Union::GetParentType() const throw(XMLException) {
+Union::GetParentType() const noexcept(false) {
 	return new Types::String();
 }
 
 Union::TypeLst*
-Union::MemberTypes() const throw(XMLException) {
+Union::MemberTypes() const noexcept(false) {
 	Union::TypeLst* retLst	= new TypeLst();
 	/* tokenize each item in the list */
 	const std::string typeLst(this->GetAttribute<const char*>("memberTypes"));

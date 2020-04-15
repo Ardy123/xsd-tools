@@ -44,8 +44,8 @@ All::All(const All& cpy)
 { }
 
 void
-All::ParseChildren(BaseProcessor& rProcessor) const throw(XMLException) {
-	std::auto_ptr<Node> pNode(Node::FirstChild());
+All::ParseChildren(BaseProcessor& rProcessor) const noexcept(false) {
+	std::unique_ptr<Node> pNode(Node::FirstChild());
 	if (NULL != pNode.get()) {
 		do {
 			if (XSD_ISELEMENT(pNode.get(), Element) ||
@@ -54,12 +54,12 @@ All::ParseChildren(BaseProcessor& rProcessor) const throw(XMLException) {
 			else
 				throw XMLException(pNode->GetXMLElm(), XMLException::InvallidChildXMLElement);
 			break;
-		} while (NULL != (pNode = std::auto_ptr<Node>(pNode->NextSibling())).get());
+		} while (NULL != (pNode = std::unique_ptr<Node>(pNode->NextSibling())).get());
 	}
 }
 
 void
-All::ParseElement(BaseProcessor& rProcessor) const throw(XMLException) {
+All::ParseElement(BaseProcessor& rProcessor) const noexcept(false) {
 	/* verify that optional maxOccurs attribute is 1 */
 	if (HasMaxOccurs()) {
 		if (1 != MaxOccurs())
@@ -75,8 +75,8 @@ All::ParseElement(BaseProcessor& rProcessor) const throw(XMLException) {
 }
 
 Types::BaseType * 
-All::GetParentType() const throw(XMLException) {
-	std::auto_ptr<Node> pParent(Node::Parent());
+All::GetParentType() const noexcept(false) {
+	std::unique_ptr<Node> pParent(Node::Parent());
 	return pParent->GetParentType();
 }
 

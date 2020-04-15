@@ -40,7 +40,7 @@ namespace XSD {
 			mutable Schema*	m_pSchema;
 			Parser	m_parser;
 			Include();
-			std::string _schemaURI() const throw(XMLException);
+			std::string _schemaURI() const noexcept(false);;
 			static std::string _extractURIPath(const std::string& uri);
 			static bool _isFileURI(const std::string& uri);
 			static std::string _extractQuery(const std::string& uri);
@@ -48,10 +48,10 @@ namespace XSD {
 			Include(const TiXmlElement& elm, const Parser& rParser);
 			Include(const Include& elm);
 			virtual ~Include();
-			void ParseChildren(BaseProcessor& rProcessor) const throw(XMLException);
-			void ParseElement(BaseProcessor& rProcessor) const throw(XMLException);
-			Types::BaseType * GetParentType() const throw(XMLException);
-			const Schema* QuerySchema() const throw(XMLException);
+			void ParseChildren(BaseProcessor& rProcessor) const noexcept(false);;
+			void ParseElement(BaseProcessor& rProcessor) const noexcept(false);;
+			Types::BaseType * GetParentType() const noexcept(false);;
+			const Schema* QuerySchema() const noexcept(false);;
 			bool HasSchema() const;
 		};
 	}	/* namespace Elements */

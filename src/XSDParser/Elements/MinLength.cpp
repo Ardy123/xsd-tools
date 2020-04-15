@@ -43,9 +43,9 @@ MinLength::MinLength(const MinLength& cpy)
 { }
 
 void
-MinLength::ParseChildren(BaseProcessor& rProcessor) const throw(XMLException) {
+MinLength::ParseChildren(BaseProcessor& rProcessor) const noexcept(false) {
 	/* no children allowed */
-	std::auto_ptr<Node> pNode(Node::FirstChild());
+	std::unique_ptr<Node> pNode(Node::FirstChild());
 	if (NULL != pNode.get()) {
 		do {
 			if (XSD_ISELEMENT(pNode.get(), Annotation))
@@ -53,23 +53,23 @@ MinLength::ParseChildren(BaseProcessor& rProcessor) const throw(XMLException) {
 			else
 				throw XMLException(pNode->GetXMLElm(), XMLException::InvallidChildXMLElement);
 			break;
-		} while (NULL != (pNode = std::auto_ptr<Node>(pNode->NextSibling())).get());
+		} while (NULL != (pNode = std::unique_ptr<Node>(pNode->NextSibling())).get());
 	}
 }
 
 void
-MinLength::ParseElement(BaseProcessor& rProcessor) const throw(XMLException) {
+MinLength::ParseElement(BaseProcessor& rProcessor) const noexcept(false) {
 	rProcessor.ProcessMinLength(this);
 }
 
 Types::BaseType * 
-MinLength::GetParentType() const throw(XMLException) {
-	std::auto_ptr<Node> pParent(Node::Parent());
+MinLength::GetParentType() const noexcept(false) {
+	std::unique_ptr<Node> pParent(Node::Parent());
 	return pParent->GetParentType();
 }
 
 int64_t
-MinLength::Value() const throw(XMLException) {
+MinLength::Value() const noexcept(false) {
 	return Node::GetAttribute<int64_t>("value");
 }
 

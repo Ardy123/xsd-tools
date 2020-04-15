@@ -41,9 +41,9 @@ SimpleType::SimpleType(const SimpleType& rType)
 { }
 
 void
-SimpleType::ParseChildren(BaseProcessor& rProcessor) const throw(XMLException) {
+SimpleType::ParseChildren(BaseProcessor& rProcessor) const noexcept(false) {
 	/* process children */
-	std::auto_ptr<Node> pNode(Node::FirstChild());
+	std::unique_ptr<Node> pNode(Node::FirstChild());
 	if (NULL != pNode.get()) {
 		do {
 			if (XSD_ISELEMENT(pNode.get(), Restriction) ||
@@ -53,22 +53,22 @@ SimpleType::ParseChildren(BaseProcessor& rProcessor) const throw(XMLException) {
 				pNode->ParseElement(rProcessor);
 			} else
 				throw XMLException(pNode->GetXMLElm(), XMLException::InvallidChildXMLElement);
-		} while (NULL != (pNode = std::auto_ptr<Node>(pNode->NextSibling())).get());
+		} while (NULL != (pNode = std::unique_ptr<Node>(pNode->NextSibling())).get());
 	}
 }
 
 void
-SimpleType::ParseElement(BaseProcessor& rProcessor) const throw(XMLException) {
+SimpleType::ParseElement(BaseProcessor& rProcessor) const noexcept(false) {
 	if (HasName() && !Node::IsRootNode())
 		throw XMLException(Node::GetXMLElm(), XMLException::InvalidAttribute);
 	rProcessor.ProcessSimpleType(this);
 }
 
 Types::BaseType * 
-SimpleType::GetParentType(void) const throw(XMLException) {
-	std::auto_ptr<Restriction> pRestriction(Node::SearchXSDChildElm<Restriction>());
-	std::auto_ptr<List> pList(Node::SearchXSDChildElm<List>());
-	std::auto_ptr<Union> pUnion(Node::SearchXSDChildElm<Union>());
+SimpleType::GetParentType(void) const noexcept(false) {
+	std::unique_ptr<Restriction> pRestriction(Node::SearchXSDChildElm<Restriction>());
+	std::unique_ptr<List> pList(Node::SearchXSDChildElm<List>());
+	std::unique_ptr<Union> pUnion(Node::SearchXSDChildElm<Union>());
 	if ((NULL != pRestriction.get()) && (NULL == pList.get()) && (NULL == pUnion.get())) {
 		return pRestriction->GetParentType();
 	} else if ((NULL == pRestriction.get()) && (NULL != pList.get()) && (NULL == pUnion.get())) {
@@ -82,7 +82,7 @@ SimpleType::GetParentType(void) const throw(XMLException) {
 }
 
 std::string
-SimpleType::Name() const throw(XMLException) {
+SimpleType::Name() const noexcept(false) {
 	return std::string(this->GetAttribute<const char*>("name"));
 }
 
