@@ -54,7 +54,7 @@ def generate(env):
             env['LUAOBJCMD'] = '$OBJCPY --input binary --output ' + \
                                output_target[architecture] + \
                                ' --binary-architecture i386 $SOURCE $TARGET'
-    except KeyError, e:
+    except KeyError:
         raise Exception( "Architecture {0} not supported".format(architecture))    
     
 def exists(env):
