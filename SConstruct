@@ -5,8 +5,8 @@ import distro
 
 platforms = { 
     'Linux-Default': 'linux-default',
-    'Linux-Ubuntu' : 'linux-ubuntu',
-    'Darwin-': 'darwin'
+    'Linux-ubuntu' : 'linux-ubuntu',
+    'Darwin-darwin': 'darwin'
     }
 
 xsdb = { 
@@ -111,7 +111,7 @@ install_prefix      = ARGUMENTS.get('prefix', '/usr/')
 install_target_bin  = os.path.join(install_prefix, 'local/bin/')
 install_target_data = os.path.join(install_prefix, 'share/xsdtools/templates/')
 build_platform      = platforms.get(
-    ("%s-%s" % (platform.system(), distro.linux_distribution()[0])), 
+    ("%s-%s" % (platform.system(), distro.id())), 
     'linux-default'
 )
 
