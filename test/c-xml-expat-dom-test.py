@@ -24,6 +24,7 @@ import os
 import shutil
 import sys
 import conio
+import re
 
 consoleIO = conio.conio()
 
@@ -36,20 +37,35 @@ def _handleError(stdErr, errCode):
 def _extractSchemaName(filename):
 	return os.path.splitext(os.path.split(filename)[1])[0]
 
+def _csplit(input, pattern, output_path):
+        out_file = None
+        regex    = re.compile(pattern)
+        for line in input:
+                result = regex.search(line)
+                if result:
+                        if out_file:
+                                out_file.close()
+                        out_file = open(output_path + result.group(1), "w")
+                elif out_file:
+                        out_file.write(line)
+
+def _execu(cmd):
+        out, err, retCode = consoleIO.call(cmd)
+        return (True == _handleError(err, retCode))
+
 def genBinding(srcPrefix, xsdfile, rsltPath, template):
 	schemaName = _extractSchemaName(xsdfile)
 	rsltPath   = rsltPath + schemaName + '-xsdb/'
-	# use tool to generate marshalling code
-	cmd = '../xsdb ' + template + ' ' + xsdfile + ' | csplit - \'/\/\* FILE: /\' {*}'
-	out, err, retCode = consoleIO.call(cmd)
-	if _handleError(err, retCode):
-		return False
 	# move generated code to desired location
 	if not os.path.exists(rsltPath):
 		os.makedirs(rsltPath)
-	os.remove('xx00')
-	shutil.move('xx01', rsltPath + srcPrefix + schemaName +'.h')
-	shutil.move('xx02', rsltPath + srcPrefix + schemaName +'.c')
+	# use tool to generate marshalling code
+        cmd_fmt = '../xsdb {0} {1} > /tmp/c-xml-expat-dom.tmp'
+        if _execu(cmd_fmt.format(template, xsdfile)):
+                return False
+        _csplit(open('/tmp/c-xml-expat-dom.tmp', 'r'),
+                "/\* FILE:\s(.*.[h|c])",
+                rsltPath)
 	return True
 
 def genBindingTest(xsdfile, rsltPath, template):
@@ -57,10 +73,7 @@ def genBindingTest(xsdfile, rsltPath, template):
 	rsltTstFile= rsltPath + schemaName + '-bin.c'
 	# use tool to generate test code
 	cmd ='../xsdb ' + template + ' ' + xsdfile + ' >' + rsltTstFile
-	out, err, retCode = consoleIO.call(cmd)
-	if _handleError(err, retCode):
-		return False
-	return True
+        return not _execu(cmd)
 
 def genMakefile(xsdfiles, rsltPath):
 	# try and open and create makefile
