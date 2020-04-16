@@ -77,11 +77,11 @@ function list:defUnmarshal(elementName)
       ("_%s_unmarshal(const char * pVal, const xml_typeFactory * pFactory) {\n"): format(self:typeName())
    )
    out:append(("  %s term = NULL;\n"):format(self._listType:typeName()))
-   out:append(("  list_t list = _list(sizeof(%s), pFactory);\n"):format(
+   out:append(("  _xml_list_t list = _list(sizeof(%s), pFactory);\n"):format(
          self._listType:typeName())
    )
-   out:append("  tokenizer_t tokenizer = _tokenizer(pVal, pFactory);\n")
-   out:append("  const char * pToken = _tokenizer_next(&tokenizer);\n")
+   out:append("  _xml_tokenizer_t tokenizer = _tokenizer(pVal, pFactory);\n")
+   out:append("  const char        * pToken = _tokenizer_next(&tokenizer);\n")
    out:append("\n")
    out:append("  for (; *pToken; pToken = _tokenizer_next(&tokenizer)) {\n")
    out:append(("    %s val = Unmarshal(%s, pToken, pFactory);\n"):format(
