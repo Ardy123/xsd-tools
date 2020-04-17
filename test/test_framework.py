@@ -21,68 +21,81 @@ import os
 import shutil
 import sys
 import conio
+import re
 
 consoleIO = conio.conio()
 
-def _handleError(stdErr, errCode):
-	fail = (errCode and 0 != len(stdErr))
-	if fail:
-		consoleIO.stdout(consoleIO.FAIL, stdErr)
-	return fail
+_logSuccess  = lambda msg : consoleIO.stdout(consoleIO.OKGREEN, msg)
+_logFailure  = lambda msg : consoleIO.stdout(consoleIO.FAIL, msg)
+_logMessage  = lambda msg : consoleIO.stdout(consoleIO.ENDC, msg)
 
-def _extractSchemaName(filename):
-	return os.path.splitext(os.path.split(filename)[1])[0]
+_extractName = lambda name : os.path.splitext(os.path.split(name)[1])[0]
+
+def _logCondition(rslt, msg_tbl=("Fail\n", "Pass\n")):
+        (_logFailure, _logSuccess)[rslt](msg_tbl[rslt])
+        return rslt
+
+def _handleError(stdErr, errCode):
+	return _logCondition(not (errCode and 0 != len(stdErr)), (stdErr, ""))
+
+def _csplit(input, pattern, output_path):
+        out_file = None
+        regex    = re.compile(pattern)
+        for line in input:
+                result = regex.search(line)
+                if result:
+                        if out_file:
+                                out_file.close()
+                        filename = os.path.join(output_path, result.group(1))
+                        out_file = open(filename, "w")
+                elif out_file:
+                        out_file.write(line)
+        return True
+
+def _execu(command, working_dir=None):
+        out, err, retCode = consoleIO.call(command, working_dir)
+        return _handleError(err, retCode)
 
 def genBinding(srcPrefix, xsdfile, rsltPath, template):
-	schemaName = _extractSchemaName(xsdfile)
-	rsltPath   = rsltPath + schemaName + '-xsdb/'
-	# use tool to generate marshalling code
-	cmd = '../xsdb ' + template + ' ' + xsdfile + ' | csplit - \'/\/\* FILE: /\' {*}'
-	out, err, retCode = consoleIO.call(cmd)
-	if _handleError(err, retCode):
-		return False
+	schemaName = _extractName(xsdfile)
+	rsltPath   = '{0}{1}-xsdb'.format(rsltPath, schemaName)
 	# move generated code to desired location
 	if not os.path.exists(rsltPath):
 		os.makedirs(rsltPath)
-	os.remove('xx00')
-	shutil.move('xx01', rsltPath + srcPrefix + 'common.h')
-	shutil.move('xx02', rsltPath + srcPrefix + schemaName +'.h')
-	shutil.move('xx03', rsltPath + srcPrefix + schemaName +'.c')
-	return True
+	# use tool to generate marshalling code
+        cmd_fmt = '../xsdb {0} {1} > /tmp/c-xml-expat.tmp'
+        rslt    = _execu(cmd_fmt.format(template, xsdfile))
+        rslt    = rslt and _csplit(open('/tmp/c-xml-expat.tmp', 'r'),
+                                   "/\* FILE:\s(.*.[h|c])",
+                                   rsltPath)
+	return rslt
 
 def genBindingTest(xsdfile, rsltPath, template):
-	schemaName = _extractSchemaName(xsdfile)
-	rsltTstFile= rsltPath + schemaName + '-bin.c'
+	schemaName = _extractName(xsdfile)
+	rsltTstFile= '{0}{1}-bin.c'.format(rsltPath, schemaName);
 	# use tool to generate test code
-	cmd ='../xsdb ' + template + ' ' + xsdfile + ' >' + rsltTstFile
-	out, err, retCode = consoleIO.call(cmd)
-	if _handleError(err, retCode):
-		return False
-	return True
+        cmd_fmt = '../xsdb {0} {1} > {2}'
+        return _execu(cmd_fmt.format(template, xsdfile, rsltTstFile))
 
 def genMakefile(xsdfiles, rsltPath):
-	# try and open and create makefile
-	try:
-		makefile = open(rsltPath + 'makefile', "w")
-	except IOError, e:
-		consoleIO.stdout(consoleIO.FAIL, "\texception: " + e)
-		return False;
+	# open and create makefile
+	makefile = open(rsltPath + 'makefile', "w")
 	# output 'all' section
 	makefile.write('all: ')
 	for target in xsdfiles:
-		target = os.path.splitext(os.path.split(target)[1])[0]
+		target = _extractName(target)
 		makefile.write(' ' + target)
 	makefile.write('\n\n')
 	# output each target section
 	for target in xsdfiles:
-		target = os.path.splitext(os.path.split(target)[1])[0]
+		target = _extractName(target)
 		makefile.write(target + ':\n')
 		makefile.write('\t$(MAKE) -f test.mk TEST='+target + '\n')
 	makefile.write('\n')
 	# output clean section
 	makefile.write('clean:\n')
 	for target in xsdfiles:
-		target = os.path.splitext(os.path.split(target)[1])[0]
+		target = _extractName(target)
 		makefile.write('\t$(MAKE) -f test.mk TEST='+target + ' clean\n')
 	makefile.write('\n')
 	# close file and return
@@ -90,43 +103,39 @@ def genMakefile(xsdfiles, rsltPath):
 	return True
 	
 def buildTests(rsltPath):
-	cmd = 'make'
-	consoleIO.stdout(consoleIO.ENDC, 'compiling test cases: ')
-	std, err, retcode = consoleIO.call(cmd, rsltPath)
-	if _handleError(err, retcode):
-		return False
-	else:
-		consoleIO.stdout(consoleIO.OKGREEN, "Pass\n")
-	return True
+	_logMessage('compiling test cases: ')
+        return _logCondition(_execu('make', rsltPath))
 	
 def execTests(xsdfiles, rsltPath):
+        rslt = True;
 	for exe in xsdfiles:
-		exefile = os.path.splitext(os.path.split(exe)[1])[0]
-		consoleIO.stdout(consoleIO.ENDC, "executing test " + exefile + ": ")
-		cmd = rsltPath + exefile
-		std, err, retcode = consoleIO.call(cmd)
-		if _handleError(retcode, err):
-			return False
-		else:
-			consoleIO.stdout(consoleIO.OKGREEN, "Pass\n")
-	return True;
+		exefile = _extractName(exe)
+                _logMessage('executing test {0}: '.format(exefile))
+                rslt = rslt and _execu(rsltPath + exefile)
+                _logCondition(rslt)
+	return rslt
 
 def genPreconditionList(preconditionPath):
 	return glob.glob(preconditionPath + "*.xsd")
 	
-def genTestCases(srcPrefix, preconditionPath, postConditionPath, bindingTemplate, testTemplate):
+def genTestCases(srcPrefix,
+                 preconditionPath,
+                 postConditionPath,
+                 bindingTemplate,
+                 testTemplate):
+        msg_fmt             = "generating test code from {0}: "
 	preconditionFileLst = genPreconditionList(preconditionPath)
 	for preconditionFile in preconditionFileLst:
-		consoleIO.stdout(consoleIO.ENDC, "generating test code from "+ preconditionFile + ": ")
-		if not genBinding(srcPrefix, preconditionFile, postConditionPath, bindingTemplate):
-			consoleIO.stdout(consoleIO.FAIL, " Fail\n")
-			return False
-		if not genBindingTest(preconditionFile, postConditionPath, testTemplate):
-			consoleIO.stdout(consoleIO.FAIL, " Fail\n")
-			return False
-		else:
-			consoleIO.stdout(consoleIO.OKGREEN, "Pass\n")
-	return True
+                _logMessage(msg_fmt.format(preconditionFile))
+                rslt = genBinding(srcPrefix,
+                                  preconditionFile,
+                                  postConditionPath,
+                                  bindingTemplate)
+		rslt = rslt and genBindingTest(preconditionFile,
+                                               postConditionPath,
+                                               testTemplate)
+                _logCondition(rslt)
+        return rslt
 
 def cleanTestDir(rsltPath):
 	shutil.move(rsltPath + 'test.mk', '/tmp/test.mk')
@@ -145,15 +154,14 @@ def runTest(srcPrefix, testPath, bindingTemplate, op):
 	# aquire list of test cases
 	xsdLst = genPreconditionList(testPath)
 	# generate tests
-	if not genTestCases(srcPrefix, testPath, dstPath, bindingTemplate, testTemplate):
-		return
-	if not genMakefile(xsdLst, dstPath):
-		return
+	rslt = genTestCases(srcPrefix,
+                            testPath,
+                            dstPath,
+                            bindingTemplate,
+                            testTemplate)
+	rslt = rslt and genMakefile(xsdLst, dstPath)
 	# make tests
-	if not buildTests(dstPath):
-		consoleIO.stdout(consoleIO.FAIL, "Fail\n")
-		return
+        rslt = rslt and buildTests(dstPath)
 	# run tests
-	if not execTests(xsdLst, dstPath):
-		consoleIO.stdout(consoleIO.FAIL, "Fail\n")
-	return
+        rslt = rslt and execTests(xsdLst, dstPath)
+	return 

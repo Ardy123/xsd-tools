@@ -22,8 +22,10 @@ import test_framework
 
 def main(arg):
 	op = arg[1] if len(arg) > 1 and "clean" == arg[1] else ""
-	test_framework.runTest("xml_", "xsd-positive/", "../templates/c-xml-expat", op)
+	test_framework.runTest("xml_",
+                               "xsd-positive/",
+                               "../templates/c-xml-expat",
+                               op)
 
 if __name__ == "__main__":
 	main(sys.argv)
-	
