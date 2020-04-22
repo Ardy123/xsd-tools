@@ -30,7 +30,13 @@
 		end,
 		test = {
 			assign = function()
-				return string.format('%x%x%x\\n', math.random(0, 65535), math.random(0, 65535), math.random(0, 65535))
+				   local ret = {
+				   		 "Q3yj/lYzNI0Fp0SrC8sctw==\\n",
+				   		 "kpxzQiW1uLkFessP+5xZjQ==\\n",
+						 "/kFxXF8edN6Dt3L99Y6aFQ==\\n",
+						 "PceWThKB0OQoYk6O0nigSw==\\n",
+						 "KDk10Nf+vS+JrzsYzRuDRw==\\n" }
+				   return ret[math.random(1, 5)]
 			end,
 		},
 	}

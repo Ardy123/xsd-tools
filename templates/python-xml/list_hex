@@ -31,9 +31,9 @@
 		test = {
 			assign = function()
 				return table.concat({
-					string.format('%x%x%x', math.random(0, 65535), math.random(0, 65535), math.random(0, 65535)),
-					string.format('%x%x%x', math.random(0, 65535), math.random(0, 65535), math.random(0, 65535)),
-					string.format('%x%x%x', math.random(0, 65535), math.random(0, 65535), math.random(0, 65535)),
+					string.format('%.4x%.4x%.4x', math.random(0, 65535), math.random(0, 65535), math.random(0, 65535)),
+					string.format('%.4x%.4x%.4x', math.random(0, 65535), math.random(0, 65535), math.random(0, 65535)),
+					string.format('%.4x%.4x%.4x', math.random(0, 65535), math.random(0, 65535), math.random(0, 65535)),
 				}, " ")
 			end,
 		},

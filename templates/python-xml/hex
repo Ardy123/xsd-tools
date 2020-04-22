@@ -31,7 +31,7 @@
 		test = {
 			assign = function()
 				return string.format(
-					'%x%x%x',
+					'%.4x%.4x%.4x',
 					math.random(0, 65535),
 					math.random(0, 65535),
 					math.random(0, 65535)
