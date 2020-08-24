@@ -49,7 +49,7 @@ def generate(env):
     
             # run shell command 'uname -m' to get system architecture
             architecture = subprocess.Popen(["uname","-m"], 
-                               stdout=subprocess.PIPE).communicate()[0].strip()
+                               stdout=subprocess.PIPE).communicate()[0].decode('ascii').strip()
             env['OBJCPY'] = 'objcopy'
             env['LUAOBJCMD'] = '$OBJCPY --input binary --output ' + \
                                output_target[architecture] + \

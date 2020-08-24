@@ -6,6 +6,7 @@ import distro
 platforms = { 
     'Linux-Default': 'linux-default',
     'Linux-ubuntu' : 'linux-ubuntu',
+    'ubuntu'       : 'linux-ubuntu',    
     'Darwin-darwin': 'darwin'
     }
 
