@@ -53,10 +53,17 @@ class conio:
 		sys.stdout.write(color + str(message) + self.ENDC)
 		
 	def call(self, cmdLine, workDir = None):
-		if None == workDir:
-			prcssStrm = subprocess.Popen(cmdLine, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                if None == workDir:
+		        prcssStrm = subprocess.Popen(cmdLine,
+                                                     shell=True,
+                                                     stdout=subprocess.PIPE,
+                                                     stderr=subprocess.PIPE)
 		else:
-			prcssStrm = subprocess.Popen(cmdLine, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=workDir)
+			prcssStrm = subprocess.Popen(cmdLine,
+                                                     shell=True,
+                                                     stdout=subprocess.PIPE,
+                                                     stderr=subprocess.PIPE,
+                                                     cwd=workDir)
 		rslt, error = prcssStrm.communicate()
 		# handle a signal error
 		if 0 > prcssStrm.returncode:

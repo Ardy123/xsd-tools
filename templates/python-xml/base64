@@ -3,12 +3,12 @@
 		marshal = {
 			attribute = function(attributeName)
 				return table.concat({
-					"        stream.write(' ", attributeName, " = \\'' + self._", attributeName, ".encode(\"base64\") + '\\'')\n",
+					"        stream.write(' ", attributeName, " = \\'' + base64/b64encode(self._", attributeName, ").decode('ascii') + '\\n\\'')\n",
 				})
 			end,
 			content = function()
 				return table.concat({
-					"        stream.write(self.getContent()[0].encode(\"base64\"))\n",
+					"        stream.write(base64.b64encode(self.getContent()[0]).decode('ascii') + '\\n')\n",
 				})
 			end,
 		},
@@ -16,12 +16,12 @@
 			attribute = function(attribName)
 				return table.concat({
 					"            if \"", attribName, "\" == attribute:\n",
-					"                self._", attribName, " = attributes[attribute].decode(\"base64\")\n",
+					"                self._", attribName, " = base64.b64decode(attributes[attribute].encode(\"ascii\"))\n",
 				})
 			end,
 			content = function()
 				return table.concat({
-					"        self._content = [content[0].decode(\"base64\")]\n"
+					"        self._content = [base64.b64decode(content[0].encode(\"ascii\"))]\n"
 				})
 			end
 		},

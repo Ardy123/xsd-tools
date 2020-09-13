@@ -88,8 +88,8 @@ def execTests(xsdfiles, rsltPath):
 		schemaName = _extractSchemaName(exe)
 		exefile = os.path.splitext(os.path.split(exe)[1])[0] + 'test.py'
 		consoleIO.stdout(consoleIO.ENDC, "executing test " + exefile + ": ")
-		cmd = 'python ' + rsltPath + schemaName + "/" + exefile
-		std, err, retcode = consoleIO.call(cmd)
+		cmd = 'python3 ' + rsltPath + schemaName + "/" + exefile
+		std, err, retcode = consoleIO.call(cmd)        
 		if _handleError(err, retcode):
 			return False
 		else:

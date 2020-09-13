@@ -3,12 +3,12 @@
 		marshal = {
 			attribute = function(attribName)
 				return table.concat({
-					"        stream.write(' ", attribName, "=\"' + \" \".join([x.encode(\"hex\") for x in self._", attribName, "])\"')\n",
+					"        stream.write(' ", attribName, "=\"' + \" \".join([binascii.hexlify(x).decode('ascii') for x in self._", attribName, "])\"')\n",
 				})
 			end,
 			content = function()
 				return table.concat({
-					"        stream.write(\" \".join([x.encode(\"hex\") for x in self.getContent()]))\n",
+					"        stream.write(\" \".join([binascii.hexlify(x).decode('ascii') for x in self.getContent()]))\n",
 				})
 			end,
 		},
@@ -16,17 +16,17 @@
 			attribute = function(attribName)
 				return table.concat({
 					"            if \"", attribName, "\" == attribute:\n",
-					"                self._", attribName, " = [\"\".join(x.split()).decode(\"hex\") for x in attributes[attribute].split(\" \")]\n"
+					"                self._", attribName, " = [bytes.fromhex(\"\".join(x.split())) for x in attributes[attribute].split(\" \")]\n"
 				})
 			end,
 			content = function()
 				return table.concat({
-					"        self._content = [\"\".join(x.split()).decode(\"hex\") for x in content[0].split(\" \")]\n",
+					"        self._content = [bytes.fromhex(\"\".join(x.split())) for x in content[0].split(\" \")]\n",
 				})
 			end
 		},
 		default = function(attribName, value)
-			return table.concat({"        self._", attribName, " = [\"\".join(x.split()).decode(\"hex\") for x in \"", value, "\".split(\" \")]\n"})
+			return table.concat({"        self._", attribName, " = [bytes.fromhex(\"\".join(x.split())) for x in \"", value, "\".split(\" \")]\n"})
 		end,
 		test = {
 			assign = function()

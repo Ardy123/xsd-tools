@@ -3,12 +3,12 @@
 		marshal = {
 			attribute = function(attributeName)
 				return table.concat({
-					"        stream.write(' ", attributeName, "= \"' + self._", attributeName, ".encode(\"hex\") + '\"')\n",
+					"        stream.write(' ", attributeName, "= \"' + binascii.hexlify(self._", attributeName, ").decode('ascii') + '\"')\n",
 				})
 			end,
 			content = function()
 				return table.concat({
-					"        stream.write(self.getContent()[0].encode(\"hex\"))\n",
+					"        stream.write(binascii.hexlify(self.getContent()[0]).decode('ascii'))\n",
 				})
 			end,
 		},
@@ -16,17 +16,17 @@
 			attribute = function(attribName)
 				return table.concat({
 					"            if \"", attribName, "\" == attribute:\n",
-					"                self._", attribName, " = \"\".join(attributes[attribute].split()).decode(\"hex\")\n",
+					"                self._", attribName, " = bytes.fromhex(\"\".join(attributes[attribute].split()))\n",
 				})
 			end,
 			content = function()
 				return table.concat({
-					"        self._content = [\"\".join(content[0].split()).decode(\"hex\")]\n"
+					"        self._content = [bytes.fromhex(\"\".join(content[0].split()))]\n"
 				})
 			end
 		},
 		default = function(attribName, value)
-			return table.concat({"        self._", attribName, " = \"\".join(\"", value, "\".split()).decode(\"hex\")\n"})
+			return table.concat({"        self._", attribName, " = bytes.fromhex(\"\".join(\"", value, "\".split()))\n"})
 		end,
 		test = {
 			assign = function()

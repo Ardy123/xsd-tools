@@ -9,7 +9,8 @@
 	schema = schema.c_safeNames()
 	depOrder = schema.sortDependencies()
 	depOrderSansRoot = table.filter(depOrder, function(k,v) return v.name ~= schema.root and v or nil end)
-]import cStringIO
+]import base64
+import binascii
 import xml.sax
 
 
@@ -36,8 +37,8 @@ class _handler(xml.sax.ContentHandler):
         self._elemStk.append(elementRecord)
 
     def characters(self, content): 
-        if self._elemStk[-1][2] and isinstance(self._elemStk[-1][2][-1], basestring):
-            self._elemStk[-1][2][-1] = self._elemStk[-1][2][-1] + content;
+        if self._elemStk[-1][2] and isinstance(self._elemStk[-1][2][-1], str):
+            self._elemStk[-1][2][-1] = self._elemStk[-1][2][-1] + content
         else:
             self._elemStk[-1][2].append(content)
 

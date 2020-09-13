@@ -9,7 +9,7 @@
 	schema = schema.c_safeNames()
 ][@lua -- create friendly root schema name
 	schemaName = schema.types[schema.root].name:gsub("_xsd$", "")
-]import cStringIO
+]import io
 import [@lua return schemaName]
 
 test = [
@@ -41,9 +41,9 @@ test = [
 
 
 def runTest(xmlstr):
-    outStr = cStringIO.StringIO()
+    outStr = io.StringIO()
     root = [@lua return schemaName].xml_[@lua return schema.root]()
-    root.unmarshal(cStringIO.StringIO(xmlstr))
+    root.unmarshal(io.StringIO(xmlstr))
     root.marshal(outStr)
     testval = outStr.getvalue() 
     assert testval == xmlstr

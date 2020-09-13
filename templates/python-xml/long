@@ -16,12 +16,12 @@
 			attribute = function(attribName)
 				return table.concat({
 					"            if \"", attribName, "\" == attribute:\n",
-					"                self._", attribName, " = long(\"\".join(attributes[attribute].split()))\n",
+					"                self._", attribName, " = int(\"\".join(attributes[attribute].split()))\n",
 				})
 			end,
 			content = function()
 				return table.concat({
-					"        self._content = [long(\"\".join(content[0].split()))]\n"
+					"        self._content = [int(\"\".join(content[0].split()))]\n"
 				})
 			end
 		},
