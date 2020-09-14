@@ -387,7 +387,7 @@ Node::QualifyElementName(const char* pElemName) const throw() {
 	std::unique_ptr<Schema> pDocRoot(GetSchema());
 	std::string xmlNamespace = pDocRoot->Namespace();
 	/* verify that the namespace is in the qualified name */
-	if (0 != elementName.find(xmlNamespace)) {
+	if (std::string::npos != elementName.find(xmlNamespace)) {
 		return xmlNamespace + ":" + elementName;
 	}
 	return elementName;

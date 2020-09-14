@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema">
+  <element name ="outerElement">
+    <complexType>
+      <sequence>
+	<element name="innerElement">
+	  <complexType>
+	    <all>
+	      <element name="record">
+		<complexType>
+		  <simpleContent>
+		    <extension base="base64Binary">
+		      <attribute name="id" type="unsignedInt" />
+		      <attribute name="fullName" type="string" />
+		      <attribute name="address" type="string" />
+		    </extension>
+		  </simpleContent>
+		</complexType>
+	      </element>
+	    </all>
+	    <attribute name="name" type="string" />
+	  </complexType>
+	</element>
+      </sequence>
+    </complexType>
+  </element>
+</schema>

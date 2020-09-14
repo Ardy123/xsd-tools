@@ -8,7 +8,7 @@
 			end,
 			content = function()
 				return table.concat({
-					"        stream.write(\" \".join([base64.b64encode(x).decode('ascii') + '\\n' for x in self.getContent()]))\n",
+					"        stream.write(\" \".join([base64.b64encode(x).decode('utf-8') + '\\n' for x in self.getContent()]))\n",
 				})
 			end,
 		},
@@ -16,17 +16,17 @@
 			attribute = function(attribName)
 				return table.concat({
 					"            if \"", attribName, "\" == attribute:\n",
-					"                self._", attribName, " = [base64.b64decode(x.encode('ascii')) for x in attributes[attribute].split(\" \")]\n"
+					"                self._", attribName, " = [base64.b64decode(x.encode('utf-8')) for x in attributes[attribute].split(\" \")]\n"
 				})
 			end,
 			content = function()
 				return table.concat({
-					"        self._content = [base64.b64decode(x.encode('ascii')) for x in content[0].split(\" \")]\n",
+					"        self._content = [base64.b64decode(x.encode('utf-8')) for x in content[0].split(\" \")]\n",
 				})
 			end
 		},
 		default = function(attribName, value)
-			return table.concat({"        self._", attribName, " = [base64.b64decode(x.encode('ascii')) for x in \"", value, "\".split(\" \")]\n"})
+			return table.concat({"        self._", attribName, " = [base64.b64decode(x.encode('utf-8')) for x in \"", value, "\".split(\" \")]\n"})
 		end,
 		test = {
 			assign = function()

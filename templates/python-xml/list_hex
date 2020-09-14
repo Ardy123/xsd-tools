@@ -3,12 +3,12 @@
 		marshal = {
 			attribute = function(attribName)
 				return table.concat({
-					"        stream.write(' ", attribName, "=\"' + \" \".join([binascii.hexlify(x).decode('ascii') for x in self._", attribName, "])\"')\n",
+					"        stream.write(' ", attribName, "=\"' + \" \".join([binascii.hexlify(x).decode('utf-8') for x in self._", attribName, "])\"')\n",
 				})
 			end,
 			content = function()
 				return table.concat({
-					"        stream.write(\" \".join([binascii.hexlify(x).decode('ascii') for x in self.getContent()]))\n",
+					"        stream.write(\" \".join([binascii.hexlify(x).decode('utf-8') for x in self.getContent()]))\n",
 				})
 			end,
 		},

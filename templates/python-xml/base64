@@ -3,12 +3,12 @@
 		marshal = {
 			attribute = function(attributeName)
 				return table.concat({
-					"        stream.write(' ", attributeName, " = \\'' + base64/b64encode(self._", attributeName, ").decode('ascii') + '\\n\\'')\n",
+					"        stream.write(' ", attributeName, " = \\'' + base64/b64encode(self._", attributeName, ").decode('utf-8') + '\\n\\'')\n",
 				})
 			end,
 			content = function()
 				return table.concat({
-					"        stream.write(base64.b64encode(self.getContent()[0]).decode('ascii') + '\\n')\n",
+					"        stream.write(base64.b64encode(self.getContent()[0]).decode('utf-8') + '\\n')\n",
 				})
 			end,
 		},
@@ -16,17 +16,17 @@
 			attribute = function(attribName)
 				return table.concat({
 					"            if \"", attribName, "\" == attribute:\n",
-					"                self._", attribName, " = base64.b64decode(attributes[attribute].encode(\"ascii\"))\n",
+					"                self._", attribName, " = base64.b64decode(attributes[attribute].encode('utf-8'))\n",
 				})
 			end,
 			content = function()
 				return table.concat({
-					"        self._content = [base64.b64decode(content[0].encode(\"ascii\"))]\n"
+					"        self._content = [base64.b64decode(content[0].encode('utf-8'))]\n"
 				})
 			end
 		},
 		default = function(attribName, value)
-			return table.concat({"        self._", attribName, " = \"", value, "\".decode(\"base64\")\n"})
+			return table.concat({"        base64.b64decode(self._", attribName, " = \"", value, "\".encode('utf-8')\n"})
 		end,
 		test = {
 			assign = function()
