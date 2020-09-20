@@ -1,0 +1,57 @@
+outerElement = {
+	maxOccurs = 1
+	content = {
+		innerElement = {
+			maxOccurs = 1
+			content = {
+				record = {
+					maxOccurs = 1
+					content = {
+						base64Binary = {
+							maxOccurs = 1
+							content = {}
+							attributes = {}
+						}
+					}
+					attributes = {
+						id = {
+							unsignedInt = {
+								attributes = {}
+								maxOccurs = 1
+								content = {}
+								use = optional
+							}
+						}
+						fullName = {
+							string = {
+								attributes = {}
+								maxOccurs = 1
+								content = {}
+								use = optional
+							}
+						}
+						address = {
+							string = {
+								attributes = {}
+								maxOccurs = 1
+								content = {}
+								use = optional
+							}
+						}
+					}
+				}
+			}
+			attributes = {
+				name = {
+					string = {
+						attributes = {}
+						maxOccurs = 1
+						content = {}
+						use = optional
+					}
+				}
+			}
+		}
+	}
+	attributes = {}
+}
