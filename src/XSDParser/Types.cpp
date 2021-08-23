@@ -58,10 +58,8 @@ SimpleType::isTypeRelated(const BaseType* pType) const {
 
 /* virtual */ const char*
 SimpleType::Name() const {
-	if (m_pValue->HasName())
-		return m_pValue->Name().c_str();
-	else
-		return "Unnamed";
+  m_name = (m_pValue->HasName()) ? m_pValue->Name() : "Unnamed";
+  return m_name.c_str();
 }
 
 /* virtual */
@@ -95,10 +93,9 @@ ComplexType::isTypeRelated(const BaseType* pType) const {
 
 /* virtual */ const char*
 ComplexType::Name() const {
-	if (m_pValue->HasName())
-		return m_pValue->Name().c_str();
-	else
-		return "Unnamed";
+  m_name = (m_pValue->HasName())
+    ? m_pValue->Name() : "Unnamed";
+  return m_name.c_str();
 }
 
 /* virtual */
