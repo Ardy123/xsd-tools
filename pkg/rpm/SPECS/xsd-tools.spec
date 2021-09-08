@@ -1,7 +1,7 @@
 %define _topdir		%(echo $PWD)
 %define name		xsd-tools
-%define	release		1
-%define version		0.8.1
+%define	release		0
+%define version		0.1.0
 %define buildroot	%{_topdir}/%{name}-%{version}-root
 
 BuildRoot:		%{buildroot}
