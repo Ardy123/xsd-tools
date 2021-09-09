@@ -58,7 +58,10 @@ def SetupEnv(buildSettings, env, platform, config):
     # update C/C++ flags with paths
     for lib in buildSettings['libs'][platform]:
         try:
-            env.ParseConfig('PKG_CONFIG_PATH=. pkg-config --silence-errors --cflags --libs ' + lib)
+            env.ParseConfig(
+                "PKG_CONFIG_PATH={} pkg-config --silence-errors --cflags --libs {}".format(
+                    os.getenv('PKG_CONFIG_PATH', '.'),
+                    lib))
         except OSError:
             env.MergeFlags(('-l%s' % (lib)))
     return env
