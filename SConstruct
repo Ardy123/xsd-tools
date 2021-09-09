@@ -109,7 +109,7 @@ xsdb = {
 # Get arguments
 release_target      = ARGUMENTS.get('conf', 'release')
 install_prefix      = ARGUMENTS.get('prefix', '/usr/')
-install_target_bin  = os.path.join(install_prefix, 'local/bin/')
+install_target_bin  = os.path.join(install_prefix, 'bin/')
 install_target_data = os.path.join(install_prefix, 'share/xsdtools/templates/')
 build_platform      = platforms.get(
     ("%s-%s" % (platform.system(), distro.id())), 
