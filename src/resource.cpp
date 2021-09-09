@@ -48,8 +48,8 @@ using namespace Core;
 												&_binary_luascript_luac_start;
 #endif /* __APPLE__ */
 
-static const string gscHOMEPATH("~/.xsdtools/templates/");
-static const string gscGLOBALPATH("/usr/share/xsdtools/templates/");
+static const string gscHOMEPATH("~/.xsdtools/templates");
+static const string gscGLOBALPATH("/usr/share/xsdtools/templates");
 
 ResourceException::ResourceException(const string& rMsg)
 	: m_errorMsg(rMsg)
@@ -82,15 +82,23 @@ Resource::GetTemplatePath(const std::string& templateName) noexcept(false) {
 	/* test if the template name exists */
 	if (0 == access(templateName.c_str(), R_OK))
 		return templateName;
+	/* check environment variable for template file */
+	const char * val = getenv("XSDTOOLS_DATA");
+	if (nullptr != val) {
+		string envFilePath(val);
+		envFilePath += "/" + templateName;
+		if (0 == access(envFilePath.c_str(), R_OK))
+			return envFilePath;
+	}
 	/* check the home directory for template file */
 	struct passwd* pw = getpwuid(getuid());
 	string homeFilePath(pw->pw_dir);
-	homeFilePath += gscHOMEPATH.substr(1) + templateName;
+	homeFilePath += "/" + gscHOMEPATH.substr(1) + templateName;
 	if (0 == access(homeFilePath.c_str(), R_OK))
 		return homeFilePath;
 	/* check the global directory for template file */
 	string globalFilePath(gscGLOBALPATH);
-	globalFilePath += templateName;
+	globalFilePath += "/" + templateName;
 	if (0 == access(globalFilePath.c_str(), R_OK))
 		return globalFilePath;
 	else {
