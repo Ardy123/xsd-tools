@@ -1,7 +1,8 @@
 #!/bin/sh
 
-DBG_PROFILE="${DEBUG_PROFILE:-$(uname -s)-$(uname -m)-Debug}"
-REL_PROFILE="${RELEASE_PROFILE:-$(uname -s)-$(uname -m)-Release}"
+HOST_PROFILE="${HOST_PROFILE:-$(uname -s)-$(uname -m)-Release}"
+BUILD_PROFILE_DBG="${BUILD_PROFILE:-$(uname -s)-$(uname -m)-Debug}"
+BUILD_PROFILE_REL="${BUILD_PROFILE:-$(uname -s)-$(uname -m)-Release}"
 
 function num_cpus() {
     local os=$(uname -s)
@@ -15,12 +16,20 @@ function num_cpus() {
 function usage() {
     echo "xsd-tools conan build script"
     echo ""
-    echo "Usage"
-    echo "build-conan.sh [debug|release|clean]"
+    echo "\tUsage"
+    echo "\tbuild-conan.sh [debug|release|clean]"
     echo "\t\t builds either the debug or release configuraitons or"
     echo "\t\t it cleans the repo."
     echo ""
-    echo "Examples"
+    echo "\tEnvironment Variables"
+    echo "\tHOST_PROFILE"
+    echo "\t\tThe conan profile to be used to define the host"
+    echo "\t\tenvironment."
+    echo "\tBUILD_PROFILE"
+    echo "\t\tThe conan profile to be used to define the build"
+    echo "\t\tenvironment."
+    echo ""
+    echo "\tExamples"
     echo "\t\t./build-conan.sh debug"
     echo "\t\t./build-conan.sh clean"    
 }
@@ -33,11 +42,12 @@ else
 	case "$1" in
 	    Release)
 		echo "Compiling Release"
-		echo "\tprofile: $DBG_PROFILE"
-		echo "\tncpus  : $(num_cpus)"
+		echo "\thost profile : $HOST_PROFILE"
+		echo "\tbuild profile: $BUILD_PROFILE_REL"
+		echo "\tncpus        : $(num_cpus)"
 		conan install . \
-		      -pr:h $REL_PROFILE \
-		      -pr:b $REL_PROFILE
+		      -pr:h $HOST_PROFILE \
+		      -pr:b $BUILD_PROFILE_REL
 		source activate.sh
 		scons conf=release -j$(num_cpus)
 		build_error=$?
@@ -46,11 +56,12 @@ else
 		;;
 	    Debug)
 		echo "Compiling Debug"
-		echo "\tprofile: $DBG_PROFILE"
-		echo "\tncpus  : $(num_cpus)"
+		echo "\thost profile : $HOST_PROFILE"
+		echo "\tbuild profile: $BUILD_PROFILE_DBG"
+		echo "\tncpus        : $(num_cpus)"
 		conan install . \
-		      -pr:h $REL_PROFILE \
-		      -pr:b $DBG_PROFILE
+		      -pr:h $HOST_PROFILE \
+		      -pr:b $BUILD_PROFILE_DBG
 		source activate.sh
 		scons conf=debug -j$(num_cpus)
 		build_error=$?
