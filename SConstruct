@@ -71,7 +71,7 @@ xsdb = {
             'linux-ubuntu' : ['tinyxml', 'libboost_system', 'boost_filesystem', 'lua5.1'],
             'darwin' : ['tinyxml', 'libboost_system', 'boost_filesystem', 'lua5.1'] 
             },
-    'cflags': { 
+    'cflags': {
             'linux-default' : {
                 'debug'  : '-Wall -Werror -I. -g -g3 -ggdb -gdwarf-4 -Winit-self -Wformat -Wformat-nonliteral',
                 'release': '-Wall -Werror -I. -O3 -fomit-frame-pointer -Winit-self -Wformat -Wformat-nonliteral' 
@@ -81,11 +81,11 @@ xsdb = {
                 'release': '-Wall -Werror -I. -O3 -fomit-frame-pointer -Winit-self -Wformat -Wformat-nonliteral'
                 },
             'darwin' : {
-                'debug'  : '-std=c++11 -Wall -Werror -I. -g -g3 -ggdb -gdwarf-4 -Winit-self -Wformat -Wformat-nonliteral -I/usr/local/include -Wno-unused-local-typedefs -Wno-potentially-evaluated-expression',
-                'release': '-std=c++11 -Wall -Werror -I. -O3 -fomit-frame-pointer -Winit-self -Wformat -Wformat-nonliteral -I/usr/local/include -Wno-unused-local-typedefs -Wno-potentially-evaluated-expression'
+                'debug'  : '-std=c++11 -Wall -Werror -I. -g -g3 -ggdb -gdwarf-4 -Winit-self -Wformat -Wformat-nonliteral -I/usr/local/include -Wno-unused-local-typedefs -Wno-potentially-evaluated-expression -Wno-format-nonliteral',
+                'release': '-std=c++11 -Wall -Werror -I. -O3 -fomit-frame-pointer -Winit-self -Wformat -Wformat-nonliteral -I/usr/local/include -Wno-unused-local-typedefs -Wno-potentially-evaluated-expression -Wno-format-nonliteral'
                 }
             },    
-    'luaflags': { 
+    'luaflags': {
             'debug': '', 
             'release': '-s' 
             },

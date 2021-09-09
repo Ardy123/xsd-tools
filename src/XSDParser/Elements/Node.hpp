@@ -28,6 +28,7 @@
 #endif /* TIXML_USE_STL */
 #include <typeinfo>
 #include <memory>
+#include <sstream>
 #include <boost/algorithm/string/predicate.hpp>
 #include <tinyxml.h>
 #include "./src/XSDParser/Exception.hpp"

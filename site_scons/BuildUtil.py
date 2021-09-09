@@ -45,6 +45,7 @@ def _sconsWrap(str):
     return SCons.Util.CLVar(str)
 
 def SetupEnv(buildSettings, env, platform, config):
+    env['ENV']['PATH'] = os.environ['PATH']
     # setup lua builders
     env.Tool('luac')
     # pull compiler from environment variables
@@ -52,12 +53,12 @@ def SetupEnv(buildSettings, env, platform, config):
     # set C/C++/Lua/link flags with variant settings
     env['CFLAGS']   = SCons.Util.CLVar(buildSettings['cflags'][platform][config])
     env['CCFLAGS']  = SCons.Util.CLVar(buildSettings['cflags'][platform][config])
-    env['LUACFLAGS']=SCons.Util.CLVar(buildSettings['luaflags'][config])
-    env['LINKFLAGS']=SCons.Util.CLVar(buildSettings['linkflags'][platform][config])
+    env['LUACFLAGS']= SCons.Util.CLVar(buildSettings['luaflags'][config])
+    env['LINKFLAGS']= SCons.Util.CLVar(buildSettings['linkflags'][platform][config])
     # update C/C++ flags with paths
     for lib in buildSettings['libs'][platform]:
         try:
-            env.ParseConfig('pkg-config --silence-errors --cflags --libs ' + lib)
+            env.ParseConfig('PKG_CONFIG_PATH=. pkg-config --silence-errors --cflags --libs ' + lib)
         except OSError:
             env.MergeFlags(('-l%s' % (lib)))
     return env

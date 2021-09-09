@@ -26,6 +26,7 @@
 #ifndef TIXML_USE_STL
   #define TIXML_USE_STL
 #endif /* TIXML_USE_STL */
+#include <string>
 #include <tinyxml.h>
 
 namespace XSD {
