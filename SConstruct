@@ -74,12 +74,12 @@ xsdb = {
             },
     'cflags': {
             'linux-default' : {
-                'debug'  : '-Wall -Werror -I. -g -Winit-self -Wformat -Wformat-nonliteral -Wno-potentially-evaluated-expression',
-                'release': '-Wall -Werror -I. -O3 -fomit-frame-pointer -Winit-self -Wformat -Wformat-nonliteral -Wno-potentially-evaluated-expression' 
+                'debug'  : '-Wall -Werror -I. -g -Winit-self -Wformat -Wformat-nonliteral -Wno-potentially-evaluated-expression -Wno-format-nonliteral',
+                'release': '-Wall -Werror -I. -O3 -fomit-frame-pointer -Winit-self -Wformat -Wformat-nonliteral -Wno-potentially-evaluated-expression -Wno-format-nonliteral' 
                 },
             'linux-ubuntu' : {
-                'debug'  : '-Wall -Werror -I. -g -Winit-self -Wformat -Wformat-nonliteral -Wno-potentially-evaluated-expression',
-                'release': '-Wall -Werror -I. -O3 -fomit-frame-pointer -Winit-self -Wformat -Wformat-nonliteral -Wno-potentially-evaluated-expression'
+                'debug'  : '-Wall -Werror -I. -g -Winit-self -Wformat -Wformat-nonliteral -Wno-potentially-evaluated-expression -Wno-format-nonliteral',
+                'release': '-Wall -Werror -I. -O3 -fomit-frame-pointer -Winit-self -Wformat -Wformat-nonliteral -Wno-potentially-evaluated-expression -Wno-format-nonliteral'
                 },
             'darwin' : {
                 'debug'  : '-std=c++11 -Wall -Werror -I. -g -Winit-self -Wformat -Wformat-nonliteral -I/usr/local/include -Wno-unused-local-typedefs -Wno-potentially-evaluated-expression -Wno-format-nonliteral',
