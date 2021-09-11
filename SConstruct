@@ -2,6 +2,7 @@ import BuildUtil
 import os.path
 import platform
 import distro
+import os
 
 platforms = { 
     'Linux-Default': 'linux-default',
@@ -73,15 +74,15 @@ xsdb = {
             },
     'cflags': {
             'linux-default' : {
-                'debug'  : '-Wall -Werror -I. -g -g3 -ggdb -gdwarf-4 -Winit-self -Wformat -Wformat-nonliteral',
-                'release': '-Wall -Werror -I. -O3 -fomit-frame-pointer -Winit-self -Wformat -Wformat-nonliteral' 
+                'debug'  : '-Wall -Werror -I. -g -Winit-self -Wformat -Wformat-nonliteral -Wno-potentially-evaluated-expression',
+                'release': '-Wall -Werror -I. -O3 -fomit-frame-pointer -Winit-self -Wformat -Wformat-nonliteral -Wno-potentially-evaluated-expression' 
                 },
             'linux-ubuntu' : {
-                'debug'  : '-Wall -Werror -I. -g -g3 -ggdb -gdwarf-4 -Winit-self -Wformat -Wformat-nonliteral',
-                'release': '-Wall -Werror -I. -O3 -fomit-frame-pointer -Winit-self -Wformat -Wformat-nonliteral'
+                'debug'  : '-Wall -Werror -I. -g -Winit-self -Wformat -Wformat-nonliteral -Wno-potentially-evaluated-expression',
+                'release': '-Wall -Werror -I. -O3 -fomit-frame-pointer -Winit-self -Wformat -Wformat-nonliteral -Wno-potentially-evaluated-expression'
                 },
             'darwin' : {
-                'debug'  : '-std=c++11 -Wall -Werror -I. -g -g3 -ggdb -gdwarf-4 -Winit-self -Wformat -Wformat-nonliteral -I/usr/local/include -Wno-unused-local-typedefs -Wno-potentially-evaluated-expression -Wno-format-nonliteral',
+                'debug'  : '-std=c++11 -Wall -Werror -I. -g -Winit-self -Wformat -Wformat-nonliteral -I/usr/local/include -Wno-unused-local-typedefs -Wno-potentially-evaluated-expression -Wno-format-nonliteral',
                 'release': '-std=c++11 -Wall -Werror -I. -O3 -fomit-frame-pointer -Winit-self -Wformat -Wformat-nonliteral -I/usr/local/include -Wno-unused-local-typedefs -Wno-potentially-evaluated-expression -Wno-format-nonliteral'
                 }
             },    
@@ -117,7 +118,14 @@ build_platform      = platforms.get(
 )
 
 # Setup Environment
-env = BuildUtil.SetupEnv(xsdb, Environment(), build_platform, release_target)
+env_setup = {
+    'CC'    : os.environ.get('CC', 'gcc'),
+    'CXX'   : os.environ.get('CXX', 'g++'),
+    'LD'    : os.environ.get('LD', 'ld'),
+    'AR'    : os.environ.get('AR', 'ar'),
+    'STRIP' : os.environ.get('STRIP', 'strip')
+}
+env = BuildUtil.SetupEnv(xsdb, Environment(**env_setup), build_platform, release_target)
 
 # Build xsdb
 lua, xsdb = BuildUtil.Program(xsdb, env, release_target)
