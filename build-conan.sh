@@ -13,6 +13,24 @@ function num_cpus() {
     fi
 }
 
+function target() {
+    local os=$(uname -s | tr '[:upper:]' '[:lower:]')
+    if [[ "darwin" == "$os" ]]; then
+	echo "$os"
+    elif [[ "linux" == "$os" ]]; then
+	local host_plaftorm=$(lsb_release -i | \
+				  sed 's/Distributor ID://g' | \
+				  tr '[:upper:]' '[:lower:]')
+	if [[ "ubuntu" == "$host_platform" ]]; then
+	    echo "$os-$host_platform"
+	else
+	    echo "$os-default"
+	fi
+    else
+	echo "linux-default"
+    fi
+}
+
 function usage() {
     echo "xsd-tools conan build script"
     echo ""
@@ -45,11 +63,12 @@ else
 		echo "\thost profile : $HOST_PROFILE"
 		echo "\tbuild profile: $BUILD_PROFILE_REL"
 		echo "\tncpus        : $(num_cpus)"
+		echo "\ttarget       : $(target)"
 		conan install . \
 		      -pr:h $HOST_PROFILE \
 		      -pr:b $BUILD_PROFILE_REL
 		source activate.sh
-		scons conf=release -j$(num_cpus)
+		scons conf=release target=$(target) -j$(num_cpus)
 		build_error=$?
 		source deactivate.sh
 		exit $build_error
@@ -59,11 +78,12 @@ else
 		echo "\thost profile : $HOST_PROFILE"
 		echo "\tbuild profile: $BUILD_PROFILE_DBG"
 		echo "\tncpus        : $(num_cpus)"
+		echo "\ttarget       : $(target)"
 		conan install . \
 		      -pr:h $HOST_PROFILE \
 		      -pr:b $BUILD_PROFILE_DBG
 		source activate.sh
-		scons conf=debug -j$(num_cpus)
+		scons conf=debug target=$(target) -j$(num_cpus)
 		build_error=$?
 		source deactivate.sh
 		exit $build_error
