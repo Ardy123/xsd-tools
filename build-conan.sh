@@ -82,7 +82,8 @@ else
 		conan install . \
 		      -pr:h $HOST_PROFILE \
 		      -pr:b $BUILD_PROFILE_DBG \
-		      --build
+		      --build=outdated \
+		      --build=missing
 		source activate.sh
 		scons conf=debug target=$(target) -j$(num_cpus)
 		build_error=$?
