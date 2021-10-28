@@ -52,8 +52,7 @@ def generate(env):
                                stdout=subprocess.PIPE).communicate()[0].decode('ascii').strip()
             env['OBJCPY'] = 'objcopy'
             env['LUAOBJCMD'] = '$OBJCPY --input binary --output ' + \
-                               output_target[architecture] + \
-                               ' --binary-architecture i386 $SOURCE $TARGET'
+                               'elf32-little $SOURCE $TARGET'
     except KeyError:
         raise Exception( "Architecture {0} not supported".format(architecture))    
     
