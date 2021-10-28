@@ -18,9 +18,10 @@ function target() {
     if [[ "darwin" == "$os" ]]; then
 	echo "$os"
     elif [[ "linux" == "$os" ]]; then
-	local host_plaftorm=$(lsb_release -i | \
-				  sed 's/Distributor ID://g' | \
-				  tr '[:upper:]' '[:lower:]')
+	local host_platform=$(lsb_release -i | \
+				  sed 's/\s*Distributor ID:\s*//g' | \
+				  tr '[:upper:]' '[:lower:]'| \
+				  sed 's/\s+//g')
 	if [[ "ubuntu" == "$host_platform" ]]; then
 	    echo "$os-$host_platform"
 	else

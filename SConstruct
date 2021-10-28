@@ -91,11 +91,13 @@ xsdb = {
             'debug'  : '-Wall -Werror -I. -g -Winit-self -Wformat ' \
             '-Wformat-nonliteral ' \
             '-Wno-potentially-evaluated-expression ' \
-            '-Wno-format-nonliteral',
+            '-Wno-format-nonliteral ' \
+            '-no-pie',
             'release': '-Wall -Werror -I. -O3 -fomit-frame-pointer ' \
             '-Winit-self -Wformat -Wformat-nonliteral ' \
-                '-Wno-potentially-evaluated-expression ' \
-            '-Wno-format-nonliteral'
+            '-Wno-potentially-evaluated-expression ' \
+            '-Wno-format-nonliteral ' \
+            '-no-pie'
             },
         'darwin' : {
             'debug'  : '-std=c++11 -Wall -Werror -I. -g -Winit-self ' \
@@ -121,8 +123,8 @@ xsdb = {
             'release': '-Wl,-O1 -Wl,--discard-all -Wl,--no-undefined'
         },
         'linux-ubuntu' : {
-            'debug':'-g',
-        'release': '-Wl,-O1 -Wl,--discard-all -Wl,--no-undefined'
+            'debug':'-g -no-pie',
+            'release': '-Wl,-O1 -Wl,--discard-all -Wl,--no-undefined -no-pie'
         },
         'darwin' : {
             'debug':'-g -sectcreate __DATA __luascript_luac ' \
