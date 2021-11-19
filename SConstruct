@@ -120,12 +120,12 @@ xsdb = {
     'linkflags': {
         'linux-default' : {
             'debug':'-g',
-            'release': '-Wl,-O1 -Wl,--discard-all -Wl,--no-undefined -Wl,--gc-sectcions'
+            'release': '-Wl,-O1 -Wl,--discard-all -Wl,--no-undefined -Wl,--gc-sections'
         },
         'linux-ubuntu' : {
             'debug':'-g -no-pie',
             'release': '-Wl,-O1 -Wl,--discard-all -Wl,--no-undefined ' \
-            '-no-pie -Wl,--gc-sexsctions'
+            '-no-pie -Wl,--gc-sections'
         },
         'darwin' : {
             'debug':'-g',
