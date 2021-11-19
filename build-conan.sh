@@ -1,8 +1,8 @@
 #!/bin/bash
 
-HOST_PROFILE="${HOST_PROFILE:-$(uname -s)-$(uname -m)-Release}"
-BUILD_PROFILE_DBG="${BUILD_PROFILE:-$(uname -s)-$(uname -m)-Debug}"
-BUILD_PROFILE_REL="${BUILD_PROFILE:-$(uname -s)-$(uname -m)-Release}"
+HOST_PROFILE_DBG="${HOST_PROFILE:-$(uname -s)-$(uname -m)-Debug}"
+HOST_PROFILE_REL="${HOST_PROFILE:-$(uname -s)-$(uname -m)-Release}"
+BUILD_PROFILE="${BUILD_PROFILE:-$(uname -s)-$(uname -m)-Release}"
 
 function num_cpus() {
     local os=$(uname -s)
@@ -66,8 +66,8 @@ else
 		echo "    ncpus        : $(num_cpus)"
 		echo "    target       : $(target)"
 		conan install . \
-		      -pr:h $HOST_PROFILE \
-		      -pr:b $BUILD_PROFILE_REL
+		      -pr:h $HOST_PROFILE_REL \
+		      -pr:b $BUILD_PROFILE
 		source activate.sh
 		scons conf=release target=$(target) -j$(num_cpus)
 		build_error=$?
@@ -81,8 +81,8 @@ else
 		echo "    ncpus        : $(num_cpus)"
 		echo "    target       : $(target)"
 		conan install . \
-		      -pr:h $HOST_PROFILE \
-		      -pr:b $BUILD_PROFILE_DBG \
+		      -pr:h $HOST_PROFILE_DBG \
+		      -pr:b $BUILD_PROFILE \
 		      --build=outdated \
 		      --build=missing
 		source activate.sh
