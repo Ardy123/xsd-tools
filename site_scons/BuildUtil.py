@@ -68,13 +68,10 @@ def SetupEnv(buildSettings, env, platform, config):
 
 def Program(buildSettings, env, config):
     lua = env.Lua('luascript', _extractLuaFiles(buildSettings))
-
-    xsdb = None
+    xsdb     = None
     targets  = buildSettings['target']
     cppFiles = _extractCPPFiles(buildSettings) 
-    if sys.platform.startswith("linux"):
-        xsdb = env.Program(targets, cppFiles + lua)
-    elif sys.platform.startswith("darwin"):
-        xsdb = env.Program(targets, cppFiles)
-
+    xsdb     = env.Program(targets, cppFiles)
+    env.Depends(xsdb, lua)
+    
     return lua, xsdb

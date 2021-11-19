@@ -22,8 +22,13 @@ import SCons.Defaults
 import sys
 import subprocess 
 
-LuacObjectBuilder = SCons.Builder.Builder(action = '$LUACMD', suffix = '.luac', src_suffix = '.lua')
-LuacProgramBuilder = SCons.Builder.Builder(action = '$LLCCMD', suffix = '.luac', src_suffix = '.luac', src_builder = ['LuaC'])
+LuacObjectBuilder = SCons.Builder.Builder(action = '$LUACMD',
+                                          suffix = '.luac',
+                                          src_suffix = '.lua')
+LuacProgramBuilder = SCons.Builder.Builder(action = '$LLCCMD',
+                                           suffix = '.luac',
+                                           src_suffix = '.luac',
+                                           src_builder = ['LuaC'])
 
 
 def generate(env):
