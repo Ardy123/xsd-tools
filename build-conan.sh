@@ -49,7 +49,7 @@ function usage() {
     echo "        environment."
     echo ""
     echo "    Examples"
-    echo "        ./build-conan.sh debug"
+    echo "        ./build-conan.sh Debug"
     echo "        ./build-conan.sh clean"    
 }
 
