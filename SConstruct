@@ -91,13 +91,12 @@ xsdb = {
             'debug'  : '-Wall -Werror -I. -g -Winit-self -Wformat ' \
             '-Wformat-nonliteral ' \
             '-Wno-potentially-evaluated-expression ' \
-            '-Wno-format-nonliteral ' \
-            '-no-pie',
+            '-Wno-format-nonliteral',
             'release': '-Wall -Werror -I. -O3 -fomit-frame-pointer ' \
             '-ffunction-sections -fdata-sections -Winit-self ' \
             '-Wformat -Wformat-nonliteral ' \
             '-Wno-potentially-evaluated-expression ' \
-            '-Wno-format-nonliteral -no-pie'
+            '-Wno-format-nonliteral'
             },
         'darwin' : {
             'debug'  : '-std=c++11 -Wall -Werror -I. -g -Winit-self ' \

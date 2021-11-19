@@ -34,7 +34,7 @@ LuacProgramBuilder = SCons.Builder.Builder(action = '$LLCCMD',
 def generate(env):
     # set env variables/settings
     env['BUILDERS']['LuaC'] = LuacObjectBuilder
-    env['LUAC'] = env.Detect(['luac5.1', 'luac'])
+    env['LUAC'] = env.Detect(['luac', 'luac5.1'])
     env['LUACFLAGS'] = ''
     env['LUACMD'] = '$LUAC -o $TARGET $LUACFLAGS $SOURCE'
     env['BUILDERS']['Lua'] = LuacProgramBuilder
