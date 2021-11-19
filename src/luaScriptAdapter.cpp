@@ -150,6 +150,10 @@ LuaScriptAdapter::LuaState() noexcept {
 /* static */ int
 LuaScriptAdapter::luaSDBMHash(lua_State* pLuaState) {
 	const char* pStr = lua_tostring(pLuaState, -1);
+#if defined(LNUM_INT32)
+	lua_pushinteger(pLuaState, Util::SDBMHash(std::string(pStr)));
+#else	
 	lua_pushnumber(pLuaState, Util::SDBMHash(std::string(pStr)));
+#endif
 	return 1;
 }
