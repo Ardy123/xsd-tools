@@ -60,7 +60,7 @@ def SetupEnv(buildSettings, env, platform, config):
         try:
             env.ParseConfig(
                 "PKG_CONFIG_PATH={} pkg-config --silence-errors --cflags --libs {}".format(
-                    os.getenv('PKG_CONFIG_PATH', '.'),
+                    os.getenv('PKG_CONFIG_PATH', '.:third-party/'),
                     lib))
         except OSError:
             env.MergeFlags(('-l%s' % (lib)))

@@ -24,29 +24,18 @@
 #include <sys/types.h>
 #include <pwd.h>
 #include <string>
-#ifdef __APPLE__
-	#include <mach-o/dyld.h>
-	#include <mach-o/getsect.h>
-#endif /* __APPLE__ */
+#define INCBIN_SILENCE_BITCODE_WARNING
+#define INCBIN_PREFIX _binary_
+#include <incbin.h>
 #include "src/resource.hpp"
 
 using namespace std;
 using namespace Core;
 
-#ifdef __APPLE__
-	static size_t _binary_luascript_luac_size;
-	static char * _binary_luascript_luac = 
-		getsectdata("__DATA", "__luascript_luac", &_binary_luascript_luac_size)  
-		+ _dyld_get_image_vmaddr_slide(0); 
-#else /* __APPLE__ */
-	extern "C" {
-    	extern char _binary_luascript_luac_start;
-    	extern char _binary_luascript_luac_end;
-	}
-	static char * _binary_luascript_luac = &_binary_luascript_luac_start;
-	static size_t _binary_luascript_luac_size = &_binary_luascript_luac_end - 
-												&_binary_luascript_luac_start;
-#endif /* __APPLE__ */
+INCBIN(luascript_luac, "luascript.luac");
+
+static const unsigned char * _binary_luascript_luac = &_binary_luascript_luacData[0];
+static const size_t _binary_luascript_luac_size = _binary_luascript_luacSize; 
 
 static const string gscHOMEPATH("~/.xsdtools/templates");
 static const string gscGLOBALPATH("/usr/share/xsdtools/templates");
@@ -74,7 +63,7 @@ Resource::~Resource() noexcept
 const uint8_t *
 Resource::GetEngineScript(size_t* pRetSz) noexcept {
 	*pRetSz = _binary_luascript_luac_size;
-	return reinterpret_cast<uint8_t*> (_binary_luascript_luac);
+	return reinterpret_cast<const uint8_t*> (_binary_luascript_luac);
 }
 
 string

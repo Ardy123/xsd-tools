@@ -70,11 +70,11 @@ xsdb = {
         'src/TemplateEngine/templateEngine.lua'],
     'libs': {
         'linux-default' : [ 'tinyxml', 'libboost_system',
-                            'boost_filesystem', 'lua'],
+                            'boost_filesystem', 'lua', 'incbin' ],
         'linux-ubuntu' : ['tinyxml', 'libboost_system',
-                          'boost_filesystem', 'lua5.1'],
+                          'boost_filesystem', 'lua5.1', 'incbin' ],
         'darwin' : ['tinyxml', 'libboost_system', 'boost_filesystem',
-                    'lua5.1'] 
+                    'lua5.1', 'incbin' ] 
     },
     'cflags': {
         'linux-default' : {
@@ -94,10 +94,10 @@ xsdb = {
             '-Wno-format-nonliteral ' \
             '-no-pie',
             'release': '-Wall -Werror -I. -O3 -fomit-frame-pointer ' \
-            '-Winit-self -Wformat -Wformat-nonliteral ' \
+            '-ffunction-sections -fdata-sections -Winit-self ' \
+            '-Wformat -Wformat-nonliteral ' \
             '-Wno-potentially-evaluated-expression ' \
-            '-Wno-format-nonliteral ' \
-            '-no-pie'
+            '-Wno-format-nonliteral -no-pie'
             },
         'darwin' : {
             'debug'  : '-std=c++11 -Wall -Werror -I. -g -Winit-self ' \
@@ -120,17 +120,16 @@ xsdb = {
     'linkflags': {
         'linux-default' : {
             'debug':'-g',
-            'release': '-Wl,-O1 -Wl,--discard-all -Wl,--no-undefined'
+            'release': '-Wl,-O1 -Wl,--discard-all -Wl,--no-undefined -Wl,--gc-sectcions'
         },
         'linux-ubuntu' : {
             'debug':'-g -no-pie',
-            'release': '-Wl,-O1 -Wl,--discard-all -Wl,--no-undefined -no-pie'
+            'release': '-Wl,-O1 -Wl,--discard-all -Wl,--no-undefined ' \
+            '-no-pie -Wl,--gc-sexsctions'
         },
         'darwin' : {
-            'debug':'-g -sectcreate __DATA __luascript_luac ' \
-            'luascript.luac',
-            'release': '-Wl,-S -sectcreate __DATA __luascript_luac ' \
-            'luascript.luac'
+            'debug':'-g',
+            'release': '',
         }
     },
     'target': 'xsdb'
