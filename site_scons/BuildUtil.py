@@ -60,7 +60,7 @@ def SetupEnv(buildSettings, env, platform, config):
         try:
             env.ParseConfig(
                 "PKG_CONFIG_PATH={} pkg-config --silence-errors --cflags --libs {}".format(
-                    os.getenv('PKG_CONFIG_PATH', '.'),
+                    os.getenv('PKG_CONFIG_PATH', '.:third-party/'),
                     lib))
         except OSError:
             env.MergeFlags(('-l%s' % (lib)))
@@ -68,13 +68,10 @@ def SetupEnv(buildSettings, env, platform, config):
 
 def Program(buildSettings, env, config):
     lua = env.Lua('luascript', _extractLuaFiles(buildSettings))
-
-    xsdb = None
+    xsdb     = None
     targets  = buildSettings['target']
     cppFiles = _extractCPPFiles(buildSettings) 
-    if sys.platform.startswith("linux"):
-        xsdb = env.Program(targets, cppFiles + lua)
-    elif sys.platform.startswith("darwin"):
-        xsdb = env.Program(targets, cppFiles)
-
+    xsdb     = env.Program(targets, cppFiles)
+    env.Depends(xsdb, lua)
+    
     return lua, xsdb

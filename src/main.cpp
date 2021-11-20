@@ -40,7 +40,7 @@ int main(int argc, const char* argv[]) {
 		cout << "Syntax xsdb <template> <input xsd file> <unique template paramters>" << endl;
 		cout << "To retrieve list of template paramters invoke with option \"-h info\"" << endl;
 		cout << "For example:" << endl;
-		cout << "\t #./xsdb template/test test/xsd-positive/testA001.xsd -h all" << endl;
+		cout << "\t #./xsdb templates/test test/xsd-positive/testA001.xsd -h all" << endl;
 		cout << "Please note that not all templates have optional paramters in which" << endl;
 		cout << "case they will not return anything as optional paramters." << endl;
 	} else {

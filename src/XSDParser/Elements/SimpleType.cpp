@@ -20,7 +20,9 @@
  *  You should have received a copy of the GNU General Public License
  *  along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
  */
+#if !defined(TIXML_USE_STL)
 #define TIXML_USE_STL
+#endif
 #include <tinyxml.h>
 #include "./src/XSDParser/Elements/SimpleType.hpp"
 #include "./src/XSDParser/Elements/Union.hpp"

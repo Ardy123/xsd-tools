@@ -1,0 +1,8 @@
+prefix=third-party/incbin
+includedir=${prefix}
+
+Name: incbin
+Description: Include binary and textual files in your C/C++ applications with ease
+Version: 6e576ca
+Libs:
+Cflags: -I"${includedir}"

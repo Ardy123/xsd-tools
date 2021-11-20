@@ -1,8 +1,8 @@
-#!/bin/sh
+#!/bin/bash
 
-HOST_PROFILE="${HOST_PROFILE:-$(uname -s)-$(uname -m)-Release}"
-BUILD_PROFILE_DBG="${BUILD_PROFILE:-$(uname -s)-$(uname -m)-Debug}"
-BUILD_PROFILE_REL="${BUILD_PROFILE:-$(uname -s)-$(uname -m)-Release}"
+HOST_PROFILE_DBG="${HOST_PROFILE:-$(uname -s)-$(uname -m)-Debug}"
+HOST_PROFILE_REL="${HOST_PROFILE:-$(uname -s)-$(uname -m)-Release}"
+BUILD_PROFILE="${BUILD_PROFILE:-$(uname -s)-$(uname -m)-Release}"
 
 function num_cpus() {
     local os=$(uname -s)
@@ -13,25 +13,44 @@ function num_cpus() {
     fi
 }
 
+function target() {
+    local os=$(uname -s | tr '[:upper:]' '[:lower:]')
+    if [[ "darwin" == "$os" ]]; then
+	echo "$os"
+    elif [[ "linux" == "$os" ]]; then
+	local host_platform=$(lsb_release -i | \
+				  sed 's/\s*Distributor ID:\s*//g' | \
+				  tr '[:upper:]' '[:lower:]'| \
+				  sed 's/\s+//g')
+	if [[ "ubuntu" == "$host_platform" ]]; then
+	    echo "$os-$host_platform"
+	else
+	    echo "$os-default"
+	fi
+    else
+	echo "linux-default"
+    fi
+}
+
 function usage() {
     echo "xsd-tools conan build script"
     echo ""
-    echo "\tUsage"
-    echo "\tbuild-conan.sh [debug|release|clean]"
-    echo "\t\t builds either the debug or release configuraitons or"
-    echo "\t\t it cleans the repo."
+    echo "    Usage"
+    echo "    build-conan.sh [Debug|Release|clean]"
+    echo "         builds either the debug or release configuraitons or"
+    echo "         it cleans the repo."
     echo ""
-    echo "\tEnvironment Variables"
-    echo "\tHOST_PROFILE"
-    echo "\t\tThe conan profile to be used to define the host"
-    echo "\t\tenvironment."
-    echo "\tBUILD_PROFILE"
-    echo "\t\tThe conan profile to be used to define the build"
-    echo "\t\tenvironment."
+    echo "    Environment Variables"
+    echo "    HOST_PROFILE"
+    echo "        The conan profile to be used to define the host"
+    echo "        environment."
+    echo "    BUILD_PROFILE"
+    echo "        The conan profile to be used to define the build"
+    echo "        environment."
     echo ""
-    echo "\tExamples"
-    echo "\t\t./build-conan.sh debug"
-    echo "\t\t./build-conan.sh clean"    
+    echo "    Examples"
+    echo "        ./build-conan.sh Debug"
+    echo "        ./build-conan.sh clean"    
 }
 
 if [[ $# -eq 0 ]]; then
@@ -42,28 +61,32 @@ else
 	case "$1" in
 	    Release)
 		echo "Compiling Release"
-		echo "\thost profile : $HOST_PROFILE"
-		echo "\tbuild profile: $BUILD_PROFILE_REL"
-		echo "\tncpus        : $(num_cpus)"
+		echo "    host profile : $HOST_PROFILE"
+		echo "    build profile: $BUILD_PROFILE_REL"
+		echo "    ncpus        : $(num_cpus)"
+		echo "    target       : $(target)"
 		conan install . \
-		      -pr:h $HOST_PROFILE \
-		      -pr:b $BUILD_PROFILE_REL
+		      -pr:h $HOST_PROFILE_REL \
+		      -pr:b $BUILD_PROFILE
 		source activate.sh
-		scons conf=release -j$(num_cpus)
+		scons conf=release target=$(target) -j$(num_cpus)
 		build_error=$?
 		source deactivate.sh
 		exit $build_error
 		;;
 	    Debug)
 		echo "Compiling Debug"
-		echo "\thost profile : $HOST_PROFILE"
-		echo "\tbuild profile: $BUILD_PROFILE_DBG"
-		echo "\tncpus        : $(num_cpus)"
+		echo "    host profile : $HOST_PROFILE"
+		echo "    build profile: $BUILD_PROFILE_DBG"
+		echo "    ncpus        : $(num_cpus)"
+		echo "    target       : $(target)"
 		conan install . \
-		      -pr:h $HOST_PROFILE \
-		      -pr:b $BUILD_PROFILE_DBG
+		      -pr:h $HOST_PROFILE_DBG \
+		      -pr:b $BUILD_PROFILE \
+		      --build=outdated \
+		      --build=missing
 		source activate.sh
-		scons conf=debug -j$(num_cpus)
+		scons conf=debug target=$(target) -j$(num_cpus)
 		build_error=$?
 		source deactivate.sh
 		exit $build_error
