@@ -67,7 +67,9 @@ else
 		echo "    target       : $(target)"
 		conan install . \
 		      -pr:h $HOST_PROFILE_REL \
-		      -pr:b $BUILD_PROFILE
+		      -pr:b $BUILD_PROFILE \
+		      --build=outdated \
+		      --build=missing
 		source activate.sh
 		scons conf=release target=$(target) -j$(num_cpus)
 		build_error=$?
