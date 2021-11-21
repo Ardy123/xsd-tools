@@ -28,7 +28,7 @@
 					return table.concat({
 						'static void _destroy_', calcName(), '(xml_marshaller* pMarshaller, ', calcName(), '* pObj) {\n',
 						'\tif (', objArray, ') {\n',
-						'\t\tint ndx;\n',
+						'\t\tunsigned ndx;\n',
 						'\t\tfor (ndx = 0; ndx < pObj->m_nElements; ++ndx) {\n',
 						'\t\t\t', base.delete.statement(objArray..'[ndx]'),
 						'\t\t}\n',
@@ -54,7 +54,7 @@
 					definition = function() 
 						return table.concat({
 							'static void _marshal_', calcName(), '(xml_marshaller* pMarshaller, xml_cstr* pOutStr, const ', calcName(), '* pObj) {\n',
-							'\tint ndx;\n',
+							'\tunsigned ndx;\n',
 							'\tfor (ndx = 0; ndx < pObj->m_nElements; ++ndx) {\n',
 							'\t\t', base.binding.marshal.statement('pOutStr', base.buildVar('pObj->','pArray[ndx]')),
 							'\t\t_cstr_append(pMarshaller, pOutStr, " ");\n',
@@ -72,13 +72,13 @@
 					definition = function() 
 						return table.concat({
 							'static void _unmarshal_', calcName(), '(xml_marshaller* pMarshaller, const char* pContent, ', calcName(), '* pObj) {\n',
-							'\tint maxSz = 0;\n',
+							'\tunsigned maxSz = 0;\n',
 							'\tchar* pToken, *pMutableContent = _CStrCpy(pMarshaller, pContent);\n',
 							'\tfor (pObj->m_nElements = 0, pToken = strtok(pMutableContent, " \\t\\n\\r");\n',
 							'\t\tpToken;\n',
 							'\t\tpToken = strtok(NULL, " \\t\\n\\r"), pObj->m_nElements++) {\n',
 							'\t\tif (maxSz == pObj->m_nElements) {\n',
-							'\t\t\tmaxSz = maxSz ? (maxSz <<= 1) : (maxSz = 8);\n',
+							'\t\t\tmaxSz = maxSz ? (maxSz << 1) : 8;\n',
 							'\t\t\t', base.buildVar('pObj->','pArray'), ' = pMarshaller->realloc(pMarshaller, ', base.buildVar('pObj->','pArray'), ', maxSz * sizeof(', base.c_type.name(), '));\n',
 							'\t\t}\n',
 							'\t\t', base.binding.unmarshal.statement('pToken', base.buildVar('pObj->', 'pArray[pObj->m_nElements]')),
@@ -112,7 +112,7 @@
 					return table.concat({
 						string.format("\tassert(%s.m_nElements ==  %s.m_nElements);\n", obj1, obj2),
 						"\t{\n",
-						"\t\tint ndx;\n",
+						"\t\tunsigned ndx;\n",
 						string.format("\t\tfor(ndx = 0; ndx < %s.m_nElements; ++ndx) {\n", obj1),
 						"\t\t", base.test.assert(obj1..base.buildVar('.','pArray')..'[ndx]', obj2..base.buildVar('.','pArray')..'[ndx]'),
 						"\t\t}\n",

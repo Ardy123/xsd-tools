@@ -51,7 +51,7 @@
 						'\tchar* outStr = pMarshaller->realloc(pMarshaller, NULL, b64Sz);\n',
 						'\tmemset(outStr, 0, b64Sz);\n',
 						'\tbase64_init_encodestate(&base64Encoder);\n',
-						'\tencodedCnt = base64_encode_block(pObj->m_pBuffer, srcSz, outStr, &base64Encoder);\n',
+						'\tencodedCnt = base64_encode_block((const char*)pObj->m_pBuffer, srcSz, outStr, &base64Encoder);\n',
 						'\tbase64_encode_blockend(outStr + encodedCnt, &base64Encoder);\n',
 						'\t_cstr_append(pMarshaller, pOutBuffer, outStr);\n',
 						'\toutStr = pMarshaller->realloc(pMarshaller, outStr, 0);\n',
@@ -74,8 +74,8 @@
 						'\tpObj->m_pBuffer =  pMarshaller->realloc(pMarshaller, NULL, dataSz);\n',
 						'\tmemset(pObj->m_pBuffer, 0, dataSz);\n',
 						'\tbase64_init_decodestate(&base64Decoder);\n',
-						'\tbase64_decode_block(pContent, srcLen, pObj->m_pBuffer, &base64Decoder);\n',
-						'\tpObj->m_size = strlen(pObj->m_pBuffer);\n',
+						'\tbase64_decode_block(pContent, srcLen, (char*)pObj->m_pBuffer, &base64Decoder);\n',
+						'\tpObj->m_size = strlen((const char*)pObj->m_pBuffer);\n',
 						'}\n',
 					})
 				end,
@@ -94,7 +94,7 @@
 					math.random(0, 65535),
 					math.random(0, 65535)
 				)
-				return string.format('{ .m_pBuffer = \"%s\", .m_size = %d }', str, str:len())
+				return string.format('{ .m_pBuffer = (uint8_t*)\"%s\", .m_size = %d }', str, str:len())
 			end,
 			assert = function(obj1, obj2)
 				return table.concat({
