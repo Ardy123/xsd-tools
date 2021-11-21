@@ -64,7 +64,7 @@ typedef struct {
 	table.map(depOrderSansRoot, function(k, node)
 		outbuf:append(table.concat({
 			'typedef struct {\n',
-			'\tuint32_t\tm_id;\n',
+			'\tuint32_t\t_eid;\n',
 		}))
 		table.map(node.attributes, function(name, xsdType) 
 			outbuf:append(table.concat({
@@ -296,7 +296,7 @@ static int _marshal_adjustElmStk(xml_marshaller* pMarshaller, uint32_t validType
 		-- output some variable declerations
 		outbuf:append(table.concat({
 			'\txml_cstr* pOutStr = &pMarshaller->m_mrshllBuf;\n',
-			'\tconst xml_mrshllElmRec elemRec = {',sdbm_hash(node.name),'u, pObj->m_id};\n',
+			'\tconst xml_mrshllElmRec elemRec = {',sdbm_hash(node.name),'u, pObj->_eid};\n',
 		}))
 		-- output return struct if element had dependents
 		if next(node.dependents) then
@@ -441,7 +441,7 @@ static void _prsElmRec_init(xml_prsElmRec* pElmRec, xml_marshaller* pMarshaller,
 		-- output std constructor
 		outbuf:append(table.concat({
 			'\tcase ', sdbm_hash(node.name), 'u:\n',
-			'\t\tpElmRec->m_element.m_', node.name, '.m_id = _SDBMHash(pElmRec->m_typeId, strBuf);\n',
+			'\t\tpElmRec->m_element.m_', node.name, '._eid = _SDBMHash(pElmRec->m_typeId, strBuf);\n',
 		}))
 		-- output default attribute construction
 		local objName = 'pElmRec->m_element.m_'..node.name..'.'
@@ -525,7 +525,7 @@ static uint32_t _prsElmRec_id(xml_prsElmRec* pElmRec) {
 	table.map(depOrderSansRoot, function(_, node)
 		outbuf:append(table.concat({
 			'\t\tcase ', sdbm_hash(node.name), ':\n',
-			'\t\t\t return pElmRec->m_element.m_', node.name, '.m_id;\n',
+			'\t\t\t return pElmRec->m_element.m_', node.name, '._eid;\n',
 		}))
 	end)
 	return outbuf:str()

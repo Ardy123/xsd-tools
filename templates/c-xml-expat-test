@@ -47,7 +47,7 @@
 	local ID = 1	
 	table.map(typeSansRoot, function(_, node)
 		-- build list of attributes to output test values for
-		valTbl = {'.m_id = '..tostring(ID)}
+		valTbl = {'._eid = '..tostring(ID)}
 		local prcssType = function(ncname, xsdType)
 			local c_type = c_type_info[xsdType.type]
 			if "c_list" == c_type.type then
