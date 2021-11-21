@@ -44,10 +44,10 @@
 		outbuf:append(v.test.subDef(listTypeVarMap[v]))
 	end)
 	-- output stage declarations of objects (main declarations)
-	local ID = 1	
+	local ID = 1
 	table.map(typeSansRoot, function(_, node)
 		-- build list of attributes to output test values for
-		valTbl = {'.m_id = '..tostring(ID)}
+		valTbl = {'._eid = '..tostring(ID)}
 		local prcssType = function(ncname, xsdType)
 			local c_type = c_type_info[xsdType.type]
 			if "c_list" == c_type.type then
@@ -59,7 +59,7 @@
 		end
 		table.map(node.attributes, prcssType)
 		if next(node.content) then
-			prcssType("Content", node.content) 
+			prcssType("Content", node.content)
 		end
 		outbuf:append(table.concat({
 			"static const xml_", node.name, " ", node.name, "Tst = {", table.concat(valTbl, ','),"};\n",
@@ -70,7 +70,8 @@
 	return outbuf:str()
 ]
 
-static void* reallocCb(struct xml_marshaller* pThis, void* pMem, size_t size) {
+static void* reallocCb(struct xml_marshaller* pMarshaller, void* pMem, size_t size) {
+	(void)pMarshaller;
 	return realloc(pMem, size);
 }
 
@@ -78,7 +79,10 @@ static void* reallocCb(struct xml_marshaller* pThis, void* pMem, size_t size) {
 	local outbuf = stringBuffer:new()
 	table.map(typeSansRoot, function(_, node)
 		outbuf:append(table.concat({
-			"static void unmarshal_", node.name, "(struct xml_marshaller* pThis, const xml_", node.name, "* pObj, uint32_t parent) {\n",
+			"static void unmarshal_", node.name, "(struct xml_marshaller* pMarshaller, const xml_", node.name, "* pObj, uint32_t parent) {\n",
+			"\t(void)pMarshaller;\n",
+			"\t(void)parent;\n",
+			"\t(void)pObj;\n",
 		}))
 		local prcssType = function(ncname, xsdtype)
 			local c_type = c_type_info[xsdtype.type]
@@ -111,7 +115,7 @@ int main(void) {
 	table.map(typeSansRoot, function(_,node)
 		if next(node.dependents) then
 			outbuf:append(table.concat({
-				"\tmarshal_", node.name, " ", node.name, ";\n",
+				"\txml_marshal_", node.name, " ", node.name, ";\n",
 			}))
 		end
 	end)
@@ -119,11 +123,11 @@ int main(void) {
 ][@lua -- output marshalling start
 	if next(schema.types[schema.root].dependents) then
 		return table.concat({
-			'\tmarshal_', schema.root, ' ', schema.root, ' = marshal(&mrshllr);\n'
+			'\txml_marshal_', schema.root, ' ', schema.root, ' = xml_marshal(&mrshllr);\n'
 		})
 	else
 		return table.concat({
-			'\tmarshal(&mrshllr);\n'
+			'\txml_marshal(&mrshllr);\n'
 		})
 	end
 ][@lua --output marshalling statments
@@ -149,9 +153,9 @@ int main(void) {
 	end
 	table.map(schema.types[schema.root].dependents, function(_,v) marshalRec(schema.root, v) end)
 	return outbuf:str()
-]	output = marshal_flush(&mrshllr, 1);
+]	output = xml_marshal_flush(&mrshllr, 1);
 	/* test unmarshalling */
-	unmarshal(&mrshllr, &output, 1);
+	xml_unmarshal(&mrshllr, &output, 1);
 	/* clean up */
 	output.m_pBuf = realloc(output.m_pBuf, 0);
 	return 0;

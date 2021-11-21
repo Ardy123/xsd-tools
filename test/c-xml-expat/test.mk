@@ -1,7 +1,7 @@
-CC :=gcc
-RM :=rm
+CC ?=gcc
+RM ?=rm
 TEST := testA014
-CFLAGS := -g -I. -I./$(TEST)-xsdb -I../libb64/include/
+CFLAGS ?= -Wall -Wextra -Werror -g -I. -I./$(TEST)-xsdb -I../libb64/include/
 VPATH = ./$(TEST)-xsdb
 
 .SUFFIXES: 

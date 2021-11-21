@@ -43,7 +43,7 @@
 				definition = function() 
 					return table.concat({
 						'static void _marshal_xmlhex(xml_marshaller* pMarshaller, xml_buffer* pOutBuffer, const xml_hex* pObj) {\n',
-						'\tint ndx;\n',
+						'\tunsigned ndx;\n',
 						'\tstatic const char hexTbl[] = { \'0\', \'1\', \'2\', \'3\', \'4\', \'5\', \'6\', \'7\', \'8\', \'9\', \'A\', \'B\', \'C\', \'D\', \'E\', \'F\' };\n',
 						'\tuint8_t* pHexBuf = pMarshaller->realloc(pMarshaller, NULL, (pObj->m_size * 2) + 1);\n',
 						'\tfor(ndx = 0; ndx < pObj->m_size; ++ndx) {\n',
@@ -51,7 +51,7 @@
 						'\t\tpHexBuf[(ndx << 1) + 1] = hexTbl[pObj->m_pBuffer[ndx] & 0x0F];\n',
 						'\t}\n',
 						'\tpHexBuf[ndx << 1] = 0;\n',
-						'\t_cstr_append(pMarshaller, pOutBuffer, pHexBuf);\n',
+						'\t_cstr_append(pMarshaller, pOutBuffer, (const char*)pHexBuf);\n',
 						'\tpMarshaller->realloc(pMarshaller, pHexBuf, 0);\n',
 						'}\n',
 					})
@@ -88,7 +88,7 @@
 						'\tuint8_t *pOutItr, shiftFlag = 0x4, accum = 0;\n',
 						'\tpObj->m_pBuffer = pMarshaller->realloc(pMarshaller, NULL, contentSz / 2);\n',
 						'\tfor (pOutItr = pObj->m_pBuffer; *pContent; ++pContent) {\n',
-						'\t\tconst unsigned char bin = hexTbl[*pContent];\n',
+						'\t\tconst unsigned char bin = (unsigned char)hexTbl[(unsigned)(*pContent)];\n',
 						'\t\t\tif(255 != bin) {\n',
 						'\t\t\t\taccum |= bin << shiftFlag;\n',
 						'\t\t\t\tshiftFlag ^= 0x4;\n',
@@ -117,7 +117,7 @@
 					math.random(0, 65535),
 					math.random(0, 65535)
 				)
-				return string.format('{ .m_pBuffer = \"%s\", .m_size = %d }', str, str:len())
+				return string.format('{ .m_pBuffer = (uint8_t*)\"%s\", .m_size = %d }', str, str:len())
 			end,
 			assert = function(obj1, obj2)
 				return table.concat({
