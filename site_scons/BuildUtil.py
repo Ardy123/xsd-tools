@@ -50,11 +50,17 @@ def SetupEnv(buildSettings, env, platform, config):
     env.Tool('luac')
     # pull compiler from environment variables
     env['CC'] = SCons.Util.CLVar(os.environ.get('CC', str(env['CC'])))
+    env['CXX']=SCons.Util.CLVar(os.environ.get('CXX', str(env['CXX'])))
     # set C/C++/Lua/link flags with variant settings
-    env['CFLAGS']   = SCons.Util.CLVar(buildSettings['cflags'][platform][config])
-    env['CCFLAGS']  = SCons.Util.CLVar(buildSettings['cflags'][platform][config])
+    env['CFLAGS']   = SCons.Util.CLVar(
+            os.environ.get('CFLAGS', buildSettings['cflags'][platform][config]) + ' -I.'
+    )
+    env['CCFLAGS']  = SCons.Util.CLVar(
+        os.environ.get('CPPFLAGS', buildSettings['cflags'][platform][config]) + ' -I.'
+    )
+    env['LINKFLAGS']= SCons.Util.CLVar(
+        os.environ.get('LDFLAGS', buildSettings['linkflags'][platform][config]))
     env['LUACFLAGS']= SCons.Util.CLVar(buildSettings['luaflags'][config])
-    env['LINKFLAGS']= SCons.Util.CLVar(buildSettings['linkflags'][platform][config])
     # update C/C++ flags with paths
     for lib in buildSettings['libs'][platform]:
         try:
