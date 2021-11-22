@@ -31,7 +31,7 @@
 					return table.concat({
 						'void _marshal_uint64t(xml_marshaller* pMarshaller, xml_cstr* pOutStr, const uint64_t val) {\n',
 						'\tchar valBuf[256];\n',
-						'\tsnprintf(valBuf, sizeof(valBuf), "%lu", val);\n',
+						'\tsnprintf(valBuf, sizeof(valBuf), "%"PRIu64, val);\n',
 						'\t_cstr_append(pMarshaller, pOutStr, valBuf);\n',
 						'}\n',
 					})
