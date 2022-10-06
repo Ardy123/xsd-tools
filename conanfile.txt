@@ -1,5 +1,5 @@
 [build_requires]
-lua-tool/5.1.5
+lua/5.1.5
 
 [requires]
 lua/5.1.5
