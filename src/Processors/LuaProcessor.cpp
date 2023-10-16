@@ -282,11 +282,11 @@ LuaProcessor::ProcessAll(const XSD::Elements::All * pNode) {
 LuaProcessor::_parseType(const XSD::Types::BaseType& rXSDType) {
 	if(XSD_ISTYPE(&rXSDType, XSD::Types::SimpleType)) {
 		const XSD::Types::SimpleType* pSimpleType = 
-			static_cast<const XSD::Types::SimpleType*>(&rXSDType);
+			dynamic_cast<const XSD::Types::SimpleType*>(&rXSDType);
 		pSimpleType->m_pValue->ParseElement(*this);
 	} else if(XSD_ISTYPE(&rXSDType, XSD::Types::ComplexType)) {
 		const XSD::Types::ComplexType* pComplexType = 
-			static_cast<const XSD::Types::ComplexType*>(&rXSDType);
+			dynamic_cast<const XSD::Types::ComplexType*>(&rXSDType);
 		pComplexType->m_pValue->ParseElement(*this);
 	} else {
 		/* inserts basic type. Handles array types the same as basic types */

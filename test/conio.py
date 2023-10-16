@@ -20,54 +20,53 @@ import sys
 import signal
 import subprocess
 
+
 class conio:
-	HEADER = '\033[95m'
-	OKBLUE = '\033[94m'
-	OKGREEN = '\033[92m'
-	WARNING = '\033[93m'
-	FAIL = '\033[91m'
-	ENDC = '\033[0m'
-	SIGNALS_TO_NAMES_DICT = dict((getattr(signal, n), n) \
-		for n in dir(signal) if n.startswith('SIG') and '_' not in n )
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    SIGNALS_TO_NAMES_DICT = dict((getattr(signal, n), n) \
+                                 for n in dir(signal) if n.startswith('SIG') and '_' not in n)
 
-	def __init__(self):
-		return
-		
-	def enableColors(self):
-		self.HEADER = '\033[95m'
-		self.OKBLUE = '\033[94m'
-		self.OKGREEN = '\033[92m'
-		self.WARNING = '\033[93m'
-		self.FAIL = '\033[91m'
-		self.ENDC = '\033[0m'
+    def __init__(self):
+        return
 
-	def disableColors(self):
-		self.HEADER = ''
-		self.OKBLUE = ''
-		self.OKGREEN = ''
-		self.WARNING = ''
-		self.FAIL = ''
-		self.ENDC = ''
+    def enableColors(self):
+        self.HEADER = '\033[95m'
+        self.OKBLUE = '\033[94m'
+        self.OKGREEN = '\033[92m'
+        self.WARNING = '\033[93m'
+        self.FAIL = '\033[91m'
+        self.ENDC = '\033[0m'
 
-	def stdout(self, color, message):
-		sys.stdout.write(color + str(message) + self.ENDC)
-		
-	def call(self, cmdLine, workDir = None):
-                if None == workDir:
-		        prcssStrm = subprocess.Popen(cmdLine,
-                                                     shell=True,
-                                                     stdout=subprocess.PIPE,
-                                                     stderr=subprocess.PIPE)
-		else:
-			prcssStrm = subprocess.Popen(cmdLine,
-                                                     shell=True,
-                                                     stdout=subprocess.PIPE,
-                                                     stderr=subprocess.PIPE,
-                                                     cwd=workDir)
-		rslt, error = prcssStrm.communicate()
-		# handle a signal error
-		if 0 > prcssStrm.returncode:
-                        return (rslt, self.SIGNALS_TO_NAMES_DICT[-prcssStrm.returncode] + "\n" + error, prcssStrm.returncode)
-		return (rslt, error, prcssStrm.returncode)
+    def disableColors(self):
+        self.HEADER = ''
+        self.OKBLUE = ''
+        self.OKGREEN = ''
+        self.WARNING = ''
+        self.FAIL = ''
+        self.ENDC = ''
 
+    def stdout(self, color, message):
+        sys.stdout.write(color + str(message) + self.ENDC)
 
+    def call(self, cmdLine, workDir=None):
+        if None == workDir:
+            prcssStrm = subprocess.Popen(cmdLine,
+                                         shell=True,
+                                         stdout=subprocess.PIPE,
+                                         stderr=subprocess.PIPE)
+        else:
+            prcssStrm = subprocess.Popen(cmdLine,
+                                         shell=True,
+                                         stdout=subprocess.PIPE,
+                                         stderr=subprocess.PIPE,
+                                         cwd=workDir)
+        rslt, error = prcssStrm.communicate()
+        # handle a signal error
+        if 0 > prcssStrm.returncode:
+            return rslt, self.SIGNALS_TO_NAMES_DICT[-prcssStrm.returncode] + "\n" + error, prcssStrm.returncode
+        return rslt, error, prcssStrm.returncode
