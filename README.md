@@ -119,7 +119,7 @@ class xml_testA002(_handler, _xmlelement):
                 self._content = self._elemStk[-1][2]
                 return
 ```
-## Usage Guide ##
+### Usage Guide ###
 
 To use xsd-tools, invoke xsdb using the following syntax from the console
 
