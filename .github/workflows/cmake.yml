@@ -41,7 +41,7 @@ jobs:
     - name: Build
       working-directory: ${{github.workspace}}
       run: |
-        echo ${{github.workspace}}
+        ls
         scons conf=release target=linux-ubuntu -j$(nproc)
 
     - name: Test
