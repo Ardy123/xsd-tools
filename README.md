@@ -1,12 +1,12 @@
 ![ubuntu latest x86_64 workflow](https://github.com/Ardy123/xsd-tools/actions/workflows/cmake.yml/badge.svg)
 
 # xsd-tools
-## Overview ##
+### Overview ###
 xsd-tools is a set of tools for generating code from xml xsd schema documents, mainly around generating marshalling & unmarshalling code. It is designed such that it can be easily extended by any user to enable code generation for any language. By default it has a support for a simple python-sax marshalling/unmarshalling code generator as well as a C based expat marshalling/unmarshalling code generator.
 
 It processes XSD schema documents and invokes a template file which outputs code. The templates files use Lua for scripting withing the template file. Custom user templates can be easily be created to extend the tool to generate different output code.
 
-## Features ##
+### Features ###
   * XSD schema parsing
   * Easily Extendable
   * Simple Lua based templates for customizing code generation.
@@ -16,7 +16,7 @@ _Look at the Wiki section for more information._
 
 NOTE: Currently the tools are not namespace aware.
 
-## Sample Output ##
+### Sample Output ###
 ```
 # xsdb python-sax test/xsd-positive/testA002.xsd
 
@@ -129,9 +129,9 @@ xsdb <template file> <xsd schema file><br>
 <pre><code># xsdb python-sax testA022.xsd <br>
 </code></pre>
 
-## Install Instructions ##
+### Install Instructions ###
 
-### Requirements ###
+#### Requirements ####
 The following packages/libs must be available on your system.
   * liblua5.1-0-dev
   * libtinyxml-dev
@@ -141,21 +141,21 @@ The following packages/libs must be available on your system.
   * python
   * scons
 
-On ubuntu/kubuntu systems this can be done by running the following line from a shell.
+On ubuntu systems this can be done by running the following line from a shell.
 ```
    # sudo apt-get install lua5.1 liblua5.1-0-dev libtinyxml-dev libboost-dev  libboost-system-dev libboost-filesystem-dev scons
 ```
-### Building ###
+#### Building ####
 from a prompt type
 ```
    # scons
 ```
-### Installing ###
+#### Installing ####
 from a prompt type
 ```
    # sudo scons install
 ```
-### Uninstalling ###
+#### Uninstalling ####
 from a prompt type
 ```
    # sudo scons uninstall
