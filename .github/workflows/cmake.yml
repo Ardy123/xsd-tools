@@ -41,7 +41,7 @@ jobs:
     - name: Build
       working-directory: ${{github.workspace}}
       run: |
-        whereis luac
+        whereis luac5.1
         scons conf=release target=linux-ubuntu -j$(nproc)
 
     - name: Test
