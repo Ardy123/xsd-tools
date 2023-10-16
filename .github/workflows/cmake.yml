@@ -26,6 +26,9 @@ jobs:
     - name: Install scons
       run: sudo apt-get install scons
 
+    - name: Install tiny-xml
+      run: sudo apt-get instlal libtinyxml-dev
+
     - name: Install lua5.1
       run: sudo apt-get install liblua5.1-0-dev
 
