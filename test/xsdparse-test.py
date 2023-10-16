@@ -35,6 +35,7 @@ def runTest(xsdfile, rsltFile):
 		consoleIO.stdout(consoleIO.FAIL, err)
 		return
 	try:
+		postcondition = open(rsltFile).read()
 		if postcondition == test_result:
 			consoleIO.stdout(consoleIO.OKGREEN, "Pass\n")
 		else:
