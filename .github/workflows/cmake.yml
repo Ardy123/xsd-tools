@@ -41,7 +41,7 @@ jobs:
     - name: Build
       working-directory: ${{github.workspace}}
       run: |
-        whereis lua
+        ls -la /usr/bin/l*
         scons conf=release target=linux-ubuntu -j$(nproc)
 
     - name: Test
