@@ -143,7 +143,7 @@ The following packages/libs must be available on your system.
 
 On ubuntu/kubuntu systems this can be done by running the following line from a shell.
 ```
-   # sudo apt-get install liblua5.1-0-dev libtinyxml-dev libboost-dev  libboost-system-dev libboost-filesystem-dev scons
+   # sudo apt-get install lua5.1 liblua5.1-0-dev libtinyxml-dev libboost-dev  libboost-system-dev libboost-filesystem-dev scons
 ```
 ### Building ###
 from a prompt type

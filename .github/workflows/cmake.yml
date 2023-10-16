@@ -30,7 +30,7 @@ jobs:
       run: sudo apt-get install libtinyxml-dev
 
     - name: Install lua5.1
-      run: sudo apt-get install liblua5.1-0-dev
+      run: sudo apt-get install lua5.1 liblua5.1-0-dev
 
     - name: Install boost
       run: |
@@ -41,7 +41,7 @@ jobs:
     - name: Build
       working-directory: ${{github.workspace}}
       run: |
-        find / -iname luac*
+        ls -la  /snap/core20/2015/usr/share/bash-completion/completions/luac
         scons conf=release target=linux-ubuntu -j$(nproc)
 
     - name: Test
