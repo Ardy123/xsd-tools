@@ -1,6 +1,6 @@
-# xsd-tools
 ![ubuntu latest x86_64 workflow](https://github.com/Ardy123/xsd-tools/actions/workflows/cmake.yml/badge.svg)
 
+# xsd-tools
 ## Overview ##
 xsd-tools is a set of tools for generating code from xml xsd schema documents, mainly around generating marshalling & unmarshalling code. It is designed such that it can be easily extended by any user to enable code generation for any language. By default it has a support for a simple python-sax marshalling/unmarshalling code generator as well as a C based expat marshalling/unmarshalling code generator.
 
