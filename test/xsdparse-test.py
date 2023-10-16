@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 # Copyright: (c)2012 Ardavon Falls
 #
@@ -29,19 +29,20 @@ def runTest(xsdfile, rsltFile):
 	# run tool and capture output
 	cmd = "../xsdb ../templates/test " + xsdfile
 	std, err, errCode = consoleIO.call(cmd)
+	test_result = std.decode('utf-8')
 	if 0 != len(err):
 		consoleIO.stdout(consoleIO.FAIL, "Fail\n")
 		consoleIO.stdout(consoleIO.FAIL, err)
 		return
 	try:
 		postcondition = open(rsltFile).read()
-		if postcondition == std:
+		if postcondition == test_result:
 			consoleIO.stdout(consoleIO.OKGREEN, "Pass\n")
 		else:
 			consoleIO.stdout( consoleIO.FAIL, "Fail\n" )
-			for diffs in difflib.unified_diff(std, postcondition, "xsdb:output", rsltFile ):
+			for diffs in difflib.unified_diff(test_result, postcondition, "xsdb:output", rsltFile ):
 				consoleIO.stdout( consoleIO.FAIL, diffs )
-	except IOError, e:
+	except IOError as e:
 		consoleIO.stdout(consoleIO.FAIL, "Fail\n")
 		if e.errno == os.errno.ENOENT:
 			consoleIO.stdout(consoleIO.FAIL, "\ttest postcondition file not found\n")
